@@ -11,8 +11,8 @@ import org.bukkit.entity.Player
 class CommandFallback(
     commandName: String
 ) : Command(commandName) {
-    // these will only be used if CommandAPI fails to load which is usually only
-    // if this is an unsupported version of Minecraft
+    // они будут использоваться только в том случае, если CommandAPI не загружается, что обычно происходит только
+    // если это неподдерживаемая версия Minecraft
 
     override fun execute(
         sender: CommandSender,

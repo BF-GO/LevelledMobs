@@ -1,7 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.enums
 
 /**
- * Holds the attributes that can have multipliers applied
+ * Содержит атрибуты, к которым можно применять множители.
  *
  * @author lokka30, stumper66
  * @see org.bukkit.attribute.Attribute
@@ -9,12 +9,12 @@ package io.github.arcaneplugins.levelledmobs.enums
  * @since 2.6.0
  */
 enum class Addition {
-    // Prefix of ATTRIBUTE if it is a Minecraft vanilla attribute like GENERIC_MOVEMENT_SPEED
+    // Префикс ATTRIBUTE, если это ванильный атрибут Minecraft, например GENERIC_MOVEMENT_SPEED.
     ATTRIBUTE_MOVEMENT_SPEED,
     ATTRIBUTE_ATTACK_DAMAGE,
     ATTRIBUTE_MAX_HEALTH,
 
-    // Prefix of CUSTOM if it is a custom value used in listeners
+    // Префикс CUSTOM, если это пользовательское значение, используемое в прослушивателях.
     CUSTOM_RANGED_ATTACK_DAMAGE,
     CUSTOM_ITEM_DROP,
     CUSTOM_XP_DROP,

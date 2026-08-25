@@ -11,9 +11,9 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityPickupItemEvent
 
 /**
- * Listens for when an entity picks up items and tracks the items only if
- * the entity equipped the items so that later we can be sure not to
- * destroy these items
+ * Прослушивает, когда объект берет предметы, и отслеживает их, только если
+ * сущность оборудовала предметы так, чтобы мы могли быть уверены, что позже не
+ * уничтожить эти предметы
  *
  * @author stumper66
  * @since 3.14.0
@@ -21,7 +21,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent
 class EntityPickupItemListener : Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun onEntityPickupItemEvent(event: EntityPickupItemEvent) {
-        // sorry guys this is a Paper only feature
+        // извините, ребята, это функция только Paper
         if (!LevelledMobs.instance.ver.isRunningPaper) return
         if (event.entity is Player) return
 
@@ -32,7 +32,7 @@ class EntityPickupItemListener : Listener {
             return
         }
 
-        // if you don't clone the item then it will change to air in the next function
+        // если вы не клонируете элемент, он изменится на воздух в следующей функции
         val itemStack = event.item.itemStack.clone()
         val pickedUpEquipment = PickedUpEquipment(lmEntity)
         val wrapper = SchedulerWrapper(lmEntity.livingEntity) {

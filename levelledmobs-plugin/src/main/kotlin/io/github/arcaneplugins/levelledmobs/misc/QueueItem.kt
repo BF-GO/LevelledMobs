@@ -7,7 +7,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.Event
 
 /**
- * Holds data that goes into various queues for processing
+ * Содержит данные, которые попадают в различные очереди для обработки.
  *
  * @author stumper66
  * @since 3.0.0

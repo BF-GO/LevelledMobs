@@ -1,10 +1,12 @@
 package io.github.arcaneplugins.levelledmobs.rules
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
+
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import kotlin.math.ceil
 
 /**
- * Holds any rule information regarding the health indicator
+ * Содержит любую информацию о правилах, касающихся индикатора работоспособности.
  *
  * @author stumper66
  * @since 3.1.0
@@ -147,26 +149,29 @@ class HealthIndicator : MergableRule, Cloneable {
     override fun toString(): String {
         val sb = StringBuilder()
         if (indicator != null) {
-            sb.append("ind: ")
+            sb.append(LocalizedMessages.text("display.health-indicator.indicator", colorize = false))
             sb.append(indicator)
         }
 
         if (indicatorHalf != null) {
             if (sb.isNotEmpty()) sb.append(", ")
 
-            sb.append("ind.5: ").append(indicatorHalf)
+            sb.append(LocalizedMessages.text("display.health-indicator.half-indicator", colorize = false))
+                .append(indicatorHalf)
         }
 
         if (scale != null) {
             if (sb.isNotEmpty()) sb.append(", ")
 
-            sb.append("scl: ").append(scale)
+            sb.append(LocalizedMessages.text("display.health-indicator.scale", colorize = false))
+                .append(scale)
         }
 
         if (maxIndicators != null) {
             if (sb.isNotEmpty()) sb.append(", ")
 
-            sb.append("max: ").append(maxIndicators)
+            sb.append(LocalizedMessages.text("display.health-indicator.max", colorize = false))
+                .append(maxIndicators)
         }
 
         if (tiers != null) {
@@ -178,7 +183,7 @@ class HealthIndicator : MergableRule, Cloneable {
         if (doMerge) {
             if (sb.isNotEmpty()) sb.append("&r, ")
 
-            sb.append("merge: true")
+            sb.append(LocalizedMessages.text("display.health-indicator.merge", colorize = false))
         }
 
         return if (sb.isNotEmpty())

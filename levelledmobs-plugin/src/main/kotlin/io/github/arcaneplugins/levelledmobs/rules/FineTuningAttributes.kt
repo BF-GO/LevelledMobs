@@ -3,11 +3,12 @@ package io.github.arcaneplugins.levelledmobs.rules
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.enums.Addition
 import io.github.arcaneplugins.levelledmobs.misc.EffectiveInfo
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import kotlin.collections.iterator
 
 /**
- * Holds any custom multipliers values parsed from rules.yml
+ * Содержит любые пользовательские значения множителей, проанализированные из rules.yml.
  *
  * @author stumper66
  * @since 3.0.0
@@ -348,10 +349,12 @@ class FineTuningAttributes : MergableRule, Cloneable, EffectiveInfo {
     }
 
     private fun formatToString(lmEntity: LivingEntityWrapper?): String{
-        if (this.isEmpty) return "No items"
+        if (this.isEmpty) return LocalizedMessages.text("display.rules.no-items", colorize = false)
 
         val sb = StringBuilder()
-        if (this.getUseStacked()) sb.append("(all stk) ")
+        if (this.getUseStacked()) sb.append(
+            LocalizedMessages.text("display.rules.all-stacked", colorize = false)
+        )
 
         var hadItems = false
 
@@ -379,7 +382,7 @@ class FineTuningAttributes : MergableRule, Cloneable, EffectiveInfo {
             if (formatMobSpecific(
                 mobSpecificMultipliers,
                 sb,
-                "mob specific",
+                LocalizedMessages.text("display.rules.mob-specific", colorize = false),
                 hadItems,
                 lmEntity
             ))
@@ -398,7 +401,7 @@ class FineTuningAttributes : MergableRule, Cloneable, EffectiveInfo {
                 formatMultipliers(
                     baseAttributeModifiers,
                     sb,
-                    "base mods",
+                    LocalizedMessages.text("display.rules.base-modifiers", colorize = false),
                     hadItems,
                     null
                 )
@@ -410,7 +413,10 @@ class FineTuningAttributes : MergableRule, Cloneable, EffectiveInfo {
             formatMobSpecific(
                 mobSpecificBaseModifiers,
                 sb,
-                "mob specific base mods",
+                LocalizedMessages.text(
+                    "display.rules.mob-specific-base-modifiers",
+                    colorize = false
+                ),
                 hadItems,
                 lmEntity
             )

@@ -29,7 +29,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
 /**
- * Listens for when an entity dies so it's drops can be multiplied, manipulated, etc
+ * Слушает, когда объект умирает, поэтому его дроп можно умножать, манипулировать и т. д.
  *
  * @author lokka30
  * @since 2.4.0
@@ -39,7 +39,7 @@ class EntityDeathListener : Listener {
     private var lastPriority: EventPriority? = null
     private val settingName = "entity-death-event"
 
-    // These entity types will be forced not to be processed
+    // Эти типы объектов будут принудительно не обрабатываться.
     private val bypassEntity = mutableListOf(
         EntityType.ARMOR_STAND,EntityType.ITEM_FRAME, EntityType.ITEM_DISPLAY, EntityType.PAINTING)
 
@@ -98,7 +98,7 @@ class EntityDeathListener : Listener {
         var disableXpDrops = false
 
         if (lmEntity.isLevelled && killer != null && main.rulesManager.getMaximumDeathInChunkThreshold(lmEntity) > 0) {
-            // Only counts if mob is killed by player
+            // Засчитывается только в том случае, если моб убит игроком.
 
             val opts = main.rulesManager.getRuleUseCustomDropsForMob(lmEntity).chunkKillOptions!!
             val isAnyOptionEnabled = opts.getDisableXpDrops() || opts.getDisableVanillaDrops() || opts.getDisableItemBoost()
@@ -131,11 +131,11 @@ class EntityDeathListener : Listener {
 
         val scheduler = SchedulerWrapper(event.entity){
             if (lmEntity.isLevelled) {
-                // Set levelled item drops
+                // Установить уровень выпадения предметов
                 MobDataManager.populateAttributeCache(lmEntity)
                 main.levelManager.setLevelledItemDrops(lmEntity, event.drops, doNotMultiplyDrops)
 
-                // Set levelled exp drops
+                // Установить уровневые выпадения опыта
                 if (disableXpDrops)
                     event.droppedExp = 0
                 else if (!doNotBoostXp) {

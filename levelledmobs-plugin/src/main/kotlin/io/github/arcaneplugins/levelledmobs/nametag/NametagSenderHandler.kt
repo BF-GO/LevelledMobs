@@ -4,7 +4,7 @@ import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.util.Log
 
 /**
- * Manages the ideal nametag sender implementation for the server's version
+ * Управляет идеальной реализацией отправителя именной метки для версии сервера.
  *
  * @author PenalBuffalo (aka stumper66)
  * @since 3.6.0

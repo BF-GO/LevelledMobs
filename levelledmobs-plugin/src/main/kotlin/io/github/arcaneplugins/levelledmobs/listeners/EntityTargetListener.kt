@@ -13,15 +13,15 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityTargetEvent
 
 /**
- * Used as a workaround to ensure mob nametags are properly updated
+ * Используется в качестве обходного пути для обеспечения правильного обновления тегов имен мобов.
  *
  * @author stumper66
  * @since 2.4.0
  */
 class EntityTargetListener : Listener {
     /**
-     * This event is listened to update the nametag of a mob when they start targeting a player.
-     * Should provide another band-aid for packets not appearing sometimes for mob nametags.
+     * Это событие прослушивается для обновления именной метки моба, когда он начинает нацеливаться на игрока.
+     * Следует предоставить ещё одно временное исправление для пакетов, которые иногда не появляются в тегах имен мобов.
      *
      * @param event EntityTargetEvent
      */
@@ -38,13 +38,13 @@ class EntityTargetListener : Listener {
             return
         }
 
-        // Must target a player and must be a living entity
+        // Должен быть нацелен на игрока и должен быть живым существом.
         if (event.target !is Player)
             return
 
         val lmEntity = LivingEntityWrapper.getInstance(event.entity as LivingEntity)
 
-        // Must be a levelled entity
+        // Должен быть уровневой сущностью
         if (!lmEntity.isLevelled) {
             if (EntitySpawnListener.instance.processMobSpawns) {
                 lmEntity.free()
@@ -67,7 +67,7 @@ class EntityTargetListener : Listener {
             }
         }
 
-        // Update the nametag.
+        // Обновите бейдж.
         main.levelManager.updateNametag(lmEntity)
         lmEntity.free()
     }

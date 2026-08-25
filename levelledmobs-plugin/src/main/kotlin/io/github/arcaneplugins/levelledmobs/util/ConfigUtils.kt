@@ -6,7 +6,7 @@ import io.github.arcaneplugins.levelledmobs.util.Utils.replaceAllInList
 import org.bukkit.command.CommandSender
 
 /**
- * Used for managing configuration data
+ * Используется для управления данными конфигурации.
  *
  * @author lokka30, stumper66
  * @since 2.5.0
@@ -20,7 +20,7 @@ class ConfigUtils{
     var chunkLoadListenerWasEnabled = false
 
     fun load() {
-        // anything less than 3 breaks the formula
+        // все, что меньше 3, нарушает формулу
         SETTINGS_CREEPER_MAX_RADIUS =
             SETTINGS_CREEPER_MAX_RADIUS.coerceAtLeast(3)
         SETTINGS_SPAWN_DISTANCE_FROM_PLAYER =

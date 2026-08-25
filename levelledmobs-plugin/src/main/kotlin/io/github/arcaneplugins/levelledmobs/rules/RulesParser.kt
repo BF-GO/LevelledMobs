@@ -25,6 +25,7 @@ import io.github.arcaneplugins.levelledmobs.rules.strategies.SpawnDistanceStrate
 import io.github.arcaneplugins.levelledmobs.rules.strategies.StrategyType
 import io.github.arcaneplugins.levelledmobs.rules.strategies.YDistanceStrategy
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.Utils
 import io.github.arcaneplugins.levelledmobs.util.Utils.isDouble
 import io.github.arcaneplugins.levelledmobs.util.Utils.isInteger
@@ -41,7 +42,7 @@ import org.bukkit.entity.EntityType
 import org.bukkit.generator.structure.Structure
 
 /**
- * Contains the logic that parses rules.yml and reads them into the corresponding java classes
+ * Содержит логику, которая анализирует rules.yml и считывает их в соответствующие классы Java.
  *
  * @author stumper66
  * @since 3.0.0
@@ -209,7 +210,7 @@ class RulesParser {
             when (type) {
                 ModalListParsingTypes.BIOME -> {
                     mlpi.configurationKey = "biomes"
-                    mlpi.itemName = "Biome"
+                    mlpi.itemName = LocalizedMessages.text("display.rule-types.biome", colorize = false)
                     mlpi.supportsGroups = true
                     mlpi.groupMapping = LevelledMobs.instance.rulesManager.biomeGroupMappings
                     mlpi.cachedModalList = CachedModalList<Biome>()
@@ -217,19 +218,28 @@ class RulesParser {
 
                 ModalListParsingTypes.SPAWN_REASON -> {
                     mlpi.configurationKey = "spawn-reasons"
-                    mlpi.itemName = "spawn reason"
+                    mlpi.itemName = LocalizedMessages.text(
+                        "display.rule-types.spawn-reason",
+                        colorize = false
+                    )
                     mlpi.cachedModalList = CachedModalList<String>()
                 }
 
                 ModalListParsingTypes.VANILLA_BONUSES -> {
                     mlpi.configurationKey = "vanilla-bonus"
-                    mlpi.itemName = "vanilla bonus"
+                    mlpi.itemName = LocalizedMessages.text(
+                        "display.rule-types.vanilla-bonus",
+                        colorize = false
+                    )
                     mlpi.cachedModalList = CachedModalList<VanillaBonusEnum>()
                 }
 
                 ModalListParsingTypes.STRUCTURE -> {
                     mlpi.configurationKey = "structures"
-                    mlpi.itemName = "Structures"
+                    mlpi.itemName = LocalizedMessages.text(
+                        "display.rule-types.structure",
+                        colorize = false
+                    )
                     mlpi.cachedModalList = CachedModalList<Structure>()
                 }
             }
@@ -299,7 +309,7 @@ class RulesParser {
             }
 
             for (i in 0..1) {
-                // 0 is included list, 1 is excluded list
+                // 0 — включенный список, 1 — исключенный список
                 val invalidWord = if (i == 0) "included" else "excluded"
                 val configKeyname = if (i == 0) MLINCLUDEDLIST else MLEXCLUDEDITEMS
                 if (i == 1 && cs2 == null) break
@@ -375,7 +385,7 @@ class RulesParser {
                                     )
                                 }
                                 else{
-                                    // legacy versions < 1.21
+                                    // устаревшие версии < 1.21
                                     @Suppress("DEPRECATION")
                                     structure = Registry.STRUCTURE.get(NamespacedKey(namespace, key))
                                 }
@@ -533,7 +543,13 @@ class RulesParser {
                 continue
             }
 
-            this.parsingInfo = RuleInfo("preset $count")
+            this.parsingInfo = RuleInfo(
+                LocalizedMessages.text(
+                    "display.rule-types.preset",
+                    mapOf("count" to count),
+                    false
+                )
+            )
             parsingInfo.presetName = key
             parseValues(YmlParsingHelper(csKey))
             results.add(this.parsingInfo)
@@ -697,9 +713,9 @@ class RulesParser {
 
             tier.mobName = name
 
-            if (names.isNotEmpty()) // an array of names was provided
+            if (names.isNotEmpty()) // был предоставлен массив имен
                 tier.names = names
-            else if (cs.getString(name) != null) // a string was provided
+            else if (cs.getString(name) != null) // была предоставлена строка
                 tier.names = mutableListOf(cs.getString(name)!!)
 
             if (!tier.setRangeFromString(keyName))
@@ -1230,7 +1246,7 @@ class RulesParser {
     private fun parseWeightedRandom(cs: ConfigurationSection) {
         val useWeightedRandom = cs.getString("weighted-random")
 
-        // weighted-random: true
+        // weighted-random: правда
         val isDisabled = "false".equals(useWeightedRandom, ignoreCase = true)
         if (isDisabled || "true".equals(useWeightedRandom, ignoreCase = true)) {
             val randomLevelling = RandomLevellingStrategy()
@@ -1437,7 +1453,7 @@ class RulesParser {
             }
 
             if (!key.contains("-") && !isInteger(key)) {
-                // found a source tier name rather than number
+                // нашел имя исходного уровня, а не номер
                 info.sourceTierName = key
             } else if (!info.setRangeFromString(key)) {
                 Log.warKey("console.rules-parser.invalid-number-range", mapOf("value" to key))
@@ -1497,7 +1513,7 @@ class RulesParser {
         val namesList2 = mutableListOf("custom-base-attribute-modifier", "custom-attribute-modifier")
 
         for ((loopNum, useName) in namesList.withIndex()) {
-            // first loop = base mods, second loop = modifiers
+            // первый проход = базовые модификаторы, второй проход = модификаторы
             val isBaseModifier = (loopNum == 0)
             val useName2 = namesList2[loopNum]
             if (fineTuning == null) fineTuning = FineTuningAttributes()
@@ -1592,7 +1608,7 @@ class RulesParser {
 
         var useStacked: Boolean? = null
         val ymlHelper = YmlParsingHelper(cs)
-        var doNotMerge = !ymlHelper.getBoolean( "merge", true) // for backwards compat
+        var doNotMerge = !ymlHelper.getBoolean( "merge", true) // для обратной совместимости
         val doNotMergeAny = ymlHelper.getBoolean( "do-not-merge-any", false)
 
         val results = mutableMapOf<Addition, Multiplier>()
@@ -1720,7 +1736,7 @@ class RulesParser {
         }
 
         if (rls == null || !rls.autoGenerate || rls.weightedRandomMap.isNotEmpty()) return
-        // TODO: next line probably shouldn't have i-i
+        // TODO: в следующей строке, вероятно, не должно быть i-i.
         for (i in minLevel..maxLevel) rls.weightedRandomMap["$i-$i"] = maxLevel - i + 1
 
         rls.populateWeightedRandom(minLevel, maxLevel)

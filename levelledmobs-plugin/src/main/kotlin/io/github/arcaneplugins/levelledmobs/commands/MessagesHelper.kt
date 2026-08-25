@@ -67,7 +67,10 @@ object MessagesHelper {
         replaceWith: List<String>
     ): Map<String, String> {
         require(replaceWhat.size == replaceWith.size) {
-            "replaceWhat must be the same size as replaceWith"
+            LocalizedMessages.text(
+                "console.internal.replacement-list-size-mismatch",
+                colorize = false
+            )
         }
         return replaceWhat.indices.associate { replaceWhat[it] to replaceWith[it] }
     }

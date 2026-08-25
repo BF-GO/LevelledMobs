@@ -18,10 +18,10 @@ public class Main implements LevelInterface {
         final Plugin plugin = Bukkit.getPluginManager().getPlugin("LevelledMobs");
 
         if (plugin == null)
-            throw new Exception("LevelledMobs doesn't appear to be installed");
+            throw new Exception("Плагин LevelledMobs не установлен");
 
         if (!plugin.isEnabled())
-            throw new Exception("LevelledMobs is not enabled");
+            throw new Exception("Плагин LevelledMobs отключён");
 
         this.lmInterface = (LevelInterface) plugin;
     }

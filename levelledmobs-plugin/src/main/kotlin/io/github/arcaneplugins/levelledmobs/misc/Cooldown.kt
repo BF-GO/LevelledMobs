@@ -1,11 +1,11 @@
 package io.github.arcaneplugins.levelledmobs.misc
 
 /**
- * This class is used to put cooldowns on certain actions, on certain in-game objects - e.g.
- * clicking entities or blocks.
+ * Этот класс используется для установки времени восстановления определенных действий для определённых игровых объектов - например.
+ * щелкая объекты или блоки.
  * <p>
- * For example, this is used in Debug Entity Damage to stop spam from clicking the same entity over
- * and over. It is also used in the Spawner Info for the same reason: blocks unnecessary chat spam.
+ * Например, это используется при отладке повреждения объекта, чтобы спам не щелкал один и тот же объект.
+ * и более. Он также используется в информации о спавнере по той же причине: блокирует ненужный спам в чате.
  *
  * @author lokka30
  * @see System#currentTimeMillis()
@@ -13,29 +13,29 @@ package io.github.arcaneplugins.levelledmobs.misc
  */
 class Cooldown(
     /**
-     * The starting point of the cooldown - just run System#currentTimeMillis()
+     * Начальная точка восстановления — просто запустите System#currentTimeMillis().
      */
     private val startingTime: Long,
     /**
-     * What this cooldown should be identifiable by - e.g. entity ID, location
+     * По чему должно быть идентифицировано это время восстановления - например. сущность ID, местоположение
      */
     private val identifier: String
 ) {
     /**
-     * Checks if this cooldown belongs to something with a certain ID.
+     * Проверяет, принадлежит ли этот кулдаун чему-то с определенным ID.
      *
-     * @param identifier ID to check if this cooldown has the same ID.
-     * @return if the IDs match.
+     * @param identifier ID, чтобы проверить, имеет ли это время восстановления тот же ID.
+     * @return если IDs совпадает.
      */
     fun doesCooldownBelongToIdentifier(identifier: String): Boolean {
         return identifier == this.identifier
     }
 
     /**
-     * Check if the cooldown's required time (seconds!) has surpassed since the starting point.
+     * Проверьте, не прошло ли необходимое время восстановления (в секундах!) с начальной точки.
      *
-     * @param requiredTimeInSeconds how many seconds should the cooldown have lasted?
-     * @return if the cooldown has expired.
+     * @param requiredTimeInSeconds сколько секунд должен длиться кулдаун?
+     * @return если время восстановления истекло.
      */
     fun hasCooldownExpired(requiredTimeInSeconds: Long): Boolean {
         return ((System.currentTimeMillis() - startingTime) >= (requiredTimeInSeconds * 1000))

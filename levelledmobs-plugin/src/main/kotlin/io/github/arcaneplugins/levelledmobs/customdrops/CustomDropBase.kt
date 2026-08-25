@@ -6,7 +6,7 @@ import io.github.arcaneplugins.levelledmobs.misc.CachedModalList
 import io.github.arcaneplugins.levelledmobs.util.Utils
 
 /**
- * Base class for all custom drops including custom commands
+ * Базовый класс для всех пользовательских дропов, включая пользовательские команды.
  *
  * @author stumper66
  * @since 3.0.0

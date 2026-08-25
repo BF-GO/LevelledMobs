@@ -13,8 +13,8 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
 /**
- * Used to mobs have a nametag cooldown timer where the nametag stays always visible for a
- * configurable amount of time
+ * Используется для того, чтобы у мобов был таймер восстановления именной метки, при котором именной бейдж всегда остается видимым в течение некоторого времени.
+ * настраиваемое количество времени
  *
  * @author stumper66
  * @since 3.2.0
@@ -37,7 +37,7 @@ class NametagTimerChecker {
     }
 
     fun checkNametags() {
-        // in folia this is using the bukkit async scheduler context
+        // в folia используется контекст асинхронного планировщика bukkit
         synchronized(nametagTimer_Lock) {
             synchronized(playerQueue_Lock) {
                 while (!playersQueue.isEmpty()) {
@@ -116,7 +116,7 @@ class NametagTimerChecker {
         )
         val cooldownTime = cooldownTimes[livingEntity]!!
         if (timeDuration.toMillis() >= cooldownTime) {
-            // if using LoS targeting check if it's still within LoS and don't remove if so.
+            // при использовании таргетинга LoS проверьте, находится ли он все еще в LoS, и не удаляйте, если да.
             val lmEntity = LivingEntityWrapper.getInstance(livingEntity)
             val usesLoS = lmEntity.nametagVisibilityEnum.contains(NametagVisibilityEnum.TARGETED)
 

@@ -4,18 +4,19 @@ import com.mojang.brigadier.Command
 import com.mojang.brigadier.tree.LiteralCommandNode
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.misc.FileLoader
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.entity.Player
 
 
 /**
- * Reloads all LevelledMobs configuration from disk
+ * Перезагружает всю конфигурацию LevelledMobs с диска.
  *
  * @author lokka30
  * @since 2.0
  */
 object ReloadSubcommand : CommandBase("levelledmobs.command.reload") {
-    override val description = "Reloads LevelledMobs config files."
+    override val description = LocalizedMessages.text("command.descriptions.reload", colorize = false)
 
     fun buildCommand() : LiteralCommandNode<CommandSourceStack>{
         return createLiteralCommand("reload")

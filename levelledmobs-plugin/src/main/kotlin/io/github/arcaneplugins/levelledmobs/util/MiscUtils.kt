@@ -5,7 +5,7 @@ import io.github.arcaneplugins.levelledmobs.result.NBTApplyResult
 import org.bukkit.entity.LivingEntity
 
 /**
- * Various utilities that use NMS stuff
+ * Различные утилиты, использующие материал NMS.
  *
  * @author stumper66
  * @since 3.11.0
@@ -102,7 +102,11 @@ object MiscUtils {
                 byteArraySize = def.methodByteArrayTagSize!!.invoke(entry.value) as Int
 
             results[entry.key] = if (byteArraySize >= 0)
-                "(byte array size $byteArraySize)"
+                LocalizedMessages.text(
+                    "display.data.byte-array-size",
+                    mapOf("size" to byteArraySize),
+                    false
+                )
             else
                 "${entry.value}  ($className)"
         }
@@ -123,7 +127,7 @@ object MiscUtils {
                 if (i > 0)
                     sb.append(", ")
                 else
-                    sb.append("added: ")
+                    sb.append(LocalizedMessages.text("display.nbt.added", colorize = false)).append(" ")
 
                 sb.append(result.objectsAdded!![i])
             }
@@ -137,7 +141,9 @@ object MiscUtils {
                 if (i > 0 || sb.isNotEmpty())
                     sb.append(", ")
 
-                if (i == 0) sb.append("updated: ")
+                if (i == 0) sb.append(
+                    LocalizedMessages.text("display.nbt.updated", colorize = false)
+                ).append(" ")
 
                 sb.append(result.objectsUpdated!![i])
             }
@@ -152,7 +158,7 @@ object MiscUtils {
                     sb.append(", ")
 
                 if (i == 0)
-                    sb.append("removed: ")
+                    sb.append(LocalizedMessages.text("display.nbt.removed", colorize = false)).append(" ")
 
                 sb.append(result.objectsRemoved!![i])
             }

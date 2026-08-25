@@ -4,7 +4,7 @@ import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import org.bukkit.NamespacedKey
 
 /**
- * Holds all of the NamespacedKeys used by LevelledMobs
+ * Содержит все NamespacedKeys, используемые LevelledMobs.
  *
  * @author stumper66
  * @since 3.2.0

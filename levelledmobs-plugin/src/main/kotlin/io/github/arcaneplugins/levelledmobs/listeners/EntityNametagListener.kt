@@ -10,8 +10,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEntityEvent
 
 /**
- * Listens when a nametag is placed on an entity so LevelledMobs can apply various rules around
- * nametagged entities
+ * Прослушивает, когда на объекте размещается именной тег, поэтому LevelledMobs может применять различные правила вокруг
+ * сущности с тегами имен
  *
  * @author lokka30
  * @since 2.4.0
@@ -24,7 +24,7 @@ class EntityNametagListener: Listener {
         }
         val player = event.player
 
-        // Must have name tag in main hand / off-hand
+        // На основной руке должен быть бирка в основной или второй руке.
         if (!(player.inventory.itemInMainHand.type == Material.NAME_TAG
                     || player.inventory.itemInOffHand.type == Material.NAME_TAG)
         ) {
@@ -32,7 +32,7 @@ class EntityNametagListener: Listener {
         }
 
         val main = LevelledMobs.instance
-        // Must be a levelled mob
+        // Должно быть уровневый моб
         if (!main.levelManager.isLevelled(event.rightClicked as LivingEntity))
             return
 

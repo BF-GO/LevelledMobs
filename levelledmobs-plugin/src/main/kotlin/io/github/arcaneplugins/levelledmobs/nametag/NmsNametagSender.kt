@@ -15,7 +15,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
 /**
- * Sends NMS verison specific nametag packets to players
+ * Отправляет игрокам пакеты именных тегов версии NMS.
  *
  * @author PenalBuffalo (aka stumper66)
  * @since 3.6.0
@@ -63,7 +63,7 @@ class NmsNametagSender : NametagSender {
                 def.fieldOPTIONALCOMPONENT!![def.clazzDataWatcherRegistry]
             // https://wiki.vg/Entity_metadata#Entity_Metadata_Format
 
-            // final EntityDataAccessor<Optional<Component>> customNameAccessor =
+            // окончательный EntityDataAccessor<Optional<Component>> customNameAccessor =
             //     //new EntityDataAccessor<>(2, EntityDataSerializers.OPTIONAL_COMPONENT);
             val customNameAccessor =
                 def.ctorEntityDataAccessor!!.newInstance(2, optionalComponent)
@@ -82,7 +82,7 @@ class NmsNametagSender : NametagSender {
             val livingEntityId = def.methodGetId!!.invoke(internalLivingEntity) as Int
 
             val packet: Any
-            // List<DataWatcher.b<?>>
+            // Список<DataWatcher.b<?>>
             // java.util.List getAllNonDefaultValues() -> c
             val getAllNonDefaultValues: List<*> = getNametagFields(entityData)
             packet = def.ctorPacket!!
@@ -102,14 +102,14 @@ class NmsNametagSender : NametagSender {
         }
     }
 
-    // returns SynchedEntityData (DataWatcher)
-    // args: SynchedEntityData, LivingEntity (nms)
+    // возвращает SynchedEntityData (DataWatcher)
+    // аргументы: SynchedEntityData, LivingEntity (нмс)
     @Throws(InvocationTargetException::class, InstantiationException::class, IllegalAccessException::class)
     private fun cloneEntityData(
         entityDataPreClone: Any,
         internalLivingEntity: Any
     ): Any? {
-        // constructor:
+        // конструктор:
         // public a(SyncedDataHolder synceddataholder)
         // SynchedEntityData.Builder builder = new SynchedEntityData.Builder(internalLivingEntity);
         val entityDataBuilder: Any = def.ctorSynchedEntityDataBuilder!!.newInstance(internalLivingEntity)
@@ -141,7 +141,7 @@ class NmsNametagSender : NametagSender {
     private fun getNametagFields(
         entityData: Any
     ): List<Any> {
-        // List<SynchedEntityData.DataValue<?>>
+        // Список<SynchedEntityData.DataValue<?>>
         val results: MutableList<Any> = LinkedList()
 
         try {
@@ -208,11 +208,11 @@ class NmsNametagSender : NametagSender {
         }
 
         if (def.hasKiori) {
-            // paper servers go here:
+            // бумажные серверы идут сюда:
             return Optional.of(generateComponent(livingEntity, nametag))
         }
 
-        // the rest of this method will only be used on spigot servers
+        // остальная часть этого метода будет использоваться только на серверах-спиготах.
         val mobName = nametag.nametagNonNull
         val displayName = "{DisplayName}"
         val displayNameIndex = mobName.indexOf(displayName)
@@ -234,8 +234,8 @@ class NmsNametagSender : NametagSender {
         else
             getTextComponent(resolveText(nametag.overriddenName))
 
-        // for whatever reason if you use an empty component,
-        // the nametag will get duplicated with each call of this function
+        // по какой-либо причине, если вы используете пустой компонент,
+        // именной тег будет дублироваться при каждом вызове этой функции
         val comp = getTextComponent("")!!
 
         if (leftText != null) {

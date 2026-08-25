@@ -10,8 +10,8 @@ import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import org.bukkit.Location
 
 /**
- * Holds the configuration and logic for applying a levelling system that is based upon the distance
- * from the world spawn
+ * Содержит конфигурацию и логику применения стратегии назначения уровня, основанной на расстоянии.
+ * из мира спауна
  *
  * @author stumper66, lokka30
  * @since 3.0.0
@@ -66,7 +66,7 @@ class SpawnDistanceStrategy : LevellingStrategy, Cloneable{
         if (ringedTiers == 0f)
             ringedTiers = 1f
 
-        //Get the level thats meant to be at a given distance
+        //Получите уровень, который должен быть на заданном расстоянии.
         var spawnDistanceAssignment =
             ((levelDistance / ringedTiers) + varianceAdded)
 
@@ -113,17 +113,29 @@ class SpawnDistanceStrategy : LevellingStrategy, Cloneable{
         val sb = StringBuilder()
         if (heightModIsEnabled) {
             sb.append(
-                "blended, dro: ${if (bufferDistance == null) 0 else bufferDistance}, " +
-                "rt: ${if (ringedTiers == null) 0 else ringedTiers}, " +
-                "t_yHght: ${if (transitionYheight == null) 0 else transitionYheight}, " +
-                "yhp: ${if (yHeightPeriod == null) 0 else yHeightPeriod}, " +
-                "lvlMlp: ${if (lvlMultiplier == null) 0.0 else lvlMultiplier}, " +
-                "scdown: ${scaleDownward == null || scaleDownward!!}"
+                LocalizedMessages.text(
+                    "display.strategies.blended-details",
+                    mapOf(
+                        "buffer" to (bufferDistance ?: 0),
+                        "tiers" to (ringedTiers ?: 0),
+                        "transition-y" to (transitionYheight ?: 0),
+                        "height-period" to (yHeightPeriod ?: 0),
+                        "multiplier" to (lvlMultiplier ?: 0.0),
+                        "scale-down" to (scaleDownward == null || scaleDownward!!)
+                    ),
+                    false
+                )
             )
         } else {
             sb.append(
-                "spawn distance, dro: ${if (bufferDistance == null) 0 else bufferDistance}, " +
-                "rt: ${if (ringedTiers == null) 0 else ringedTiers}"
+                LocalizedMessages.text(
+                    "display.strategies.spawn-distance-details",
+                    mapOf(
+                        "buffer" to (bufferDistance ?: 0),
+                        "tiers" to (ringedTiers ?: 0)
+                    ),
+                    false
+                )
             )
         }
 

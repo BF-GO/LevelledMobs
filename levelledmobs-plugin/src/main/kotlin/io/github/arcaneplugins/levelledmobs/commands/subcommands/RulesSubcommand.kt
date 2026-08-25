@@ -48,13 +48,13 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.util.Vector
 
 /**
- * Shows the current rules as parsed from the various config files
+ * Показывает текущие правила, проанализированные из различных файлов конфигурации.
  *
  * @author stumper66
  * @since 3.0.0
  */
 object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
-    override val description = "Used to view various rules."
+    override val description = LocalizedMessages.text("command.descriptions.rules", colorize = false)
 
     fun buildCommand() : LiteralCommandNode<CommandSourceStack>{
         return createLiteralCommand("rules")
@@ -170,7 +170,7 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
     }
 
     private fun forceRelevel() {
-        //TODO: make this work in Folia
+        //TODO: сделайте это в Folia.
         if (LevelledMobs.instance.ver.isRunningFolia) {
             LocalizedMessages.send(commandSender!!, "common.not-available-on-folia")
             return
@@ -196,7 +196,7 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
                             PersistentDataType.INTEGER
                         )
                     ) {
-                        doContinue = true  // was summon using lm summon command.  don't relevel it
+                        doContinue = true  // был вызван с помощью команды lm summous.  не повышай его уровень
                     }
                 }
                 if (doContinue) continue
@@ -539,7 +539,7 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
                 }
                 scheduler.run()
 
-                // this thread is async, no blocking occurs
+                // этот поток асинхронный, блокировки не происходит
                 Thread.sleep(30)
             }
         }
@@ -601,7 +601,7 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
                     val ruleTypeInfo = f.getAnnotation(RuleFieldInfo::class.java)
                     if (ruleTypeInfo != null) {
                         ruleInfoType = ruleTypeInfo.ruleType
-                        ruleName = ruleTypeInfo.value
+                        ruleName = LocalizedMessages.text(ruleTypeInfo.value, colorize = false)
                     }
 
                     if (value is Map<*, *> && value.isEmpty()) continue

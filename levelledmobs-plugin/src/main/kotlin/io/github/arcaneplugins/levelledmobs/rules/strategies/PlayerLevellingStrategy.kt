@@ -13,7 +13,7 @@ import org.bukkit.persistence.PersistentDataType
 import kotlin.math.roundToInt
 
 /**
- * Holds any rules relating to player levelling
+ * Соблюдает любые правила, касающиеся повышения уровня игрока.
  *
  * @author stumper66
  * @since 3.1.0
@@ -65,7 +65,12 @@ class PlayerLevellingStrategy : LevellingStrategy, Cloneable {
 
         val results = MinAndMaxHolder(0f, 0f)
         var tierMatched: String? = null
-        val capDisplay = if (options.outputCap == null) "" else "cap: ${options.outputCap}, "
+        val capDisplay = if (options.outputCap == null) "" else
+            LocalizedMessages.text(
+                "command.levelledmobs.debug.runtime.d207",
+                mapOf("value" to options.outputCap),
+                false
+            )
 
         if (options.getMatchVariable) {
             results.min = levelSource
@@ -131,12 +136,16 @@ class PlayerLevellingStrategy : LevellingStrategy, Cloneable {
         if (playerLevelSourceResult.randomVarianceResult != null) {
             playerLevelSourceResult.randomVarianceResult =
                 playerLevelSourceResult.randomVarianceResult!! + playerLevelSourceResult.randomVarianceResult!!
-            // ensure the min value is at least 1
+            // убедитесь, что минимальное значение составляет не менее 1
             results.min = results.min.coerceAtLeast(1f)
-            // ensure the min value is not higher than the max value
+            // убедитесь, что минимальное значение не превышает максимальное значение
             results.min = results.min.coerceAtMost(results.max)
 
-            varianceDebug = ", var: ${playerLevelSourceResult.randomVarianceResult}"
+            varianceDebug = LocalizedMessages.text(
+                "command.levelledmobs.debug.runtime.d208",
+                mapOf("value" to playerLevelSourceResult.randomVarianceResult),
+                false
+            )
         } else
             varianceDebug = ""
 
@@ -236,7 +245,7 @@ class PlayerLevellingStrategy : LevellingStrategy, Cloneable {
         get() = this.matchVariable != null && matchVariable!!
 
     val getEnabled: Boolean
-        // enabled is true by default unless specifically disabled
+        // «Включено» по умолчанию истинно, если не отключено специально
         get() = this.enabled == null || enabled!!
 
     val getVariableAsMax: Boolean
@@ -268,12 +277,14 @@ class PlayerLevellingStrategy : LevellingStrategy, Cloneable {
         val sb = StringBuilder()
 
         if (!getEnabled)
-            sb.append("(disabled)")
+            sb.append(LocalizedMessages.text("display.player-level-source.disabled", colorize = false))
 
         if (variable != null) {
             if (sb.isNotEmpty()) sb.append(", ")
 
-            sb.append("var: ").append(variable)
+            sb.append(
+                LocalizedMessages.text("display.player-level-source.variable", colorize = false)
+            ).append(variable)
         }
 
         if (getMatchVariable) {
@@ -285,19 +296,28 @@ class PlayerLevellingStrategy : LevellingStrategy, Cloneable {
         if (getVariableAsMax) {
             if (sb.isNotEmpty()) sb.append(", ")
 
-            sb.append("use-plr-max-lvl")
+            sb.append(
+                LocalizedMessages.text(
+                    "display.player-level-source.use-player-max-level",
+                    colorize = false
+                )
+            )
         }
 
         if (playerVariableScale != null) {
             if (sb.isNotEmpty()) sb.append(", ")
 
-            sb.append("scale: ").append(playerVariableScale)
+            sb.append(
+                LocalizedMessages.text("display.player-level-source.scale", colorize = false)
+            ).append(playerVariableScale)
         }
 
         if (outputCap != null) {
             if (sb.isNotEmpty()) sb.append(", ")
 
-            sb.append("cap: ").append(outputCap)
+            sb.append(
+                LocalizedMessages.text("display.player-level-source.cap", colorize = false)
+            ).append(outputCap)
         }
 
         if (levelTiers.isNotEmpty()) {

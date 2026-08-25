@@ -25,8 +25,8 @@ import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.persistence.PersistentDataType
 
 /**
- * Listens for when a player joins, leaves or changes worlds so that send messages as needed, update
- * nametags or track the player
+ * Прослушивает, когда игрок присоединяется, покидает или меняет миры, чтобы отправлять сообщения по мере необходимости, обновлять
+ * бейджи или отслеживать игрока
  *
  * @author lokka30, stumper66
  * @since 2.4.0
@@ -71,8 +71,8 @@ class PlayerJoinListener : Listener {
 //        if (main.customDropsHandler.customDropsParser.hadParsingError){
 //            event.player.sendMessage(
 //                MessageUtils.colorizeAll(
-//                    "&b&lLevelledMobs:&r &6There was an error parsing customdrops.yml&r\n" +
-//                            "Check the console log for more details"
+// "&b&lLevelledMobs:&r &6Произошла ошибка при анализе customdrops.yml&r\n" +
+// «Подробнее проверьте журнал консоли»
 //                ))
 //        }
 
@@ -147,8 +147,8 @@ class PlayerJoinListener : Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     fun onTeleport(event: PlayerTeleportEvent) {
-        // on spigot API .getTo is nullable but not Paper
-        // only update tags if teleported to a different world
+        // на патрубке API .getTo имеет значение NULL, но не Paper
+        // обновлять теги только в случае телепортации в другой мир
         @Suppress("SENSELESS_COMPARISON")
         if (event.to != null && event.to.world != null && event.from.world != null && event.from.world != event.to.world)
             updateNametagsInWorldAsync(event.player, event.to.world.entities)
@@ -168,10 +168,10 @@ class PlayerJoinListener : Listener {
         for (entity in entities) {
             if (entity !is LivingEntity) continue
 
-            // mob must be alive
+            // моб должен быть жив
             if (!entity.isValid) continue
 
-            // mob must be levelled
+            // мобу необходимо назначить уровень
             if (!main.levelManager.isLevelled(entity)) continue
 
             val lmEntity = LivingEntityWrapper.getInstance(entity)

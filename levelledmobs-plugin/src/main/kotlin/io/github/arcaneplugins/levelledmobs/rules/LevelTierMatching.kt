@@ -3,7 +3,7 @@ package io.github.arcaneplugins.levelledmobs.rules
 import java.util.Objects
 
 /**
- * Holds any rule information relating to leveled tiers
+ * Содержит любую информацию о правилах, относящуюся к уровневым уровням.
  *
  * @author stumper66
  * @since 3.1.0

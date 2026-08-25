@@ -4,7 +4,7 @@ import io.github.arcaneplugins.levelledmobs.enums.Addition
 import io.github.arcaneplugins.levelledmobs.rules.FineTuningAttributes.Multiplier
 
 /**
- * Holds results used in parsing rules for fine tuning
+ * Содержит результаты, используемые в правилах синтаксического анализа для точной настройки.
  *
  * @author stumper66
  * @since 4.4.0

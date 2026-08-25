@@ -12,8 +12,8 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 /**
- * Used to store information when a custom drop item is being requested either during mob spawn in
- * for equipped items or after mob death to get the items the mob will potentially drop
+ * Используется для хранения информации, когда запрашивается пользовательский предмет, либо во время появления моба в
+ * для экипированных предметов или после смерти моба, чтобы получить предметы, которые потенциально могут выпасть из моба
  *
  * @author stumper66
  * @since 2.4.1

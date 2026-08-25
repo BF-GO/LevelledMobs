@@ -4,8 +4,8 @@ import io.github.arcaneplugins.levelledmobs.rules.MinAndMax
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 
 /**
- * Holds values that are used for a variable chance based on either
- * a float number or a defined set of tiers
+ * Содержит значения, которые используются для переменной вероятности, основанной либо на
+ * плавающее число или определенный набор уровней
  *
  * @author stumper66
  * @since 3.15.0
@@ -31,7 +31,7 @@ class SlidingChance : Cloneable {
         lmEntity: LivingEntityWrapper
     ): Float {
         if (!formula.isNullOrEmpty()){
-            // run formula
+            // запустить формулу
             val evalResult = CustomDropsHandler.evaluateNumberFormula(
                 formula,
                 formulaFriendlyName,
@@ -40,14 +40,14 @@ class SlidingChance : Cloneable {
             formulaHadError = evalResult.hadError
             lastFormulaResult = evalResult.result.toFloat()
             if (!evalResult.hadError) return lastFormulaResult
-            // error has been thrown gracefully fall back on normal sliding chance if present
+            // после корректно обработанной ошибки используется обычная скользящая вероятность, если она задана
         }
 
         var result: Float? = null
 
         for (i in 0..1) {
-            // first check with this class settings
-            // if no tiers are matched then check against defaults
+            // сначала проверьте настройки этого класса
+            // если ни один уровень не соответствует, проверьте значения по умолчанию
             val slidingChance = if (i == 0) this else defaults
 
             if (slidingChance == null) continue

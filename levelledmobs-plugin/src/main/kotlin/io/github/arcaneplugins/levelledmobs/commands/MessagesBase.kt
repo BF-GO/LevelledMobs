@@ -4,7 +4,7 @@ import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import org.bukkit.command.CommandSender
 
 /**
- * Provides common functions for showing messages stored in messages.yml to the user
+ * Предоставляет общие функции для показа пользователю сообщений, хранящихся в messages.yml.
  *
  * @author stumper66
  * @since 3.3.0
@@ -15,7 +15,9 @@ open class MessagesBase{
 
     protected fun showMessage(path: String) {
         if (commandSender == null) {
-            throw NullPointerException("CommandSender must be set before calling showMessage")
+            throw NullPointerException(
+                LocalizedMessages.text("console.internal.command-sender-not-set", colorize = false)
+            )
         }
 
         showMessage(path, commandSender!!, messageLabel)
@@ -38,7 +40,10 @@ open class MessagesBase{
             replaceWith: MutableList<String>
         ): MutableList<String> {
             require(replaceWhat.size == replaceWith.size) {
-                "replaceWhat must be the same size as replaceWith"
+                LocalizedMessages.text(
+                    "console.internal.replacement-list-size-mismatch",
+                    colorize = false
+                )
             }
             val replacements = replaceWhat.indices.associate { replaceWhat[it] to replaceWith[it] }
                 .toMutableMap()
@@ -65,7 +70,9 @@ open class MessagesBase{
         replaceWith: MutableList<String>
     ) {
         if (commandSender == null)
-            throw NullPointerException("CommandSender must be set before calling showMessage")
+            throw NullPointerException(
+                LocalizedMessages.text("console.internal.command-sender-not-set", colorize = false)
+            )
 
         val messages = getMessage(path, replaceWhat, replaceWith)
         commandSender!!.sendMessage(messages.joinToString("\n"))

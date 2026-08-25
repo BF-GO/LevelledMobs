@@ -22,7 +22,7 @@ import org.bukkit.event.HandlerList
 import kotlin.math.floor
 
 /**
- * Provides the logic for the debug system
+ * Предоставляет логику для системы отладки.
  *
  * @author stumper66
  * @since 3.14.0
@@ -169,11 +169,11 @@ class DebugManager {
         }
 
         /**
-         * Sends a debug message to console if enabled in settings
+         * Отправляет отладочное сообщение на консоль, если это включено в настройках.
          *
-         * @param debugType Reference to whereabouts the debug log is called so that it can be traced
-         * back easily
-         * @param msg       Message to help de-bugging
+         * @param debugType Ссылка на местонахождение журнала отладки, чтобы его можно было отследить.
+         * назад легко
+         * @param msg       Сообщение для отладки
          */
         fun log(debugType: DebugType, msg: Supplier<String?>) {
             val message = msg.get() ?: return
@@ -229,7 +229,7 @@ class DebugManager {
         if (!isEnabled) return
         var msg = origMsg
 
-        // now you have to pass all of the filters if they are configured
+        // теперь вам нужно пройти все фильтры, если они настроены
         if (!bypassAllFilters) {
             if (filterDebugTypes.isNotEmpty() && !filterDebugTypes.contains(debugType)) return
 
@@ -276,7 +276,7 @@ class DebugManager {
                 if (minYLevel != null && useEntity.location.blockY < minYLevel!!) return
                 if (maxYLevel != null && useEntity.location.blockY > maxYLevel!!) return
             }
-        } // end bypass all
+        } // конец, обойти все
 
         if (ruleInfo != null){
             msg = if (origMsg.isEmpty())
@@ -545,7 +545,7 @@ class DebugManager {
     fun toggleDamageDebugOutput(doEnable: Boolean){
         if (doEnable) {
             if (damageDebugOutputIsEnabled) return
-            // we'll load and unload this listener based on the above setting when reloading
+            // мы загрузим и выгрузим этот прослушиватель на основе вышеуказанных настроек при перезагрузке
             damageDebugOutputIsEnabled = true
             Bukkit.getPluginManager().registerEvents(LevelledMobs.instance.entityDamageDebugListener, LevelledMobs.instance)
         }

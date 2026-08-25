@@ -39,11 +39,11 @@ import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.persistence.PersistentDataType
 
 /**
- * This class handles mob spawning on the server, forming the starting point of the 'levelling'
- * process
+ * Обрабатывает появление мобов и запускает назначение уровня.
+ * процесс
  *
  * @author lokka30
- * @version 2.5.0
+ * @версия 2.5.0
  */
 class EntitySpawnListener : Listener{
     var processMobSpawns = true
@@ -189,7 +189,7 @@ class EntitySpawnListener : Listener{
         val main = LevelledMobs.instance
 
         if (cs == null) return
-        // mob was spawned from a custom LM spawner
+        // моб был создан из специального спавнера LM.
         val useParticle = main.rulesManager.getSpawnerParticle(lmEntity)
         val particleCount = main.rulesManager.getSpawnerParticleCount(lmEntity)
 
@@ -264,7 +264,7 @@ class EntitySpawnListener : Listener{
         lmEntity: LivingEntityWrapper,
         event: Event?
     ) {
-        // this function runs in an async thread
+        // эта функция выполняется в асинхронном потоке
         if (!lmEntity.reEvaluateLevel && lmEntity.isLevelled)
             return
 
@@ -277,7 +277,7 @@ class EntitySpawnListener : Listener{
         lmEntity.spawnedTimeOfDay = lmEntity.world.time.toInt()
 
         if (event is SpawnerSpawnEvent) {
-            // on spigot servers event.spawner can be null
+            // на серверах-спиготах event.spawner может быть нулевым
             if (event.spawner != null && (event.spawner as CreatureSpawner)
                     .persistentDataContainer
                     .has(NamespacedKeys.keySpawner, PersistentDataType.INTEGER)
@@ -306,7 +306,7 @@ class EntitySpawnListener : Listener{
                             lmEntity.livingEntity
                         )
                     ) {
-                        // the mob was spawned by the summon command and will get processed directly
+                        // моб был порожден командой вызова и будет обработан напрямую
                         return
                     }
                 }
@@ -358,11 +358,11 @@ class EntitySpawnListener : Listener{
                 (LocalizedMessages.text("command.levelledmobs.debug.runtime.d039", mapOf("value-1" to (lmEntity.worldName), "value-2" to (levellableState)), false))
             }
 
-            // Check if the mob is already levelled - if so, remove their level
+            // Проверьте, имеет ли моб уровень — если да, удалите его уровень
             if (lmEntity.isLevelled) {
                 main.levelInterface.removeLevel(lmEntity)
             } else if (lmEntity.isBabyMob) {
-                // add a tag so we can potentially level the mob when/if it ages
+                // добавьте тег, чтобы мы могли потенциально повысить уровень моба, когда/если он состарится
                 synchronized(lmEntity.livingEntity.persistentDataContainer) {
                     lmEntity.pdc
                         .set(NamespacedKeys.wasBabyMobKey, PersistentDataType.INTEGER, 1)
@@ -417,7 +417,7 @@ class EntitySpawnListener : Listener{
             return levellableState
 
         if (event is CreatureSpawnEvent) {
-            // the mob gets processed via SpawnerSpawnEvent
+            // моб обрабатывается через SpawnerSpawnEvent
 
             if (event.spawnReason == SpawnReason.SPAWNER)
                 return LevellableState.DENIED_OTHER
@@ -481,7 +481,7 @@ class EntitySpawnListener : Listener{
 
             lmEntity.associatedPlayer = closestPlayer
 
-            // if player has been logged in for less than 5 seconds then ignore
+            // если игрок вошел в систему менее 5 секунд, игнорируйте
             val logonTime = main.mainCompanion.getRecentlyJoinedPlayerLogonTime(closestPlayer)
             if (logonTime != null) {
                 if (Utils.getMillisecondsFromInstant(logonTime) < 5000L) return

@@ -1,8 +1,8 @@
 package io.github.arcaneplugins.levelledmobs.annotations
 
 /**
- * When for rules to prevent them from being shown
- * when the value is false
+ * Когда следует использовать правила, чтобы предотвратить их показ
+ * когда значение ложно
  *
  * @author stumper66
  * @since 4.1.2

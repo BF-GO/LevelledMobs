@@ -8,21 +8,21 @@ import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import org.bukkit.Bukkit
 
 /**
- * Used for detecting mobs using Mythic Mobs
+ * Используется для обнаружения мобов с помощью мифических мобов.
  *
  * @author stumper66
  * @since 3.6.0
  */
 object MythicMobUtils {
     fun getMythicMobInfo(lmEntity: LivingEntityWrapper): MythicMobsMobInfo? {
-        // the below code was written against MythicMobs v5.0.4-f1007ca3
+        // приведенный ниже код был написан для MythicMobs v5.0.4-f1007ca3
 
         /*
-           1. The main class of the plugin, MythicBukkit - get field: private MobExecutor mobManager;
-           2. from MobExecutor class, call this function while passing the UUID from the mob: public Optional<ActiveMob> getActiveMob(UUID uuid);
-           3. in the ActiveMob class, get this field: private transient MythicMob type;
-           4. MythicMob is an interface, the class implementation is MobType
-           5. the MobType class has the properties we want including:
+           1. В основном классе плагина MythicBukkit получить поле: private MobExecutor mobManager;
+           2. У класса MobExecutor вызвать метод с UUID моба: public Optional<ActiveMob> getActiveMob(UUID uuid);
+           3. У класса ActiveMob получить поле: private transient MythicMob type;
+           4. MythicMob — интерфейс, его реализация — MobType.
+           5. Класс MobType содержит необходимые свойства:
               private Boolean preventRandomEquipment = Boolean.valueOf(false);
               private Boolean preventOtherDrops = Boolean.valueOf(false);
               private String internalName;
@@ -46,7 +46,7 @@ object MythicMobUtils {
             //     public Optional<ActiveMob> getActiveMob(UUID uuid) {
             //       return ((MobRegistry)this.mobRegistry.get()).getActiveMob(uuid); }
 
-            // Optional<io.lumine.mythic.core.mobs.ActiveMob>
+            // Дополнительно<io.lumine.mythic.core.mobs.ActiveMob>
             val activeMobObj = def.methodMMgetActiveMob!!.invoke(
                 mobExecutorObj, lmEntity.livingEntity.uniqueId
             ) as Optional<*>

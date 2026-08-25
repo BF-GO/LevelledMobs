@@ -12,7 +12,7 @@ import java.util.regex.Pattern
 import io.github.arcaneplugins.levelledmobs.util.Utils
 
 /**
- * Migrates older yml versions to the latest available
+ * Переносит старые версии yml на последние доступные.
  *
  * @author stumper66
  * @since 2.4.0
@@ -287,16 +287,16 @@ object  FileMigrator {
                                 val fiOld = oldConfigMap[oldKey]
                                 val fiNew = newConfigMap[key]
                                 val padding: String = getPadding((depth + 1) * 2)
-                                // arrays go here:
+                                // массивы идут сюда:
                                 if (fiOld!!.isList) {
-                                    // add any values present in old list that might not be present in new
+                                    // добавьте любые значения, присутствующие в старом списке, которых может не быть в новом
                                     for (oldValue: String? in fiOld.valueList!!) {
                                         if (!fiNew!!.isList || !fiNew.valueList!!.contains(
                                                 oldValue
                                             )
                                         ) {
                                             val newline =
-                                                "$padding- $oldValue" // + "\r\n" + line;
+                                                "$padding- $oldValue" // + "\r\n" + строка;
                                             newConfigLines.add(currentLine + 1, newline)
                                             if (showMessages) {
                                                 Log.infKey("console.migration.array-value-added", mapOf("value" to oldValue))
@@ -304,7 +304,7 @@ object  FileMigrator {
                                         }
                                     }
                                 } else {
-                                    // non-array values go here.  Loop thru and find any subkeys under here
+                                    // Здесь находятся значения, не являющиеся массивами.  Пройдитесь и найдите здесь все подразделы.
                                     val numOfPeriods: Int = countPeriods(key)
                                     for (entry in oldConfigMap.entries) {
                                         val enumeratedKey = entry.key
@@ -353,7 +353,7 @@ object  FileMigrator {
                                         && (oldVersion > 20) && (oldVersion < 26
                                         ) && (migratedValue == "'&8[&7Level %level%&8 | &f%displayname%&8 | &c%health%&8/&c%max_health% %heart_symbol%&8]'"))
                             ) {
-                                // updating to the new default introduced in file ver 26 if they were using the previous default
+                                // обновление до нового значения по умолчанию, представленного в файле версии 26, если они использовали предыдущее значение по умолчанию
                                 currentLine++
                                 continue
                             }
@@ -379,7 +379,7 @@ object  FileMigrator {
                                     parentKey
                                 )
                             ) {
-                                // here's where we add values from the old config not present in the new
+                                // здесь мы добавляем значения из старой конфигурации, которых нет в новой
                                 for (entry in oldConfigMap.entries) {
                                     val oldValue = entry.key
                                     if (!oldValue!!.startsWith(parentKey))
@@ -429,7 +429,7 @@ object  FileMigrator {
                         val key = getKeyFromList(currentKey, null)
                         val value = line.trim().substring(1).trim()
 
-                        // we have an array value present in the new config but not the old, so it must've been removed
+                        // у нас есть значение массива, присутствующее в новой конфигурации, но не в старой, поэтому оно должно быть удалено
                         if ((oldConfigMap.containsKey(key) && oldConfigMap[key]!!.isList
                                     && !oldConfigMap[key]!!.valueList!!.contains(value))
                         ) {
@@ -445,9 +445,9 @@ object  FileMigrator {
                     }
                     currentLine++
                 }
-            } // end if is not custom drops
+            } // конец обработки, если это не пользовательский дроп
             else {
-                // migrate all values
+                // перенести все значения
                 var startAt = 0
 
                 for (i in newConfigLines.indices) {

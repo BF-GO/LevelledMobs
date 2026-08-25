@@ -11,7 +11,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
 
 /**
- * Listens for when a player dies
+ * Слушает, когда игрок умирает
  *
  * @author stumper66
  * @since 2.6.0
@@ -45,14 +45,14 @@ class PlayerDeathListener : Listener {
     }
 
     /**
-     * This listener handles death nametags so we can determine which mob killed it and update the
-     * death message accordingly
+     * Этот прослушиватель обрабатывает теги смерти, поэтому мы можем определить, какой моб его убил, и обновить
+     * сообщение о смерти соответственно
      *
      * @param event PlayerDeathEvent
      */
     private fun onPlayerDeath(event: PlayerDeathEvent) {
-        // returns false if not a translatable component, in which case just use the old method
-        // this can happen if another plugin has butchered the event by using the deprecated method (*cough* mythic mobs)
+        // возвращает false, если это не переводимый компонент, и в этом случае просто используйте старый метод
+        // это может произойти, если другой плагин удалил событие, используя устаревший метод (*кхе* мифические мобы)
         if (!LevelledMobs.instance.ver.isRunningPaper || !paperListener!!.onPlayerDeathEvent(event))
             nonPaperPlayerDeath(event)
     }

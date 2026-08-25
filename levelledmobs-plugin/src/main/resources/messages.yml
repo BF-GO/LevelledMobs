@@ -49,6 +49,16 @@ common:
 #   ---------------  -  ------------------------------
 #
 command:
+  descriptions:
+    main: 'Управление плагином LevelledMobs'
+    debug: 'Команды диагностики и отладки.'
+    info: 'Сведения об установленной версии плагина.'
+    reload: 'Перезагрузка файлов конфигурации LevelledMobs.'
+    kill: 'Команды массового удаления уровневых мобов.'
+    rules: 'Просмотр действующих правил.'
+    spawner-egg: 'Команды создания яиц призыва.'
+    spawner: 'Команды создания и изменения спавнеров.'
+    summon: 'Команды призыва мобов.'
   levelledmobs:
     fallback-options:
       - '%prefix% Доступные варианты: reload / info / show-errors'
@@ -158,6 +168,8 @@ command:
           - '%prefix% В радиусе &b%radius%&7 блоков удалено уровневых мобов: &b%killed%&7 &8(&b%skipped%&7 пропущено&8)&7.'
         usage:
           - '%prefix% Использование: &b/%label% kill near <radius>'
+        usage-console:
+          - '%prefix% Команда kill near доступна только игроку.'
 
 
     #
@@ -180,6 +192,8 @@ command:
         - '%prefix% Не указано значение параметра ''&b%keyname%&7''.'
       no-player:
         - '%prefix% Команда доступна только игроку, если не указан параметр &b/giveplayer&7.'
+      no-player-specified:
+        - '%prefix% Игрок не указан.'
       invalid-value:
         - '%prefix% Значение &b%keyname%&7 должно быть числом.'
       no-level-specified:
@@ -189,7 +203,7 @@ command:
       spawner-give-message:
         - '%prefix% Получен спавнер LM.'
       spawner-give-message-console:
-        - '%prefix% Игроку &r%playername%&7 выдан спавнер LM. &8|&7 minLevel: &b%minlevel%&7, maxLevel: &b%maxlevel%&7'
+        - '%prefix% Игроку &r%playername%&7 выдан спавнер LM. &8|&7 минимальный уровень: &b%minlevel%&7, максимальный уровень: &b%maxlevel%&7'
       permission-denied:
         - '%prefix% Недостаточно прав для обновления или преобразования спавнера LM.'
       spawner-converted:
@@ -251,7 +265,7 @@ command:
       give-message:
         - '%prefix% Получено яйцо призыва LM.'
       give-message-console:
-        - '%prefix% Игроку &r%playername%&7 выдано яйцо LM. &8|&7 minLevel: &b%minlevel%&7, maxLevel: &b%maxlevel%&7, entity: &b%entitytype%&7'
+        - '%prefix% Игроку &r%playername%&7 выдано яйцо LM. &8|&7 минимальный уровень: &b%minlevel%&7, максимальный уровень: &b%maxlevel%&7, entity: &b%entitytype%&7'
 
 
     #
@@ -332,6 +346,7 @@ command:
         - '&7Поддерживаемые версии: &fMC &f%supportedVersions%'
         - ' '
       listSeparator: '&7, &f'
+      contributors-link: 'См. &8&nhttps://tinyurl.com/lm-contributors&r'
       usage:
         - '%prefix% Использование: &b/%label% info'
     compatibility:
@@ -419,97 +434,97 @@ command:
       runtime:
         d001: "%value-1%"
         d002: "формула: '%value-1%'"
-        d003: "формулаPre: '%value-1%'"
+        d003: "формула до подстановки: '%value-1%'"
         d004: "формула: '%value-1%'"
         d005: "результат (ошибка, %value-1%)\n%value-2%"
         d006: "формула: '%value-1%'"
-        d007: "формулаPre: '%value-1%'"
+        d007: "формула до подстановки: '%value-1%'"
         d008: "формула: '%value-1%'"
         d009: "%value-1%, результат: %value-2%\n%value-3%"
         d010: "&8- &7Группы: &b"
-        d011: "&7, &б"
+        d011: "&7, &b"
         d012: "Достигнут лимит на количество позиций %value-1% для %value-2%."
         d013: "Достигнут общий лимит %value-1% для группы: %value-2%."
         d014: "Достигнут общий лимит %value-1% для группы: %value-2%."
-        d015: "&7item: &b%value-1%&r, зачаровывает"
+        d015: "&7предмет: &b%value-1%&r, зачаровывает"
         d016: "%value-1%"
         d017: "(l-%value-1%): &4%value-2%&r &b(%value-3%)&r"
         d018: "&b(%value-1% шанс)"
         d019: "&2%value-1%&r &b(%value-2%)"
         d020: "(l-%value-1%): %value-2%&r"
-        d021: ", используется dflt: &2%value-1%&r"
+        d021: ", используется значение по умолчанию: &2%value-1%&r"
         d022: "Групповые ограничения:"
-        d023: "Примененные данные НБТ, %value-1%"
+        d023: "Применены данные NBT, %value-1%"
         d024: "формула: '%value-1%'"
-        d025: "формулаPre: '%value-1%'"
+        d025: "формула до подстановки: '%value-1%'"
         d026: "формула: '%value-1%'"
         d027: "результат (ошибка, %value-1%)\n%value-2%"
         d028: "формула: '%value-1%'"
-        d029: "формулаPre: '%value-1%'"
+        d029: "формула до подстановки: '%value-1%'"
         d030: "формула: '%value-1%'"
         d031: "результат %value-1%\n%value-2%"
         d032: "урон: &b%value-1%&7, новый урон: &b%value-2%&7"
         d033: "старый урон: &b: %value-1%&r, новый урон: &b%value-2%&r"
         d034: "%value-1%: игрок: %value-2%, достигнут предел уничтожения чанков, максимум: %value-3%"
-        d035: ", дропид: %value-1%"
-        d036: "Созданный моб из спавнера LM: minLevel:&b %value-1%&7, maxLevel: &b%value-2%&7,generatedLevel: &b%value-3%&b%value-4%"
+        d035: ", ID дропа: %value-1%"
+        d036: "Созданный моб из спавнера LM: минимальный уровень:&b %value-1%&7, максимальный уровень: &b%value-2%&7,назначенный уровень: &b%value-3%&b%value-4%"
         d037: "Порожденный моб из ванильного спавнера"
-        d038: "запрещено перевыравнивание до &b%value-1%&r из-за отключения понижения уровня"
-        d039: "мир: &b%value-1%&7 не был выровнен -> состояние выравнивания: &b%value-2%"
+        d038: "запрещено повторное назначение уровня до &b%value-1%&r из-за отключения понижения уровня"
+        d039: "мир: &b%value-1%&7 не получил уровень -> состояние назначения уровня: &b%value-2%"
         d040: "экземпляр CreatureSpawnListener: &b%value-1%"
         d041: "&7, с spawnReason &b%value-1%&7."
         d042: "не экземпляр CreatureSpawnListener: &b%value-1%"
-        d043: "Выравниваемое состояние было %value-1%"
+        d043: "Состояние назначения уровня было %value-1%"
         d044: "no-level-conditions.tamed = &btrue"
         d045: "Удален уровень прирученного моба."
         d046: "Применение уровня к прирученному мобу"
         d047: "объект &bне&7 был экземпляром LivingEntity"
-        d048: "исходная сущность была &bnot&7 выровнена"
+        d048: "исходная сущность была &bне&7 имела уровня"
         d049: "сущность&b не&7 была экземпляром LivingEntity (цикл)"
-        d050: "преобразованный объект &bне&7 можно было выравнивать, причина: &b%value-1%"
+        d050: "преобразованный объект &bне&7 могла получить уровень, причина: &b%value-1%"
         d051: "сущность была преобразована"
         d052: ", %value-1%: %value-2%"
         d053: "%value-1%: %value-2%"
         d054: ", %value-1%: %value-2%"
         d055: "%value-1%: %value-2%"
         d056: "формула: '%value-1%'"
-        d057: "формулаPre: '%value-1%'\n   формула: '%value-2%'"
+        d057: "формула до подстановки: '%value-1%'\n   формула: '%value-2%'"
         d058: "результат (ошибка, %value-1%)\n%value-2%"
         d059: "формула: '%value-1%'"
-        d060: "формулаPre: '%value-1%'\n   формула: '%value-2%'"
+        d060: "формула до подстановки: '%value-1%'\n   формула: '%value-2%'"
         d061: "результат %value-1%\n%value-2%"
         d062: "Получен пустой результат для «%value-1%» от PAPI. Игрок %value-2% в %value-3%, %value-4%, %value-5% в %value-6%"
         d063: "Получен пустой результат для «%value-1%» от PAPI. Игрок %value-2% в %value-3%, %value-4%, %value-5% в %value-6%"
-        d064: "удаление любых присутствующих капель"
-        d065: "%value-1%, ванильные капли: &b%value-2%&7, все капли: &b%value-3%&7, дополнение: &b%value-4%&7."
+        d064: "удаление всего имеющегося дропа"
+        d065: "%value-1%, обычный дроп: &b%value-2%&7, весь дроп: &b%value-3%&7, дополнение: &b%value-4%&7."
         d066: "&7Элемент неуправляем."
-        d067: "&7Выпадение: &b%value-1%&7, старая сумма: &b%value-2%&7, добавленная стоимость: &b%value-3%&7,"
-        d068: "новая сумма: &b%value-1%&7."
-        d069: "xp-ваниль: &b%value-1%&7, новый-xp: &b0&7"
-        d070: "XP-ваниль: &b%value-1%&7, новый-XP: &b%value-2%&7"
-        d071: "mob-lvl был 0 или maxlevel был 0"
+        d067: "&7Дроп: &b%value-1%&7, старое количество: &b%value-2%&7, добавленное количество: &b%value-3%&7,"
+        d068: "новое количество: &b%value-1%&7."
+        d069: "обычный XP: &b%value-1%&7, новый-xp: &b0&7"
+        d070: "обычный XP: &b%value-1%&7, новый-XP: &b%value-2%&7"
+        d071: "уровень моба равен 0 или максимальный уровень равен 0"
         d072: "'(%value-1% - %value-2%) / (%value-3% - %value-4%)', результат: %value-5%"
         d073: "Достигнуто значение %value-1% мс, очистка кэша LEW,"
-        d074: "&7был ребенком, а теперь стал взрослым и применяет правила прокачки"
-        d075: "мульп: ноль, результат: 3"
-        d076: "mulp: %value-1%, максимум: %value-2%, результат: %value-3%"
+        d074: "&7был ребенком, а теперь стал взрослым и применяет правила назначения уровня"
+        d075: "множитель: ноль, результат: 3"
+        d076: "множитель: %value-1%, максимум: %value-2%, результат: %value-3%"
         d077: "Достигнут предел экипировки %value-1%, предмет: %value-2%, группа: %value-3%."
         d078: "&7 имел прикрепленный &bnoLevelKey&7"
         d079: "Время ожидания применения уровня к мобу истекло."
-        d080: "Примененные данные НБТ, %value-1%"
+        d080: "Применены данные NBT, %value-1%"
         d081: "атрибут: %value-1%, старая база: %value-2%,"
         d082: "новая база: %value-1%"
         d083: "атрибут: %value-1%, база: %value-2%,"
         d084: "дополнение: %value-1%"
-        d085: "Ошибка установки maxhealth = %value-1%, %value-2%"
+        d085: "Ошибка установки максимального здоровья = %value-1%, %value-2%"
         d086: "%value-1%,%value-2%,%value-3%"
         d087: "Удаление %value-1% в %value-2%"
-        d088: "%value-1%, формулаPre: '%value-2%'\nформула:"
+        d088: "%value-1%, формула до подстановки: '%value-2%'\nформула:"
         d089: "«%value-1%», результат: «%value-2%»"
-        d090: "maxLevel был 0"
+        d090: "максимальный уровень равен 0"
         d091: "множитель был 0"
         d092: "%value-1%; возврат 0 для %value-2%"
-        d093: "атрибут: %value-1%, формула stkd, %value-2%"
+        d093: "атрибут: %value-1%, суммируемая формула, %value-2%"
         d094: "атрибут: %value-1%, стандартная формула, %value-2%"
         d095: "%value-1%,"
         d096: "%value-1%,"
@@ -520,25 +535,25 @@ command:
         d101: "количество правил: &b%value-1%&r"
         d102: "время восстановления достигнуто, правило отключено"
         d103: "минимальный уровень правила: &b%value-1%&7"
-        d104: "правило maxlvl: &b%value-1%&7"
+        d104: "максимальный уровень правила: &b%value-1%&7"
         d105: "имя: &b%value-1%&7"
         d106: "причина появления: &b%value-1%&7"
         d107: "плагины мобов: &b%value-1%&7"
         d108: "mm_name: &b%value-1%&7"
         d109: "спаунер: &b%value-1%&7"
         d110: "spawn_egg: &b%value-1%&7"
-        d111: "ни один игрок не был предоставлен"
+        d111: "игрок не указан"
         d112: "игрок: &b%value-1%&7, разрешение отклонено"
         d113: "игрок: &b%value-1%&7, разрешение получено"
-        d114: "ни один игрок не был предоставлен"
+        d114: "игрок не указан"
         d115: "игрок: &b%value-1%&r"
-        d116: "ни один игрок не был предоставлен"
+        d116: "игрок не указан"
         d117: "игрок: &b%value-1%&7, режим игры: %value-2%&r"
-        d118: "именной тег: %value-1%"
-        d119: "именной тег: %value-1%"
+        d118: "тег имени: %value-1%"
+        d119: "тег имени: %value-1%"
         d120: "приручен: %value-1%"
         d121: "приручен: %value-1%"
-        d122: "световой люк: %value-1%, критерии: %value-2%"
+        d122: "уровень небесного света: %value-1%, критерии: %value-2%"
         d123: "xCoord: %value-1%, startX: %value-2%, endX: %value-3%"
         d124: "yCoord: %value-1%, startY: %value-2%, endY: %value-3%"
         d125: "zCoord: %value-1%, startZ: %value-2%, endZ: %value-3%"
@@ -552,10 +567,10 @@ command:
         d133: "расстояние появления: &b%value-1%&7, мин-SD: &b%value-2%&7"
         d134: "расстояние появления: &b%value-1%&7, мин-SD: &b%value-2%&7"
         d135: "время тика: &b%value-1%&7"
-        d136: "шанс: &b%value-1%&7, роль шанса: &b%value-2%&7"
+        d136: "шанс: &b%value-1%&7, роль вероятности: &b%value-2%&7"
         d137: "удалены записи о времени восстановления, до: %value-1%, после: %value-2%"
         d138: "формула не указана, используется 1"
-        d139: "FormulaPre: '%value-1%', FormulaPost: '%value-2%', результат: %value-3%"
+        d139: "формула до подстановки: '%value-1%', формула после подстановки: '%value-2%', результат: %value-3%"
         d140: "игрок: %value-1%, ввод: %value-2%, масштаб: %value-3%,%value-4% не совпадают уровни"
         d141: "игрок: %value-1%, ввод: '%value-2%', %value-3% не совпадают уровни"
         d142: "игрок: %value-1%, ввод: %value-2%%value-3%%value-4%, масштаб: %value-5%, %value-6%результат: %value-7%"
@@ -563,59 +578,68 @@ command:
         d144: "игрок: %value-1%, ввод: '%value-2%'%value-3%, уровень: %value-4%, %value-5%, результат: %value-6%"
         d145: "Неверный ввод: %value-1%"
         d146: "мин. %value-1%, макс.: %value-2%, результат: %value-3%."
-        d147: "SpawnDistanceStrategy сгенерировал NaN, levelDistance: %value-1%, увеличенияLevelDistance: %value-2%"
-        d148: "BlendedLevel генерирует NaN, возвращая 0.transitionYHeight: %value-1%, yPos: %value-2%,"
-        d149: "yHeightPeriod: %value-1%, lvlMultiplier: %value-2%, sda: %value-3%"
+        d147: "SpawnDistanceStrategy вернула NaN, расстояние уровня: %value-1%, увеличение расстояния уровня: %value-2%"
+        d148: "BlendedLevel вернула NaN; возвращается 0. Переходная высота Y: %value-1%, yPos: %value-2%,"
+        d149: "период высоты Y: %value-1%, множитель уровня: %value-2%, sda: %value-3%"
         d150: "Неверный хэш, местоположение: %value-1%"
         d151: "Хэш отсутствует, местоположение: %value-1%"
         d152: "Хэш отсутствует, местоположение: %value-1%"
         d153: "getPDCLock не удалось заблокировать поток — %value-1%:%value-2%"
         d154: "getPDCLock повторить %value-1% - %value-2%:%value-3%"
-        d155: "общий шанс не составил%value-1%"
-        d156: "не предоставлен общий шанс для игрока: &b%value-1%&r"
-        d157: "&7Пользовательские капли%value-1%:"
-        d158: "&7Специальное оборудование для &b%value-1% &r(%value-2%)"
-        d159: "&7Специальное оборудование для &b%value-1%&r"
+        d155: "общая вероятность не сработала: %value-1%"
+        d156: "общая вероятность не задана для игрока: &b%value-1%&r"
+        d157: "&7Пользовательский дроп%value-1%:"
+        d158: "&7Пользовательская экипировка для &b%value-1% &r(%value-2%)"
+        d159: "&7Пользовательская экипировка для &b%value-1%&r"
         d160: "%value-1%"
-        d161: "&8 --- &7Добавлены пользовательские элементы: &b%value-1%&7."
-        d162: "&8 - &7item: &b%value-1%&7, причина смерти: &b%value-2%&7, не была вызвана игроком"
+        d161: "&8 --- &7Добавлены пользовательские предметы: &b%value-1%&7."
+        d162: "&8 - &7предмет: &b%value-1%&7, причина смерти: &b%value-2%&7, не была вызвана игроком"
         d163: ", удалено: &bfalse&7."
         d164: "предмет: %value-1%, моб исключен"
-        d165: "fromSpawner: &b%value-1%&7, предмет: &b%value-2%&7,"
-        d166: "minL: &b%value-1%&7, maxL: &b%value-2%&7, nospawner: &b%value-3%&7, выброшено: &bfalse"
-        d167: "&8- custom-cmd, fromSpawner: &b%value-1%&7, minL: &b%value-2%&7,"
-        d168: "maxL: &b%value-1%&7, nospawner: &b%value-2%&7, выполнено: &bfalse"
+        d165: "из спавнера: &b%value-1%&7, предмет: &b%value-2%&7,"
+        d166: "мин. уровень: &b%value-1%&7, макс. уровень: &b%value-2%&7, без спавнера: &b%value-3%&7, выброшено: &bfalse"
+        d167: "&8- пользовательская команда, из спавнера: &b%value-1%&7, мин. уровень: &b%value-2%&7,"
+        d168: "макс. уровень: &b%value-1%&7, без спавнера: &b%value-2%&7, выполнено: &bfalse"
         d169: "&8 - &7предмет: &b%value-1%&7, не был экипирован на моба, выпал: &bfalse&7."
-        d170: "item: &b%value-1%&7, gId: &b%value-2%&7, достигнуто количество уничтожений фрагментов"
-        d171: "элемент: пользовательская команда, gId: &b%value-1%&7, достигнуто количество уничтожений фрагментов"
+        d170: "предмет: &b%value-1%&7, ID группы: &b%value-2%&7, достигнуто количество уничтожений фрагментов"
+        d171: "предмет: пользовательская команда, ID группы: &b%value-1%&7, достигнуто количество уничтожений фрагментов"
         d172: "&8 - &7предмет: &b%value-1%&7, сумма: &b%value-2%&7, шанс: &b%value-3%&7,"
-        d173: "шансРоль: &b%value-1%&7, выброшено: &bfalse&7."
-        d174: "&8 - &7Пользовательская команда&7, шанс: &b%value-1%&7, шансРоль:"
+        d173: "роль вероятности: &b%value-1%&7, выброшено: &bfalse&7."
+        d174: "&8 - &7Пользовательская команда&7, шанс: &b%value-1%&7, роль вероятности:"
         d175: "&b%value-1%&7, выполнено: &bfalse&7."
-        d176: "элемент: &b%value-1%&7, gId: &b%value-2%&7,"
-        d177: "maxDropGroup: &b%value-1%&7, groupDropCount: &b%value-2%&7, drop: &bfalse"
-        d178: "элемент: пользовательская команда, gId: &b%value-1%&7,"
-        d179: "maxDropGroup: &b%value-1%&7, groupDropCount: &b%value-2%&7, выполнено: &bfalse"
-        d180: "&8 - &7предмет: &b%value-1%&7, экипировкаШанс: &b%value-2%&7, шансРоль:"
+        d176: "предмет: &b%value-1%&7, ID группы: &b%value-2%&7,"
+        d177: "максимум группы: &b%value-1%&7, число дропа группы: &b%value-2%&7, выпало: &bfalse"
+        d178: "предмет: пользовательская команда, ID группы: &b%value-1%&7,"
+        d179: "максимум группы: &b%value-1%&7, число дропа группы: &b%value-2%&7, выполнено: &bfalse"
+        d180: "&8 - &7предмет: &b%value-1%&7, вероятность экипировки: &b%value-2%&7, роль вероятности:"
         d181: "&b%value-1%&7, оборудовано: &btrue&7."
-        d182: "&8 - &7элемент: &b%value-1%&7, сумма: &b%value-2%&7, newAmount: &b%value-3%&7,"
-        d183: "шанс: &b%value-1%&7, шансРоль:"
+        d182: "&8 - &7предмет: &b%value-1%&7, сумма: &b%value-2%&7, новое количество: &b%value-3%&7,"
+        d183: "шанс: &b%value-1%&7, роль вероятности:"
         d184: "&b%value-1%&7, удалено: &btrue&7%value-2%."
         d185: "предмет: &b%value-1%&7, шанс экипировки:"
         d186: "&b%value-1%&7, шанс:"
         d187: "&b%value-1%&7, не удалось использовать шанс"
-        d188: "&8 - &7элемент: &b%value-1%&7, причина смерти: &b%value-2%&7, причина смерти-req:"
+        d188: "&8 - &7предмет: &b%value-1%&7, причина смерти: &b%value-2%&7, требуемая причина смерти:"
         d189: "&b%value-1%&7, удалено: &bfalse&7."
         d190: "&8 - &7предмет: &b%value-1%&7, ни одному игроку не были предоставлены разрешения на предмет"
         d191: "&8 - &7предмет: &b%value-1%&7, игрок: &b%value-2%&7 не имел разрешения: &b%value-3%&7"
-        d192: "элемент: %value-1%, значение PAPI: %value-2%, соответствует: %value-3%"
-        d193: "(customCommand), значение PAPI: $, сопоставлено: %value-1%"
-        d194: "элемент: %value-1%, значение PAPI: %value-2%, совпадений не найдено"
-        d195: "(customCommand), значение PAPI: %value-1%, совпадений не найдено"
-        d196: "&8 - &7Моб: &b%value-1%&7, предмет: %value-2%, lvl-src: %value-3%,"
-        d197: "minlvl: %value-1%, maxlvl: %value-2% критерии уровня игрока не соблюдены"
-        d198: "&8 - &7Mob: &b%value-1%&7, (customCommand), lvl-src: %value-2%, minlvl: %value-3%,"
-        d199: "maxlvl: критерии уровня игрока %value-1% не соблюдены"
+        d192: "предмет: %value-1%, значение PAPI: %value-2%, соответствует: %value-3%"
+        d193: "(пользовательская команда), значение PAPI: $, сопоставлено: %value-1%"
+        d194: "предмет: %value-1%, значение PAPI: %value-2%, совпадений не найдено"
+        d195: "(пользовательская команда), значение PAPI: %value-1%, совпадений не найдено"
+        d196: "&8 - &7Моб: &b%value-1%&7, предмет: %value-2%, источник уровня: %value-3%,"
+        d197: "мин. уровень: %value-1%, макс. уровень: %value-2% критерии уровня игрока не соблюдены"
+        d198: "&8 - &7Моб: &b%value-1%&7, (пользовательская команда), источник уровня: %value-2%, мин. уровень: %value-3%,"
+        d199: "макс. уровень: критерии уровня игрока %value-1% не соблюдены"
+        d200: "предмет: команда, ID группы: &b%group%&7, максимум группы: &b%max-group%&7, число дропа группы: &b%count%&7, выполнено: &btrue"
+        d201: "предмет: пользовательская команда, ID группы: &b%group%&7, максимум группы: &b%max-group%&7, выполнено: &btrue"
+        d202: ", повторная попытка: %retry%"
+        d203: "Команда (повторов: %count%): "
+        d204: "Команда: "
+        d205: "мир: %world%, уровень: %level%"
+        d206: " (призван)"
+        d207: "предел: %value%, "
+        d208: ", разброс: %value%"
       status-heading: "\nСостояние отладки: %status%"
       status-time-left: ' (осталось: %time%)'
       status-filters-heading: "\n--------------------------\nТекущие фильтры:"
@@ -694,6 +718,7 @@ display:
   entity-types: 'типы сущностей'
   debug-types: 'типы отладки'
   unknown-entity: 'неизвестная сущность'
+  location: '%world%, координаты %x%, %y%, %z%'
   task:
     cancelled: 'отменена'
     not-running: 'не выполняется'
@@ -705,8 +730,158 @@ display:
     mob-hash: 'хеш моба'
     external-plugin-type: 'тип внешнего плагина'
     value-prefix: 'значение: '
+    id-heading: '&lID:&r '
+    disabled-suffix: '&6(отключено)&r'
+    conditions-heading: '&lУсловия:&r'
+    apply-settings-heading: '&lПрименяемые настройки&r:'
+    strategies-heading: '&lСтратегии:&r'
+    misc-heading: '&lПрочее:&r'
+    death-messages-disabled: 'Сообщения о смерти (отключены)'
+    death-messages-empty: 'Сообщения о смерти'
+    death-messages-count: 'Сообщения о смерти (задано: %count%)'
+    no-items: 'нет значений'
+    all-stacked: '(всё суммируется) '
+    mob-specific: 'для конкретного моба'
+    base-modifiers: 'базовые модификаторы'
+    mob-specific-base-modifiers: 'базовые модификаторы для конкретного моба'
+    fields:
+      apply-above-y: 'применять выше Y'
+      apply-below-y: 'применять ниже Y'
+      baby-mobs-inherit-adult-settings: 'детёныши наследуют настройки взрослых мобов'
+      biomes: 'биомы'
+      chunk-kill-options: 'параметры убийств в чанке'
+      chunk-max-cooldown-time: 'максимальное время восстановления чанка'
+      construct-level: 'формула вычисления уровня'
+      cooldown-time: 'время восстановления'
+      creature-death-nametag: 'тег имени при смерти сущности'
+      creeper-max-damage-radius: 'максимальный радиус урона крипера'
+      custom-death-messages: 'пользовательские сообщения о смерти'
+      custom-names: 'пользовательские имена'
+      custom-strategy: 'пользовательская стратегия'
+      drop-table-ids: 'ID таблиц дропа'
+      enabled-compatibilities: 'включённые интеграции'
+      entities: 'сущности'
+      entity-name-overrides: 'переопределения имён сущностей'
+      entity-name-overrides-with-level: 'переопределения имён сущностей с уровнем'
+      external-plugins: 'внешние плагины'
+      gamemode: 'режим игры'
+      health-indicator: 'индикатор здоровья'
+      invalid-placeholder-replacement: 'замена некорректного плейсхолдера'
+      is-temp-disabled: 'временно отключено'
+      levelling-strategy: 'стратегия назначения уровня'
+      lock-entity: 'зафиксировать сущность'
+      max-adjacent-chunks: 'максимум соседних чанков'
+      max-death-in-chunk-threshold: 'порог убийств в чанке'
+      max-distance-from-spawn: 'максимальное расстояние от точки появления'
+      maxlevel: 'максимальный уровень'
+      max-random-variance: 'максимальная случайная вариация'
+      min-distance-from-spawn: 'минимальное расстояние от точки появления'
+      minlevel: 'минимальный уровень'
+      mob-customname: 'наличие пользовательского имени у моба'
+      mob-level-inheritance: 'наследование уровня моба'
+      mob-multipliers: 'множители моба'
+      mob-nbt-data: 'данные NBT моба'
+      mob-tamed-status: 'статус приручения моба'
+      mythic-mobs-names: 'имена MythicMobs'
+      nametag: 'тег имени'
+      nametag-placeholder-levelled: 'плейсхолдер тега уровневого моба'
+      nametag-placeholder-unlevelled: 'плейсхолдер тега моба без уровня'
+      nametag-visibility-options: 'параметры видимости тега'
+      nametag-visible-time: 'время видимости тега'
+      no-drop-entities: 'сущности без дропа'
+      passenger-match-level: 'синхронизация уровня пассажира'
+      player-names: 'имена игроков'
+      player-permissions: 'права игроков'
+      rule-chance: 'вероятность правила'
+      scoreboard-tags: 'теги scoreboard'
+      skylight-level: 'уровень небесного света'
+      spawner-egg-names: 'имена яиц призыва'
+      spawner-names: 'имена спавнеров'
+      spawner-particle: 'частица спавнера'
+      spawner-particles-count: 'число частиц спавнера'
+      spawn-reasons: 'причины появления'
+      stop-proessing-rules: 'остановить обработку правил'
+      structures: 'структуры'
+      sunlight-burn-amount: 'урон от горения на солнце'
+      tiered-coloring-info: 'цветовые диапазоны уровней'
+      times-to-cooldown-activation: 'число срабатываний до восстановления'
+      use-custom-drops: 'использовать пользовательский дроп'
+      use-no-spawner-particles: 'отключить частицы спавнера'
+      vanilla-bonuses: 'обычные бонусы'
+      within-coordinates: 'в пределах координат'
+      worldguard-region-owners: 'владельцы регионов WorldGuard'
+      worldguard-regions: 'регионы WorldGuard'
+      worlds: 'миры'
+      world-tick-time: 'время мира в тиках'
+  modal:
+    all-included: 'включены все'
+    all-excluded: 'исключены все'
+  strategies:
+    blended: 'смешанная'
+    spawn-distance: 'расстояние от точки появления'
+    blended-details: 'смешанная, буфер: %buffer%, кольцевых диапазонов: %tiers%, переход по Y: %transition-y%, период высоты Y: %height-period%, множитель уровня: %multiplier%, масштабирование вниз: %scale-down%'
+    spawn-distance-details: 'расстояние от точки появления, буфер: %buffer%, кольцевых диапазонов: %tiers%'
+    y-distance-details: 'координата Y, начало: %start%, конец: %end%, период Y: %period%, увеличение на уровень: %increase%'
+  nbt:
+    added: 'добавлено:'
+    updated: 'обновлено:'
+    removed: 'удалено:'
+  custom-command: 'пользовательская команда'
+  default: 'по умолчанию'
+  customdrops:
+    override-suffix: ' — переопределение'
+    item: '%material%, количество: %amount%, вероятность: %chance%, вероятность экипировки: %equipped%'
+    enchantment-chances: 'Вероятности зачарований, предметов: %count%'
+    chance-minimum: '(минимум: &b%minimum%&7, роль вероятности: &b%role%&7)'
+  debug-archive:
+    file-size: 'размер файла:'
+    sha256-hash: 'хеш SHA-256:'
+    error: '(ошибка)'
+    server-build: 'сборка сервера:'
+    bukkit-version: 'версия Bukkit:'
+    player-count: 'число игроков:'
+    plugins: 'плагины:'
+    disabled: '(отключён) '
+  limit-bypass: '(ограничения проигнорированы)'
+  modal-labels:
+    included-list: 'включённые значения:'
+    included-groups: 'включённые группы:'
+    excluded-list: 'исключённые значения:'
+    excluded-groups: 'исключённые группы:'
+  external-plugin:
+    key-type: 'тип ключа'
+    placeholder: 'плейсхолдер'
+  result:
+    multiplier: 'множитель: %multiplier%, базовое значение: %base%, является дополнением: %addition%'
+  health-indicator:
+    indicator: 'индикатор: '
+    half-indicator: 'половинный индикатор: '
+    scale: 'масштаб: '
+    max: 'максимум: '
+    merge: 'объединение: true'
+  rule-types:
+    biome: 'биом'
+    spawn-reason: 'причина появления'
+    structure: 'структура'
+    vanilla-bonus: 'обычный бонус'
+    preset: 'пресет %count%'
+  custom-strategy:
+    no-formula: '(формула не задана)'
+  data:
+    byte-array-size: '(размер массива байтов: %size%)'
+  player-level-source:
+    disabled: '(отключено)'
+    variable: 'переменная: '
+    use-player-max-level: 'использовать максимальный уровень игрока'
+    scale: 'масштаб: '
+    cap: 'предел: '
+  random-strategy:
+    name: 'Случайное назначение уровня'
+    auto-generate: 'Случайное назначение уровня (автоматическая генерация)'
+    merge-suffix: ' (объединение)'
   spawner:
     levelledmobs: 'Спавнер LevelledMobs'
+    spawn-egg: 'Яйцо призыва LevelledMobs'
     vanilla: 'Обычный спавнер'
     min-level: 'минимальный уровень'
     max-level: 'максимальный уровень'
@@ -716,8 +891,11 @@ display:
     max-spawn-delay: 'максимальная задержка спавна'
     required-player-range: 'дальность до игрока'
     spawn-count: 'число существ за спавн'
+    spawn-range: 'радиус появления'
     spawn-type: 'тип сущности'
     custom-drop-id: 'ID пользовательского дропа'
+    no-lore: 'без описания'
+    lore: 'описание'
 
 
 #
@@ -753,6 +931,8 @@ other:
       - '&8 &m->&7 Сообщение отправлено из-за права &blevelledmobs.compatibility-notice&7. Его можно отключить в &bmessages.yml&7.'
       - '&8 &m->&7 Убедитесь, что выполнены инструкции из wiki плагина.'
   update-notice:
+    pre-release:
+      - 'Используется предварительная версия LevelledMobs. Последняя стабильная версия: %latestVersion%. Текущая версия: %currentVersion%.'
     messages:
       - '&b&nДоступно обновление LevelledMobs:'
       - '&7Установленная версия &bLevelledMobs&7 &bустарела&7. Обновите плагин до &bv%latestVersion%&7. &8(&7Текущая версия: &bv%currentVersion%&8)'
@@ -777,6 +957,9 @@ other:
 
 
 console:
+  log:
+    warning-prefix: '&e[ПРЕДУПРЕЖДЕНИЕ] '
+    severe-prefix: '&e[КРИТИЧЕСКАЯ ОШИБКА] '
   customdrops:
     invalid-droptable-id: 'В правиле указано некорректное значение use-droptable-id: %id%'
     unsupported-drop-type: 'Неподдерживаемый тип дропа: %type%'
@@ -861,6 +1044,7 @@ console:
     reflection-error: 'Не удалось получить методы рефлексии для операций nbt-dump: %error%'
     nms-version: 'Для поддержки тегов используется версия NMS %version%.'
     invalid-nms-mapping: 'Некорректное сопоставление NMS: %name%'
+    bukkit-version-regex: 'NMSHandler не смог определить версию Bukkit по шаблону: %version%'
   queue:
     mob-processing-stopped: 'Диспетчер очереди обработки мобов остановлен.'
     mob-processing-restarting: 'Перезапуск задачи очереди обработки мобов; состояние: %status%.'
@@ -882,6 +1066,7 @@ console:
     apply-error: 'Не удалось применить NBT ''%nbt%'' к %entity%: %error%'
     api-required-summon: 'Переданы данные NBT, но обязательный плагин NBTAPI не установлен.'
     api-required-customdrops: 'В customdrops.yml заданы данные NBT, но обязательный плагин NBTAPI не установлен.'
+    no-data-changed: 'Данные NBT не изменились. Проверьте корректность строк NBT.'
   rules:
     resource-stream-null: '%operation%: поток встроенного ресурса имеет значение null.'
     particle-error: 'Не удалось создать эффект частиц: %error%'
@@ -957,6 +1142,16 @@ console:
     invalid-wildcard: 'Некорректный шаблон с подстановочными знаками: %pattern%'
     invalid-time: 'Некорректный интервал времени: %input%.'
     invalid-time-unit: 'Некорректная единица времени: %input% (%unit%).'
+  internal:
+    command-sender-not-set: 'CommandSender должен быть задан до вызова showMessage.'
+    replacement-list-size-mismatch: 'Списки replaceWhat и replaceWith должны иметь одинаковый размер.'
+    built-in-plugin-definition: 'Определение внешнего плагина %plugin% является встроенным. Используйте соответствующие внутренние методы.'
+    addition-must-be-attribute: 'Значение Addition должно относиться к Attribute; этот вариант не обработан методом.'
+    invalid-version-format: 'Версия может содержать только цифры и точки.'
+    invalid-hex-character: 'Некорректный шестнадцатеричный символ: %character%'
+    world-required: 'Значение World не может быть null.'
+    unexpected-summon-type: 'Получено неожиданное значение SummonType: %type%.'
+    papi-result-size-mismatch: 'getPapiPlaceholder: размер входного списка (%input%) не совпал с размером результата (%result%).'
 
 
 #

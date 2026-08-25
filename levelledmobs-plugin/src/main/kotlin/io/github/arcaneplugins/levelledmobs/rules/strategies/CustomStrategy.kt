@@ -8,8 +8,8 @@ import io.github.arcaneplugins.levelledmobs.managers.MobDataManager
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 
 /**
- * Allows custom levelling stratgies based on a supplied
- * formula
+ * Позволяет настраивать стратегии прокачки на основе предоставленного
+ * формула
  *
  * @author stumper66
  * @since 4.0
@@ -71,7 +71,7 @@ class CustomStrategy(
 
     override fun toString(): String {
         return if (formula.isNullOrEmpty())
-            "(no formula)"
+            LocalizedMessages.text("display.custom-strategy.no-formula", colorize = false)
         else
             "'$formula'"
     }

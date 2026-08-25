@@ -4,8 +4,8 @@ import io.github.arcaneplugins.levelledmobs.annotations.DoNotShow
 import io.github.arcaneplugins.levelledmobs.util.Utils.isInteger
 
 /**
- * Specifies a region based on coordinates that can be
- * used in a rule condition
+ * Определяет регион на основе координат, которые могут быть
+ * используется в условии правила
  *
  * @author stumper66
  * @since 3.8.0

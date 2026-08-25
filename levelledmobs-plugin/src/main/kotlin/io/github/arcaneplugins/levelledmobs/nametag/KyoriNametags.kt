@@ -10,8 +10,8 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.entity.LivingEntity
 
 /**
- * Holds logic used to send nametags using Kyori
- * which is usually only found on Paper servers
+ * Содержит логику, используемую для отправки бейджей с использованием Кёри.
+ * который обычно встречается только на серверах Paper.
  *
  * @author stumper66
  * @since 3.9.3
@@ -26,7 +26,7 @@ object KyoriNametags {
         val nametag = nametagResult.nametagNonNull
         val mobKey = livingEntity.type.translationKey()
 
-        // this component holds the component of the mob name and will show the translated name on clients
+        // этот компонент содержит компонент имени моба и будет отображать переведенное имя на клиентах.
         val mobNameComponent: Component = if (nametagResult.overriddenName == null) {
             if (def.useTranslationComponents)
                 Component.translatable(mobKey)
@@ -39,7 +39,7 @@ object KyoriNametags {
                 .deserialize(nametagResult.overriddenName!!)
         }
 
-        // replace placeholders and set the new death message
+        // замените заполнители и установите новое сообщение о смерти
         var result = if (def.getUseLegacySerializer()) {
             LegacyComponentSerializer
                 .legacyAmpersand()
@@ -86,7 +86,7 @@ object KyoriNametags {
         )
         lmEntity.free()
 
-        // this component holds the component of the mob name and will show the translated name on clients
+        // этот компонент содержит компонент имени моба и будет отображать переведенное имя на клиентах.
         val mobNameComponent: Component = if (nametagResult.overriddenName == null)
             Component.translatable(mobKey)
         else {
@@ -95,7 +95,7 @@ object KyoriNametags {
                 .deserialize(nametagResult.overriddenName!!)
         }
 
-        // replace placeholders and set the new death message
+        // замените заполнители и установите новое сообщение о смерти
         val result = if (def.getUseLegacySerializer()) {
             LegacyComponentSerializer
                 .legacyAmpersand()

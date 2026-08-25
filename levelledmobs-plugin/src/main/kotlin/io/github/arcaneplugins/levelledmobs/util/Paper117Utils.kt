@@ -4,7 +4,7 @@ import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 
 /**
- * Provides function for APIs that are used in Paper 1.17+ but not present in 1.16
+ * Предоставляет функции для APIs, которые используются в Paper 1.17+, но отсутствуют в 1.16.
  *
  * @author stumper66
  * @since 3.3.0

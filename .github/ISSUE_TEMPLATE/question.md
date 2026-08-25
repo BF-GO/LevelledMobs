@@ -1,10 +1,10 @@
 ---
-name: Question
-about: If you have a general question, feel free to ask it using this template.
-title: Untitled Question
+name: Вопрос
+about: Используйте этот шаблон для общего вопроса о плагине
+title: Вопрос
 labels: question
 assignees: ''
 
 ---
 
-(Please clearly outline your question here.)
+(Сформулируйте вопрос максимально точно.)

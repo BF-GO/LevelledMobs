@@ -1,13 +1,15 @@
 package io.github.arcaneplugins.levelledmobs.rules.strategies
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
+
 import java.util.concurrent.ThreadLocalRandom
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import kotlin.math.floor
 
 /**
- * Holds the configuration and logic for applying a levelling system that is based upon the distance
- * y level height
+ * Содержит конфигурацию и логику применения стратегии назначения уровня, основанной на расстоянии.
+ * высота уровня y
  *
  * @author stumper66
  * @since 3.0.0
@@ -43,12 +45,15 @@ class YDistanceStrategy : LevellingStrategy, Cloneable {
     }
 
     override fun toString(): String {
-        return String.format(
-            "y coord, start: %s, end: %s, yPeriod: %s, increasePerLvl: %s",
-            if (startingYLevel == null) 0 else startingYLevel,
-            if (endingYLevel == null) 0 else endingYLevel,
-            if (yPeriod == null) 0 else yPeriod,
-            if (increasePerLevel == null) 0 else increasePerLevel
+        return LocalizedMessages.text(
+            "display.strategies.y-distance-details",
+            mapOf(
+                "start" to (startingYLevel ?: 0),
+                "end" to (endingYLevel ?: 0),
+                "period" to (yPeriod ?: 0),
+                "increase" to (increasePerLevel ?: 0)
+            ),
+            false
         )
     }
 
@@ -68,7 +73,7 @@ class YDistanceStrategy : LevellingStrategy, Cloneable {
         val lowest = if (isDescending) yEnd else yStart
         val diff = if (isDescending) yStart - yEnd else yEnd - yStart
 
-        // make sure the mob location isn't past the end or start
+        // убедитесь, что местоположение моба не зашло за конец или начало
         if (isDescending && yPeriod == 0f && increasePerLevel == null)
             mobYLocation = mobYLocation.coerceAtMost(highest)
 
@@ -113,12 +118,12 @@ class YDistanceStrategy : LevellingStrategy, Cloneable {
 
         val change = ThreadLocalRandom.current().nextInt(0, variance + 1)
 
-        // Start variation. First check if variation is positive or negative towards the original level amount.
+        // Начать вариацию. Сначала проверьте, является ли отклонение положительным или отрицательным по отношению к исходной сумме уровня.
         return if (!isAtMaxLevel || ThreadLocalRandom.current().nextBoolean()) {
-            // Positive. Add the variation to the final level
+            // Позитивный. Добавьте вариацию на финальный уровень
             change
         } else {
-            // Negative. Subtract the variation from the final level
+            // Отрицательный. Вычтите вариацию из конечного уровня
             -change
         }
     }

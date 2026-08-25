@@ -2,12 +2,13 @@ package io.github.arcaneplugins.levelledmobs.customdrops
 
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.util.Utils
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import org.bukkit.Material
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 
 /**
- * This holds all the attributes set for a custom drop item
+ * Здесь хранятся все атрибуты, установленные для пользовательского выпадающего элемента.
  *
  * @author stumper66
  * @since 2.5.0
@@ -162,6 +163,15 @@ class CustomDropItem() : CustomDropBase(
         }
 
     override fun toString(): String {
-        return "${material.name}, amount: $amountAsString, chance: $chance, equipped: $equippedChance"
+        return LocalizedMessages.text(
+            "display.customdrops.item",
+            mapOf(
+                "material" to material.name,
+                "amount" to amountAsString,
+                "chance" to chance,
+                "equipped" to equippedChance
+            ),
+            false
+        )
     }
 }

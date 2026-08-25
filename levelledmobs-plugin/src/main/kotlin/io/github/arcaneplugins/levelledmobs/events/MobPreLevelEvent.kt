@@ -8,8 +8,8 @@ import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
 /**
- * This event is fired *before* a mob has been levelled. Note that it does not fire when the mob was
- * spawned using `/lm summon`, instead see Summoned- -MobPreLevelEvent.
+ * Это событие запускается *до* уровня моба. Обратите внимание, что он не срабатывает, когда моб был
+ * создается с помощью `/lm summon`, вместо этого см. SummonedMobPreLevelEvent.
  *
  * @author lokka30
  * @since 2.5.0
@@ -24,11 +24,11 @@ class MobPreLevelEvent(
     private var cancelled = false
 
     /**
-     * When a mob is levelled, the following enum is used to allow plugins to find the cause of the
-     * mob being levelled.
+     * При назначении уровня мобу, используется следующее перечисление, позволяющее плагинам найти причину
+     * моб получает уровень.
      * <p>
-     * NORMAL: Spawned naturally, by a spawn egg, etc. CHANGED_LEVEL: When an existing levelled mob
-     * has its level changed.
+     * NORMAL: Порождается естественным путем, яйцом призыва и т. д. CHANGED_LEVEL: Когда существующий уровневый моб
+     * изменился его уровень.
      */
     enum class LevelCause {
         NORMAL,

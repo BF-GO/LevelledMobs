@@ -1,8 +1,8 @@
 package io.github.arcaneplugins.levelledmobs.rules
 
 /**
- * Provides a common interface for various rules
- * that can be merged together
+ * Предоставляет общий интерфейс для различных правил.
+ * которые можно объединить воедино
  *
  * @author stumper66
  * @since 3.12.0

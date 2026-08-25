@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 
 /**
- * Manages communication to PlaceholderAPI (PAPI)
+ * Управляет связью с PlaceholderAPI (PAPI)
  *
  * @author stumper66
  * @since 3.0.0

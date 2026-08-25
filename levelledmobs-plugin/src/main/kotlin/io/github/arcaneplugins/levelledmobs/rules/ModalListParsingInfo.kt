@@ -4,7 +4,7 @@ import io.github.arcaneplugins.levelledmobs.enums.ModalListParsingTypes
 import io.github.arcaneplugins.levelledmobs.misc.CachedModalList
 
 /**
- * Holds various info used for parsing rules.yml
+ * Содержит различную информацию, используемую для анализа rules.yml.
  *
  * @author stumper66
  * @since 3.7.5

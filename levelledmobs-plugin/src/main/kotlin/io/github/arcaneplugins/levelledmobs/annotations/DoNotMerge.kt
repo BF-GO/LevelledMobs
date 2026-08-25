@@ -1,8 +1,8 @@
 package io.github.arcaneplugins.levelledmobs.annotations
 
 /**
- * When for rules to prevent them from being merged
- * when used as a preset
+ * Когда следует использовать правила, чтобы предотвратить их объединение
+ * при использовании в качестве предустановки
  *
  * @author stumper66
  * @since 3.2.0

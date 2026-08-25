@@ -3,8 +3,8 @@ package io.github.arcaneplugins.levelledmobs.rules
 import java.util.TreeSet
 
 /**
- * Holds all valid configuration options for settings and rules
- * so it knows if an invalid option or value is used
+ * Содержит все допустимые параметры конфигурации для настроек и правил.
+ * поэтому он знает, используется ли недопустимая опция или значение
  *
  * @author stumper66
  * @since 4.1.5
@@ -71,8 +71,8 @@ object KeyValidation {
             "use-droptable-id",
             "invalid-placeholder-replacement",
 
-            // these values are not valid but they were present in rules.yml so long
-            // we are leaving them so people don't get errors
+            // эти значения недействительны, но они присутствовали в rules.yml так долго
+            // мы оставляем их, чтобы у людей не было ошибок
             "transforming-mobs-inherit-level",
             "riding-passengers-match-vehicle-level"
         ))

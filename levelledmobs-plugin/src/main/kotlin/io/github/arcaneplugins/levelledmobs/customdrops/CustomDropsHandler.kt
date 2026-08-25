@@ -36,31 +36,31 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta
 import org.bukkit.persistence.PersistentDataType
 
 /**
- * The main CustomDropsclass that holds useful functions for parsing, instantizing and more of
- * custom drop items
+ * Основной CustomDropsclass, содержащий полезные функции для анализа, создания экземпляров и многого другого.
+ * пользовательские выпадающие предметы
  *
  * @author stumper66
  * @since 2.4.0
  */
 class CustomDropsHandler {
-    // regular custom drops defined for a mob type
+    // обычные пользовательские дропы, определенные для типа моба
     private val customDropsitems = mutableMapOf<EntityType, CustomDropInstance>()
-    // regular custom drops defined for a mob type that is a baby
+    // обычные специальные дропы, определенные для типа моба, который является ребенком
     val customDropsitemsBabies = mutableMapOf<EntityType, CustomDropInstance>()
 
-    // only used for the built-in universal groups
+    // используется только для встроенных универсальных групп
     private val customDropsitemsGroups = mutableMapOf<String, CustomDropInstance>()
 
-    // these are drops defined by a drop table
+    // это сбросы, определенные таблицей сбросов
     val customDropIDs: MutableMap<String, CustomDropInstance> = TreeMap(String.CASE_INSENSITIVE_ORDER)
 
-    // mappings of groupIds to drop instance
+    // сопоставления groupIds для удаления экземпляра
     private val groupIdToInstance: MutableMap<String, CustomDropInstance> = TreeMap(String.CASE_INSENSITIVE_ORDER)
 
-    // get a drop instance from it's groupid
+    // получить экземпляр отбрасывания из его идентификатора группы
     var customItemGroups = mutableMapOf<String, CustomDropInstance>()
 
-    // groupid to grouplimits map
+    // сопоставление groupid и grouplimits
     val groupLimitsMap: MutableMap<String, GroupLimits> = TreeMap(String.CASE_INSENSITIVE_ORDER)
     val customDropsParser = CustomDropsParser(this)
     val externalCustomDrops: ExternalCustomDrops = ExternalCustomDropsImpl()
@@ -133,8 +133,8 @@ class CustomDropsHandler {
                 continue
             }
 
-            // merge the 3rd party drops into the defined drops for the entity
-            // 3rd party drop settings will override any conflicting
+            // объединить сторонний дроп с определенными для объекта
+            // Сторонние настройки перетаскивания будут иметь приоритет над любыми конфликтующими
             val currentDropInstance = drops[entityType]
             currentDropInstance!!.combineDrop(dropInstance)
 
@@ -157,8 +157,8 @@ class CustomDropsHandler {
                 continue
             }
 
-            // merge the 3rd party drops into the defined drops for the entity
-            // 3rd party drop settings will override any conflicting
+            // объединить сторонний дроп с определенными для объекта
+            // Сторонние настройки перетаскивания будут иметь приоритет над любыми конфликтующими
             val currentDropInstance = drops[groupName]
             currentDropInstance!!.combineDrop(dropInstance)
 
@@ -241,7 +241,7 @@ class CustomDropsHandler {
 
         val buildResult = buildDropsListFromGroupsAndEntity(groupsList, processingInfo)
         if (buildResult != DropInstanceBuildResult.SUCCESSFUL) {
-            // didn't make overall chance
+            // не имел общего шанса
             if (buildResult == DropInstanceBuildResult.DID_NOT_MAKE_CHANCE) {
                 processingInfo.addDebugMessage(
                     DebugType.CUSTOM_DROPS,
@@ -271,7 +271,7 @@ class CustomDropsHandler {
             }
         }
 
-        getCustomItemsFromDropInstance(processingInfo) // payload
+        getCustomItemsFromDropInstance(processingInfo) // полезная нагрузка
 
         val postCount = drops.size
         val showCustomEquips = main.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_EQUIPS)
@@ -452,7 +452,7 @@ class CustomDropsHandler {
         val defaultLimits = groupLimitsMap.getOrDefault("default", null)
 
         for (items in info.prioritizedDrops!!.values) {
-            // loop thru each drop list associated with any groupids
+            // циклически перебирать каждый выпадающий список, связанный с любыми идентификаторами групп
 
             val retriesHardcodedMax = 10
             var maxRetries = 1
@@ -462,7 +462,7 @@ class CustomDropsHandler {
                 info.retryNumber = i
 
                 for (drop in items) {
-                    // loop thru all drops in this groupid
+                    // перебрать все узлы в этом идентификаторе группы
 
                     if (drop.hasGroupId) {
                         info.dropInstance = groupIdToInstance[drop.groupId]
@@ -498,13 +498,13 @@ class CustomDropsHandler {
                         }
                     }
 
-                    // payload:
+                    // полезная нагрузка:
                     getDropsFromCustomDropItem(info, drop)
                 }
 
                 i++
             }
-        } // next group
+        } // следующая группа
     }
 
     private fun getDropsFromCustomDropItem(
@@ -524,7 +524,8 @@ class CustomDropsHandler {
                     || dropBase.causeOfDeathReqs!!.isEmpty()) && !info.wasKilledByPlayer
         ){
             if (!info.equippedOnly && LevelledMobs.instance.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
-                val itemName = if (dropBase is CustomDropItem) dropBase.material.name else "(command)"
+                val itemName = if (dropBase is CustomDropItem) dropBase.material.name else
+                    LocalizedMessages.text("display.custom-command", colorize = false)
                 info.addDebugMessage(
                     LocalizedMessages.text("command.levelledmobs.debug.runtime.d162", mapOf("value-1" to (itemName), "value-2" to (info.deathCause)), false) +
                             LocalizedMessages.text("command.levelledmobs.debug.runtime.d163", colorize = false)
@@ -572,7 +573,7 @@ class CustomDropsHandler {
         if (!info.equippedOnly && dropBase is CustomDropItem)
             info.itemWasEquipped = isMobWearingOrHoldingItem(info, dropBase)
 
-        // equip-chance and equip-drop-chance:
+        // equip-chance и equip-drop-chance:
         if (!info.equippedOnly && dropBase is CustomDropItem) {
             if (!checkIfMadeEquippedDropChance(info, dropBase)) {
                 if (main.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
@@ -647,8 +648,8 @@ class CustomDropsHandler {
             maxDropGroup = dropBase.maxDropGroup
 
         if (!info.equippedOnly && dropBase.hasGroupId) {
-            // legacy section, only executed if the old 'maxdropgroup' was used
-            // instead of 'group-limits.capSelect'
+            // устаревший раздел, выполняется только в том случае, если использовалась старая «maxdropgroup».
+            // вместо «group-limits.capSelect»
             val groupDroppedCount = info.getItemsDropsByGroup(dropBase)
 
             if (maxDropGroup in 1..groupDroppedCount
@@ -672,7 +673,7 @@ class CustomDropsHandler {
         }
 
         if (dropBase is CustomCommand) {
-            // ------------------------------------------ commands get executed here then function returns ---------------------------------------------------
+            // ----------------------------------------- Здесь команды выполняются, а затем функция возвращает ----------------------------------------------------
             var count = 0
             if (dropBase.hasGroupId && info.groupLimits != null) {
                 count = info.getItemsDropsByGroup(dropBase)
@@ -690,19 +691,40 @@ class CustomDropsHandler {
 
             if (dropBase.hasGroupId) {
                 if (main.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
-                    var msg = "item: command, gId: &b${dropBase.groupId}&7, maxDropGroup: &b${dropBase.maxDropGroup}&7, " +
-                            "groupDropCount: &b$count&7, executed: &btrue"
+                    var msg = LocalizedMessages.text(
+                        "command.levelledmobs.debug.runtime.d200",
+                        mapOf(
+                            "group" to dropBase.groupId,
+                            "max-group" to dropBase.maxDropGroup,
+                            "count" to count
+                        ),
+                        false
+                    )
                     if (info.retryNumber > 0)
-                        msg += ", retry: ${info.retryNumber}"
+                        msg += LocalizedMessages.text(
+                            "command.levelledmobs.debug.runtime.d202",
+                            mapOf("retry" to info.retryNumber),
+                            false
+                        )
 
                     info.addDebugMessage(msg)
                 }
             } else if (main.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
-                var msg =
-                    "item: custom command, gId: &b${dropBase.groupId}&7, maxDropGroup: &b${dropBase.maxDropGroup}&7, executed: &btrue"
+                var msg = LocalizedMessages.text(
+                    "command.levelledmobs.debug.runtime.d201",
+                    mapOf(
+                        "group" to dropBase.groupId,
+                        "max-group" to dropBase.maxDropGroup
+                    ),
+                    false
+                )
 
                 if (info.retryNumber > 0)
-                    msg += ", retry: ${info.retryNumber}"
+                    msg += LocalizedMessages.text(
+                        "command.levelledmobs.debug.runtime.d202",
+                        mapOf("retry" to info.retryNumber),
+                        false
+                    )
 
                 info.addDebugMessage(msg)
             }
@@ -751,7 +773,7 @@ class CustomDropsHandler {
             }
         }
 
-        // if we made it this far then the item will be dropped
+        // если мы зайдём так далеко, то предмет выпадет
         if (dropBase.isExternalItem &&
             !main.mainCompanion.externalCompatibilityManager.doesLMIMeetVersionRequirement()
         )
@@ -763,7 +785,7 @@ class CustomDropsHandler {
         if (dropBase.itemStacks == null) return
 
         for (newItemPre in dropBase.itemStacks!!) {
-            // will only be multiple items for supported LM Items items
+            // будет только несколько элементов для поддерживаемых элементов LM Items.
 
             var newItem = newItemPre.clone()
 
@@ -792,7 +814,11 @@ class CustomDropsHandler {
                             LocalizedMessages.text("command.levelledmobs.debug.runtime.d181", mapOf("value-1" to (Utils.round(info.equippedChanceRole.toDouble(), 4))), false)
                 )
             } else if (!info.equippedOnly && main.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
-                val retryMsg = if (info.retryNumber > 0) ", retry: " + info.retryNumber else ""
+                val retryMsg = if (info.retryNumber > 0) LocalizedMessages.text(
+                    "command.levelledmobs.debug.runtime.d202",
+                    mapOf("retry" to info.retryNumber),
+                    false
+                ) else ""
                 var amountMsg = ""
                 if (newDropAmountD != null) amountMsg = newDropAmountD.toString()
                 else if (dropBase.externalAmount != null && dropBase.externalAmount!! > 0.0) dropBase.externalAmount.toString()
@@ -917,7 +943,7 @@ class CustomDropsHandler {
                 }
             }
 
-            // we'll roll the dice to see if we get any drops at all and store it in the PDC
+            // мы бросим кости, чтобы увидеть, получим ли мы вообще какой-либо дроп, и сохраним результат в PDC
             val chanceRole =
                 ThreadLocalRandom.current().nextInt(0, 100001).toFloat() * 0.00001f
             val effectiveChance = dropInstance.overallChance!!.getSlidingChance(
@@ -926,8 +952,14 @@ class CustomDropsHandler {
             )
 
             val madeChance = (1f - chanceRole) < effectiveChance
-            info.overallChanceDebugMessage = " (minimum: &b${Utils.round(effectiveChance.toDouble(), 4)}&7, " +
-                    "chanceRole: &b${Utils.round(chanceRole.toDouble(), 4)}&7)"
+            info.overallChanceDebugMessage = " " + LocalizedMessages.text(
+                "display.customdrops.chance-minimum",
+                mapOf(
+                    "minimum" to Utils.round(effectiveChance.toDouble(), 4),
+                    "role" to Utils.round(chanceRole.toDouble(), 4)
+                ),
+                false
+            )
             if (info.equippedOnly) {
                 synchronized(info.lmEntity!!.livingEntity.persistentDataContainer) {
                     info.lmEntity!!.pdc
@@ -1044,7 +1076,8 @@ class CustomDropsHandler {
 
         if (!Utils.isDamageCauseInModalList(dropBase.causeOfDeathReqs!!, info.deathCause!!)) {
             if (!info.equippedOnly && LevelledMobs.instance.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
-                val itemName = if (dropBase is CustomDropItem) dropBase.material.name else "(command)"
+                val itemName = if (dropBase is CustomDropItem) dropBase.material.name else
+                    LocalizedMessages.text("display.custom-command", colorize = false)
                 info.addDebugMessage(
                     LocalizedMessages.text("command.levelledmobs.debug.runtime.d188", mapOf("value-1" to (itemName), "value-2" to (info.deathCause)), false) +
                             LocalizedMessages.text("command.levelledmobs.debug.runtime.d189", mapOf("value-1" to (dropBase.causeOfDeathReqs)), false)
@@ -1068,7 +1101,7 @@ class CustomDropsHandler {
         if (info.mobKiller == null) {
             if (main.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
                 val itemDescription = if ((dropBase is CustomDropItem)) dropBase.itemStack?.type?.name
-                    else "custom command"
+                    else LocalizedMessages.text("display.custom-command", colorize = false)
                 info.addDebugMessage(
                     LocalizedMessages.text("command.levelledmobs.debug.runtime.d190", mapOf("value-1" to (itemDescription)), false)
                 )
@@ -1088,7 +1121,7 @@ class CustomDropsHandler {
         if (!hadPermission) {
             if (main.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
                 val msg = if ((dropBase is CustomDropItem)) dropBase.itemStack?.type?.name
-                else "custom command"
+                else LocalizedMessages.text("display.custom-command", colorize = false)
                 info.addDebugMessage(
                     LocalizedMessages.text("command.levelledmobs.debug.runtime.d191", mapOf("value-1" to (msg), "value-2" to (info.mobKiller?.name), "value-3" to (dropBase.permissions)), false)
                 )
@@ -1166,7 +1199,7 @@ class CustomDropsHandler {
             }
         }
         else{
-            // non-equippable items go here
+            // Сюда помещаются неэкипируемые предметы.
             if (item.isSimilar(equipment.itemInMainHand)) return true
             return item.isSimilar(equipment.itemInOffHand)
         }
@@ -1256,7 +1289,7 @@ class CustomDropsHandler {
         }
 
         if (!info.equippedOnly && (dropBase.minPlayerLevel > -1 || dropBase.maxPlayerLevel > -1)) {
-            // check if the variable result has been cached already and use it if so
+            // проверьте, был ли уже кэширован результат переменной, и используйте его, если да
             val variableToUse =
                 if (dropBase.playerLevelVariable.isNullOrEmpty()) "%level%" else dropBase.playerLevelVariable!!
             val levelToUse: Int
@@ -1339,7 +1372,14 @@ class CustomDropsHandler {
 
             timesToRun = timesToRun.coerceAtMost(maxAllowedTimesToRun)
 
-            val debugCommand = if (timesToRun > 1) String.format("Command (%sx): ", timesToRun) else "Command: "
+            val debugCommand = if (timesToRun > 1) LocalizedMessages.text(
+                "command.levelledmobs.debug.runtime.d203",
+                mapOf("count" to timesToRun),
+                false
+            ) else LocalizedMessages.text(
+                "command.levelledmobs.debug.runtime.d204",
+                colorize = false
+            )
             val commandFinal = command
             DebugManager.log(DebugType.CUSTOM_COMMANDS, info.lmEntity) { debugCommand + commandFinal }
 

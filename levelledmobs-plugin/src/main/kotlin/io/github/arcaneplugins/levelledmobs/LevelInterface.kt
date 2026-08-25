@@ -6,52 +6,52 @@ import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
 
 /**
- * This is the interface used in the API and exposes functions that use
- * mostly generic classes to apply and modify the main functions of LevelledMobs.
+ * Этот интерфейс используется в API и предоставляет функции, использующие
+ * в основном общие классы для применения и изменения основных функций LevelledMobs.
  *
  * @author stumper66
  * @since 4.0
  */
 interface LevelInterface {
     /**
-     * Check if an existing mob is allowed to be levelled, according to the user's configuration.
+     * Проверьте, разрешено ли повышать уровень существующего моба в соответствии с конфигурацией пользователя.
      *
      *
-     * Thread-safety intended, but not tested.
+     * Потокобезопасность предусмотрена, но не проверена.
      *
-     * @param livingEntity target mob
-     * @return if the mob is allowed to be levelled (yes/no), with reason
+     * @param livingEntity целевой моб
+     * @return разрешено ли назначать мобу уровень (да/нет), с указанием причины
      */
     @NotNull
     fun getLevellableState(@NotNull livingEntity: LivingEntity): LevellableState
 
     /**
-     * Check if a LivingEntity is a levelled mob or not. This is determined *after*
+     * Проверьте, является ли LivingEntity уровневым мобом или нет. Это определяется *после*
      * MobPreLevelEvent.
      *
      *
-     * Thread-safety intended, but not tested.
+     * Потокобезопасность предусмотрена, но не проверена.
      *
-     * @param livingEntity living entity to check
-     * @return if the mob is levelled or not
+     * @param livingEntity живое существо для проверки
+     * @return есть ли у моба уровень
      */
     fun isLevelled(@NotNull livingEntity: LivingEntity): Boolean
 
     /**
-     * Retrieve the level of a levelled mob.
+     * Получите уровень уровневого моба.
      *
      *
-     * Thread-safety intended, but not tested.
+     * Потокобезопасность предусмотрена, но не проверена.
      *
-     * @param livingEntity the levelled mob to get the level of
-     * @return the mob's level
+     * @param livingEntity уровневый моб, чтобы получить уровень
+     * @return уровень моба
      */
     fun getLevelOfMob(@NotNull livingEntity: LivingEntity): Int
 
     /**
-     * Un-level a mob.
+     * Снять уровень моба.
      *
-     * @param livingEntity levelled mob to un-level
+     * @param livingEntity уровневый моб до снятия уровня
      */
     fun removeLevel(@NotNull livingEntity: LivingEntity)
 

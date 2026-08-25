@@ -14,7 +14,7 @@ import org.bukkit.event.entity.EntityCombustByEntityEvent
 import org.bukkit.event.entity.EntityCombustEvent
 
 /**
- * Listens for when an entity combusts for the purpose of increasing sunlight damage if desired
+ * Прислушивается к моменту возгорания сущности с целью увеличения урона от солнечного света, если это необходимо.
  *
  * @author stumper66
  * @since 2.4.0

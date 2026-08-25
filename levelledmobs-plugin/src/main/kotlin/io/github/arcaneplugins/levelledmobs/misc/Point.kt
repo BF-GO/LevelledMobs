@@ -3,9 +3,9 @@ package io.github.arcaneplugins.levelledmobs.misc
 import org.bukkit.Location
 
 /**
- * A smaller version of the Location class only including a world name, and three integers for the
- * x, y and z. Finds uses where the extra data and precision of the Location class is completely
- * unnecessary.
+ * Уменьшенная версия класса Location, включающая только имя мира и три целых числа для
+ * х, у и z. Находит области применения, в которых дополнительные данные и точность класса Location полностью
+ * ненужно.
  *
  * @author lokka30
  * @see Location

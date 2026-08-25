@@ -38,14 +38,14 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * Summons a levelled mob with a specific level and criteria
+ * Призывает уровневого моба с определенным уровнем и критериями.
  *
  * @author stumper66
  * @author lokka30
  * @since v2.0.0
  */
 object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
-    override val description = "Various commands for summoning mobs."
+    override val description = LocalizedMessages.text("command.descriptions.summon", colorize = false)
 
     fun buildCommand() : LiteralCommandNode<CommandSourceStack> {
         return createLiteralCommand("summon")
@@ -116,7 +116,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
         val miscArgs = splitStringWithQuotes(values, false)
         // 0           1   2   3   4
         // <nbtdata>
-        // at-player   <player>
+        // at-player <player>
         // at-location <x> <y> <z> <world>
         for (i in 2..<miscArgs.size){
             val arg = miscArgs[i]
@@ -202,7 +202,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
                     if (target == null)
                         offline = true
                     else if (sender is Player) {
-                        // Vanished player compatibility.
+                        // Исчезла совместимость с плеерами.
                         if (!sender.canSee(target) && !sender.isOp)
                             offline = true
 
@@ -256,9 +256,9 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
         }
 
         // 0  1      2  3      4 5           6   7   8   9
-        // lm summon 10 zombie 9 here
-        //                       at-player   <player>
-        //                       at-location <x> <y> <z> <world>
+        // Я вызываю 10 зомби 9 здесь
+        // at-player <player>
+        // at-location <x> <y> <z> <world>
 
         when (args[5].lowercase()){
             "here" -> { return builder.buildFuture() }
@@ -283,7 +283,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
                     }
                     return builder.buildFuture()
                 }
-                // TODO: add NBT suggestions
+                // TODO: добавьте предложения NBT.
             }
         }
 
@@ -365,7 +365,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
                 }
                 location = locationTemp
             } else if (target == null && sender is BlockCommandSender) {
-                // increase the y by one so they don't spawn inside the command block
+                // увеличьте y на единицу, чтобы они не появлялись внутри командного блока
                 location = Location(
                     location.world, location.blockX.toDouble(),
                     (location.blockY + 2).toDouble(), location.blockZ.toDouble()
@@ -440,7 +440,11 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
             }
 
             else -> throw IllegalStateException(
-                ("Unexpected SummonType value of " + options.summonType) + "!"
+                LocalizedMessages.text(
+                    "console.internal.unexpected-summon-type",
+                    mapOf("type" to options.summonType),
+                    false
+                )
             )
         }
     }
@@ -502,7 +506,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
         )
 
         if (maxDistFromPlayer == null) {
-            // legacy name
+            // унаследованное имя
             maxDistFromPlayer = main.helperSettings.getInt2(
                 "summon-command-spawn-distance-from-player", null
             )
@@ -567,7 +571,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
 
             for (y in 0 until maxYVariance) {
                 val block = tempLocation.add(0.0, min(y.toDouble(), 1.0), 0.0).block
-                // start at player level and keep going up until a solid block is found
+                // начните с уровня игрока и продолжайте идти вверх, пока не найдете сплошной блок
                 if (block.type.isSolid) {
                     blockCandidates.add(block)
                     foundBlock = true
@@ -579,7 +583,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
                 tempLocation = startingLocation.clone()
                 for (y in 1..maxYVariance) {
                     val block = tempLocation.add(0.0, -1.0, 0.0).block
-                    // start at player level and keep going down until a solid block is found
+                    // начните с уровня игрока и продолжайте спускаться вниз, пока не найдете сплошной блок
                     if (block.type.isSolid) {
                         blockCandidates.add(block)
                         break
@@ -598,7 +602,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
         blocksNeeded: Int,
         world: World
     ): Location? {
-        // return first block from the candiates that has 2 air spaces above it
+        // вернуть первый блок из кандидатов, над которым есть 2 воздушных пространства
         for (block in blockCandidates) {
             var notGoodSpot = false
             for (i in 1 until blocksNeeded + 1) {
@@ -629,7 +633,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
         if (rotation < 0) rotation += 360.0
 
         when (rotation) {
-            in 0.0..<22.5 // N
+            in 0.0..<22.5 // Н
                 -> {
                 newZ -= useDistFromPlayer
             }
@@ -639,7 +643,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
                 newZ -= useDistFromPlayer
             }
 
-            in 67.5..<112.5 // E
+            in 67.5..<112.5 // Э
                 -> {
                 newX += useDistFromPlayer
             }
@@ -649,7 +653,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
                 newZ += useDistFromPlayer
             }
 
-            in 157.5..<202.5 // S
+            in 157.5..<202.5 // С
                 -> {
                 newZ += useDistFromPlayer
             }
@@ -659,7 +663,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
                 newZ += useDistFromPlayer
             }
 
-            in 247.5..<292.5 // W
+            in 247.5..<292.5 // Вт
                 -> {
                 newX -= useDistFromPlayer
             }
@@ -669,7 +673,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
                 newZ -= useDistFromPlayer
             }
 
-            else  // N
+            else  // Н
                 -> {
                 newZ -= useDistFromPlayer
             }
@@ -738,7 +742,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
         val min = 0.5
         val max = 2.5
 
-        //Creates 3x new Random()s for a different seed each time
+        //Каждый раз создает 3 новых Random() для разных начальных чисел.
         val random1 = Random()
         val random2 = Random()
 

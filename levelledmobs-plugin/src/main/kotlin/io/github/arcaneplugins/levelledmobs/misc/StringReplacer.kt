@@ -3,8 +3,8 @@ package io.github.arcaneplugins.levelledmobs.misc
 import java.util.function.Supplier
 
 /**
- * Holds a string and provides methods to run
- * various string replacement operations
+ * Содержит строку и предоставляет методы для запуска
+ * различные операции замены строк
  *
  * @author stumper66
  * @since 3.13.2

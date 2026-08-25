@@ -1,7 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.result
 
 /**
- * Holds values used when a min and max value is needed
+ * Содержит значения, используемые, когда требуется минимальное и максимальное значение.
  *
  * @author stumper66
  * @since 3.12.2

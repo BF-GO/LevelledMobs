@@ -1,8 +1,10 @@
 package io.github.arcaneplugins.levelledmobs.rules
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
+
 /**
- * Holds various options relating to the
- * chunk kill feature
+ * Содержит различные варианты, касающиеся
+ * функция уничтожения фрагментов
  *
  * @author stumper66
  * @since 3.12.0
@@ -50,7 +52,7 @@ class ChunkKillOptions : MergableRule, Cloneable {
     }
 
     override fun toString(): String {
-        if (this.isDefault) return "Default"
+        if (this.isDefault) return LocalizedMessages.text("display.default", colorize = false)
 
         val sb = StringBuilder()
         if (disableVanillaDrops != null) {

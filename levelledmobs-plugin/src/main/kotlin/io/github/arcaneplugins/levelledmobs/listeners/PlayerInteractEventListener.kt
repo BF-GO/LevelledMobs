@@ -33,8 +33,8 @@ import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
 /**
- * Listens for when a player interacts with the environment. Currently only used to check for LM
- * spawners and LM spawn eggs
+ * Слушает, когда игрок взаимодействует с окружающей средой. В настоящее время используется только для проверки LM.
+ * спаунеры и яйца спауна LM
  *
  * @author stumper66
  * @since 3.1.2
@@ -104,7 +104,7 @@ class PlayerInteractEventListener : MessagesBase(), Listener {
             return false
         }
 
-        // we've confirmed it is a LM spawn egg. cancel the event and spawn the mob manually
+        // мы подтвердили, что это яйцо призывания LM. отменить событие и вызвать моба вручную
         event.isCancelled = true
         val location = event.clickedBlock!!.location.add(0.0, 1.0, 0.0)
         var minLevel = 1
@@ -157,7 +157,10 @@ class PlayerInteractEventListener : MessagesBase(), Listener {
                 .get(NamespacedKeys.keySpawnerCustomName, PersistentDataType.STRING)
         }
 
-        if (eggName.isNullOrEmpty()) eggName = "LM Spawn Egg"
+        if (eggName.isNullOrEmpty()) eggName = LocalizedMessages.text(
+            "display.spawner.spawn-egg",
+            colorize = false
+        )
 
         if (event.clickedBlock!!.blockData.material == Material.SPAWNER) {
             val info = CustomSpawnerInfo(false)
@@ -250,7 +253,10 @@ class PlayerInteractEventListener : MessagesBase(), Listener {
         cs.update()
 
         if (info.customName.isNullOrEmpty())
-            info.customName = "LM Spawner"
+            info.customName = LocalizedMessages.text(
+                "display.spawner.levelledmobs",
+                colorize = false
+            )
 
         if (!wasLMSpawner) {
             showMessage(

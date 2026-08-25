@@ -1,7 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.rules
 
 /**
- * When in conjunction when a customdrops is being processed
+ * В сочетании с обработкой пользовательских дропов
  *
  * @author stumper66
  * @since 3.0.0

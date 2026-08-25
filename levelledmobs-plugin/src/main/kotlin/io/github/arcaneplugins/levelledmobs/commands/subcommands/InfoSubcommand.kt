@@ -1,5 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.commands.subcommands
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
+
 import com.mojang.brigadier.Command
 import com.mojang.brigadier.tree.LiteralCommandNode
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
@@ -8,13 +10,13 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.command.CommandSender
 
 /**
- * Shows LevelledMobs information such as the version number
+ * Показывает информацию LevelledMobs, такую как номер версии.
  *
  * @author lokka30
  * @since v2.0.0
  */
 object InfoSubcommand : CommandBase("levelledmobs.command.info") {
-    override val description = "View info about the installed version of the plugin."
+    override val description = LocalizedMessages.text("command.descriptions.info", colorize = false)
 
     fun buildCommand() : LiteralCommandNode<CommandSourceStack>{
         return createLiteralCommand("info")
@@ -42,7 +44,10 @@ object InfoSubcommand : CommandBase("levelledmobs.command.info") {
                 main.description.description ?: "",
                 "1.21, 26.1, 26.2",
                 main.description.authors.joinToString(listSeparator),
-                "See &8&nhttps://tinyurl.com/lm-contributors&r"
+                LocalizedMessages.text(
+                    "command.levelledmobs.info.contributors-link",
+                    colorize = false
+                )
             )
         )
     }

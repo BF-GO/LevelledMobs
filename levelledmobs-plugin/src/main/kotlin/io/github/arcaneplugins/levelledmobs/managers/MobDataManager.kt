@@ -32,7 +32,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * Manages data related to various mob levelling
+ * Управляет данными, связанными с различными уровнями мобов.
  *
  * @author lokka30, stumper66
  * @since 2.6.0
@@ -115,12 +115,13 @@ class MobDataManager {
             "Zombie reinforcement callee charge" to VanillaBonusEnum.ZOMBIE_REINFORCE_CALLEE
         ))
         /*
-        Syntax: between(num, lower, upper)
+        Синтаксис: between(num, lower, upper)
 
-        Returns `1` if `num` is between (inclusive) `lower` and `upper`, else, returning `0`.
+        Возвращает `1`, если `num` находится в диапазоне от `lower` до `upper` включительно;
+        иначе возвращает `0`.
 
-        Example: between(7, 1, 5) -> 0
-            (7 is not between 1 and 5 (inclusive), so 0 (false) was returned.)
+        Пример: between(7, 1, 5) -> 0
+            (7 не входит в диапазон от 1 до 5, поэтому возвращается 0 (false).)
          */
         crunchEvalEnv.addFunction("between", 3) { d: DoubleArray ->
             if ((d[0] >= d[1] && d[0] <= d[2])
@@ -128,13 +129,12 @@ class MobDataManager {
         }
 
         /*
-        Syntax: clamp(num, lower, upper)
+        Синтаксис: clamp(num, lower, upper)
 
-        Returns `num` although increasing it / reducing it to be in between (inclusive) the
-        `lower` and `upper` bounds.
+        Возвращает `num`, ограничивая значение диапазоном от `lower` до `upper` включительно.
 
-        Example: clamp(7, 1, 5) -> 5
-            (7 is larger than the upper bound of 5, so 5 was returned.)
+        Пример: clamp(7, 1, 5) -> 5
+            (7 превышает верхнюю границу 5, поэтому возвращается 5.)
          */
         crunchEvalEnv.addFunction("clamp", 3) { d: DoubleArray ->
             min(
@@ -147,7 +147,7 @@ class MobDataManager {
     fun isLevelledDropManaged(
         material: Material
     ): Boolean {
-        // Head drops
+        // Дроп голов
         val main = LevelledMobs.instance
         if (material.toString().endsWith("_HEAD") || material.toString().endsWith("_SKULL"))
             return main.helperSettings.getBoolean( "mobs-multiply-head-drops")
@@ -185,7 +185,7 @@ class MobDataManager {
             ) as AttributeModifier
         }
 
-        // if zombified piglins get this attribute applied, they will spawn in zombies in the nether
+        // если к зомбированным свиньям будет применен этот атрибут, они будут появляться в зомби в преисподней.
         if (lmEntity.entityType == EntityType.ZOMBIFIED_PIGLIN &&
             attribute.toString() == Utils.getAttribute(AttributeNames.SPAWN_REINFORCEMENTS)!!.toString()
         ) {
@@ -210,7 +210,7 @@ class MobDataManager {
             val additionValue = info.multiplierResult.multiplierAmount
             val attrib = lmEntity.livingEntity.getAttribute(info.attribute) ?: return
 
-            // if zombified piglins get this attribute applied, they will spawn in zombies in the nether
+            // если к зомбированным свиньям будет применен этот атрибут, они будут появляться в зомби в преисподней.
             if (lmEntity.entityType == EntityType.ZOMBIFIED_PIGLIN &&
                 info.attribute.toString() == Utils.getAttribute(AttributeNames.SPAWN_REINFORCEMENTS)!!.toString()
             ) {
@@ -267,7 +267,7 @@ class MobDataManager {
         attrib: AttributeInstance,
         existingDamagePercent: Float?
     ){
-        // MAX_HEALTH specific: set health to max health
+        // Специально для MAX_HEALTH: установите максимальное значение здоровья.
         val newHealth = if (existingDamagePercent != null)
             (attrib.value * existingDamagePercent).toFloat()
         else
@@ -350,7 +350,7 @@ class MobDataManager {
             attributeMultiplier = fineTuning.getMultiplier(addition, lmEntity)
 
             for (loop in 0..1){
-                // loop 0 = multipliers, loop 1 = base modifiers
+                // проход 0 = множители, проход 1 = базовые модификаторы
                 val multiplierOrMod = if (loop == 0)
                     attributeMultiplier
                 else
@@ -423,10 +423,10 @@ class MobDataManager {
             }
 
             multiplierValue = if (attributeMax > 0.0) {
-                // only used for 5 specific attributes
+                // используется только для 5 конкретных атрибутов
                 lmEntity.getMobLevel / maxLevel * (attributeMax * multiplierValue)
             } else {
-                // normal formula for most attributes
+                // нормальная формула для большинства атрибутов
                 defaultValue * multiplierValue * ((lmEntity.getMobLevel) / maxLevel)
             }
             return MultiplierResult(multiplierValue, baseModifierAmount, isAddition)

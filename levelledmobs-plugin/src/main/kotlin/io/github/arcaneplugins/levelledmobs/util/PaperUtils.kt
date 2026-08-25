@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.meta.ItemMeta
 
 /**
- * Provides function for APIs that are used in Paper but not present in Spigot
+ * Предоставляет функции для APIs, которые используются в Paper, но отсутствуют в Spigot.
  *
  * @author stumper66
  * @since 3.3.0
@@ -68,6 +68,6 @@ object PaperUtils {
         return if (comp is TextComponent)
             serializeTextComponent(comp)
         else
-            comp.toString() // this is never happen but just in case.  it will return a bunch of garbage
+            comp.toString() // такого никогда не бывает, но на всякий случай.  он вернет кучу мусора
     }
 }

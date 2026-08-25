@@ -15,7 +15,7 @@ import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitTask
 
 /**
- * Queues up mob info so they can be processed in a background thread
+ * Ставит информацию о мобах в очередь, чтобы ее можно было обработать в фоновом потоке.
  *
  * @author stumper66
  * @since 3.0.0
@@ -32,7 +32,7 @@ class MobsQueueManager {
     private val queueLock = Any()
 
     fun start() {
-        // folia will run directly
+        // фолия будет работать напрямую
         if (LevelledMobs.instance.ver.isRunningFolia) return
 
         if (isRunning) {
@@ -188,7 +188,7 @@ class MobsQueueManager {
             LevelledMobs.instance.levelManager.entitySpawnListener.processMob(item.lmEntity, item.event)
         }
         catch (_: EvaluationException){
-            // this exception is manually thrown after logging and notifying op users
+            // это исключение выдается вручную после входа в систему и уведомления пользователей операции
         }
         catch (_: TimeoutException){
             DebugManager.log(DebugType.APPLY_LEVEL_RESULT, item.lmEntity, false){

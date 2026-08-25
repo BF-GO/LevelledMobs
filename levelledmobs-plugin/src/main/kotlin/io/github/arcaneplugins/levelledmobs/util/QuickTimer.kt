@@ -1,14 +1,14 @@
 package io.github.arcaneplugins.levelledmobs.util
 
 /**
- * This is a small class useful for timing simple things such as the time required to start-up a plugin or run a command.
+ * Это небольшой класс, полезный для определения времени простых вещей, таких как время, необходимое для запуска плагина или запуска команды.
  * <p>
- * Mark the starting point of the timer with `QuickTimer timer = new QuickTimer()`, then get the time (in milliseconds)
- * since it started using `QuickTimer#getTimer()`.
+ * Отметьте начальную точку таймера с помощью `QuickTimer timer = new QuickTimer()`, затем получите время (в миллисекундах).
+ * с тех пор, как он начал использовать `QuickTimer#getTimer()`.
  *
  * @author lokka30
  * @see System#currentTimeMillis()
- * @since unknown
+ * @since неизвестно
  */
 class QuickTimer {
     private var startTime = 0L
@@ -18,14 +18,14 @@ class QuickTimer {
     }
 
     /**
-     * Re/start the timer.
+     * Перезапустите/запустите таймер.
      */
     fun start() {
         startTime = System.currentTimeMillis()
     }
 
     /**
-     * @return time (millis) since start time
+     * @return время (в миллисекундах) с момента начала
      */
     val timer: Long
         get() = System.currentTimeMillis() - startTime

@@ -3,7 +3,7 @@ package io.github.arcaneplugins.levelledmobs.misc
 import org.bukkit.entity.Player
 
 /**
- * Holds info on a player when they join the server or world
+ * Содержит информацию об игроке, когда он присоединяется к серверу или миру.
  *
  * @author stumper66
  * @since 3.2.3

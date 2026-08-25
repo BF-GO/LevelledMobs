@@ -12,8 +12,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.world.ChunkLoadEvent
 
 /**
- * Listens for when chunks are loaded and processes any mobs accordingly Needed for server startup
- * and for mostly passive mobs when players are moving around
+ * Прослушивает загрузку чанков и соответствующим образом обрабатывает любых мобов. Требуется для запуска сервера.
+ * и в основном для пассивных мобов, когда игроки перемещаются
  *
  * @author stumper66
  * @since 2.4.0
@@ -31,9 +31,9 @@ class ChunkLoadListener : Listener {
     fun onChunkLoad(event: ChunkLoadEvent) {
         if (!ensureMobsAreLevelledOnChunkLoad) return
 
-        // Check each entity in the chunk
+        // Проверьте каждую сущность в чанке
         for (entity in event.chunk.entities) {
-            // Must be a *living* entity
+            // Должно быть *живое* существо
             if (entity !is LivingEntity) continue
 
             checkEntity(entity, event)

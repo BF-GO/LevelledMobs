@@ -13,8 +13,8 @@ import org.bukkit.persistence.PersistentDataType
 import org.bukkit.scheduler.BukkitRunnable
 
 /**
- * Provides logic for when a player enters a portal.
- * Used for various spawn distance placeholders
+ * Предоставляет логику того, когда игрок входит в портал.
+ * Используется для различных заполнителей расстояния появления.
  *
  * @author stumper66
  * @since 3.3.0
@@ -31,7 +31,7 @@ class PlayerPortalEventListener : Listener {
         val player = event.player
         val main = LevelledMobs.instance
 
-        // store the player's portal coords in the nether.  only used for player levelling
+        // хранить координаты портала игрока в Пустоте.  используется только для прокачки игрока
         main.mainCompanion.setPlayerNetherPortalLocation(player, event.to)
         val locationStr = "${event.to.world.name},${event.to.blockX},${event.to.blockY},${event.to.blockZ}"
 
@@ -65,8 +65,8 @@ class PlayerPortalEventListener : Listener {
             }
         }
 
-        // for some reason event#getTo has different coords that the actual nether portal
-        // delay for 1 ticket and grab the player location instead
+        // по какой-то причине событие # getTo имеет другие координаты, чем реальный портал Нижнего мира.
+        // задержка на 1 билет и вместо этого получение местоположения игрока
         runnable.runTaskLater(main, 1L)
     }
 }

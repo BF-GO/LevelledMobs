@@ -8,11 +8,11 @@ import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
- * Resolves all configurable LevelledMobs text from messages.yml.
+ * Разрешает весь настраиваемый текст LevelledMobs из messages.yml.
  *
- * The bundled file is loaded during onLoad so bootstrap diagnostics can be shown before the
- * writable configuration is available. Once messages.yml has been loaded, it becomes the active
- * source and the bundled catalog remains a fallback for missing keys.
+ * Связанный файл загружается во время onLoad, поэтому загрузочная диагностика может быть показана до
+ * доступна записываемая конфигурация. После загрузки messages.yml он становится активным.
+ * source и прилагаемый каталог остаются запасным вариантом на случай отсутствия ключей.
  */
 object LocalizedMessages {
     private const val BUNDLED_RESOURCE = "messages.yml"

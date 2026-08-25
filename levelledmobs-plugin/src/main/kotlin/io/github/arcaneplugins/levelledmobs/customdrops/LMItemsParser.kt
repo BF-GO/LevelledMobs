@@ -17,8 +17,8 @@ import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 
 /**
- * Interfaces with the plugin LM_Items so can custom items from 3rd party plugins can be used
- * directly in custom drops
+ * Интерфейсы с плагином LM_Items позволяют использовать пользовательские элементы из сторонних плагинов.
+ * прямо в кастомных дропах
  *
  * @author stumper66
  * @since 3.5.0
@@ -49,7 +49,7 @@ class LMItemsParser {
         if (!MainCompanion.instance.hasFinishedLoading){
             pendingItems[item] = materialName
 
-            // this is a placeholder item for now
+            // на данный момент это элемент-заполнитель
             item.itemStack = ItemStack(Material.STICK)
             return true
         }
@@ -161,8 +161,8 @@ class LMItemsParser {
                 )
             )
 
-            // on server startup show as warning message
-            // after reload show as debug
+            // при запуске сервера отображается как предупреждающее сообщение
+            // после перезагрузки отображается как отладка
             if (main.mainCompanion.hasFinishedLoading)
                 DebugManager.log(DebugType.CUSTOM_DROPS) { msg }
             else
@@ -191,7 +191,7 @@ class LMItemsParser {
         lmEntity: LivingEntityWrapper?
     ): Any?{
         if (value == null) return null
-        if (lmEntity == null) return 1 // maybe an hack but do you have any better ideas?
+        if (lmEntity == null) return 1 // может быть, хак, но есть ли у вас идеи получше?
 
         val formulaPre = value.toString()
         val formula = LevelledMobs.instance.levelManager.replaceStringPlaceholdersForFormulas(formulaPre, lmEntity)

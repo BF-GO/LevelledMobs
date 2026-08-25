@@ -31,8 +31,8 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.persistence.PersistentDataType
 
 /**
- * Listens for when an entity is damaged so LevelledMobs can apply a multiplier to the damage
- * amount
+ * Прослушивает, когда объект поврежден, поэтому LevelledMobs может применить множитель к урону.
+ * сумма
  *
  * @author lokka30
  * @since 2.4.0
@@ -82,7 +82,7 @@ class EntityDamageListener : Listener {
         lastPriority = priority
     }
 
-    // When the mob is damaged, update their nametag.
+    // Когда моб поврежден, обновите его бейдж.
     private fun onEntityDamageEvent(event: EntityDamageEvent) {
         if (event.entity !is LivingEntity) return
 
@@ -91,18 +91,18 @@ class EntityDamageListener : Listener {
         if (event is EntityDamageByEntityEvent
         ) {
             if (isCritical && event.damager is Player) {
-                // this is so custom drops can associate the killer if the mob was
-                // killed via a custom projectile such as magic
+                // это сделано для того, чтобы специальные дропы могли связать убийцу, если моб был
+                // убит с помощью специального снаряда, такого как магия
                 LevelledMobs.instance.entityDeathListener.damageMappings[event.getEntity().uniqueId] =
                     (event.damager as Player)
                 return
             }
             if (!updateMobsOnNonPlayerdamage && !isCritical && event.entity !is Player && event.damager !is Player) {
-                // we only care about player caused damage
+                // нас волнует только ущерб, нанесенный игроком
                 return
             }
         } else if (!updateMobsOnNonPlayerdamage) {
-            // we only care about player caused damage
+            // нас волнует только ущерб, нанесенный игроком
             return
         }
 
@@ -111,7 +111,7 @@ class EntityDamageListener : Listener {
         if (event.entity is Player) {
             if (event !is EntityDamageByEntityEvent) return
 
-            // if a mob hit a player then show the mob's nametag
+            // если моб ударил игрока, покажите бейдж моба
             if (event.damager !is LivingEntity || event.damager is Player)
                 return
 
@@ -134,7 +134,7 @@ class EntityDamageListener : Listener {
         val livingEntity = event.entity as LivingEntity
         val lmEntity = LivingEntityWrapper.getInstance(event.entity as LivingEntity)
 
-        //Make sure the mob is levelled
+        //Убедитесь, что моб имеет уровень
         if (!lmEntity.isLevelled) {
             if (EntitySpawnListener.instance.processMobSpawns) {
                 lmEntity.free()
@@ -170,7 +170,7 @@ class EntityDamageListener : Listener {
 
             lmEntity.pdc.set(NamespacedKeys.lastDamageTime, PersistentDataType.LONG, Instant.now().toEpochMilli())
 
-            // Update their nametag with a 1 tick delay so that their health after the damage is shown
+            // Обновите их бейджик с задержкой в 1 тик, чтобы отображалось их здоровье после повреждения.
             lmEntity.main.levelManager.updateNametagWithDelay(lmEntity)
             lmEntity.free()
         }
@@ -181,7 +181,7 @@ class EntityDamageListener : Listener {
         lmEntity.free()
     }
 
-    // Check for levelled ranged damage.
+    // Проверьте уровень урона дальнего боя.
     private fun onEntityDamageByEntityEvent(event: EntityDamageByEntityEvent) {
         if (event.finalDamage == 0.0) return
 
@@ -195,7 +195,7 @@ class EntityDamageListener : Listener {
 
     private fun processRangedDamage(event: EntityDamageByEntityEvent) {
         if (event.damager.type == EntityType.AREA_EFFECT_CLOUD) {
-            // ender dragon breath
+            // дыхание дракона Края
             val aec = event.damager as AreaEffectCloud
             if (aec.source !is EnderDragon) return
 
@@ -283,7 +283,7 @@ class EntityDamageListener : Listener {
         event.damage = lmEntity.main.mobDataManager.getAdditionsForLevel(
             lmEntity, Addition.CUSTOM_RANGED_ATTACK_DAMAGE,
             event.damage.toFloat()
-        ).multiplierAmount.toDouble() // use ranged attack damage value
+        ).multiplierAmount.toDouble() // использовать значение урона от дальней атаки
         DebugManager.log(DebugType.RANGED_DAMAGE_MODIFICATION, livingEntity)
         { LocalizedMessages.text("command.levelledmobs.debug.runtime.d033", mapOf("value-1" to (oldDamage), "value-2" to (event.damage)), false) }
         lmEntity.free()

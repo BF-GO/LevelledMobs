@@ -1,5 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.rules.strategies
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
+
 import io.github.arcaneplugins.levelledmobs.rules.MinAndMax
 import io.github.arcaneplugins.levelledmobs.util.Log
 import java.util.TreeMap
@@ -7,8 +9,8 @@ import java.util.concurrent.ThreadLocalRandom
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 
 /**
- * Holds the configuration and logic for applying a levelling system that is based upon random
- * levelling
+ * Содержит конфигурацию и логику применения системы прокачки, основанной на случайных
+ * назначение уровня
  *
  * @author stumper66
  * @since 3.1.0
@@ -52,7 +54,7 @@ class RandomLevellingStrategy : LevellingStrategy, Cloneable {
         minLevel: Int,
         maxLevel: Int
     ): Float {
-        // this function only has lmEmtity to satify the interface requirement
+        // эта функция имеет только lmEmtity для удовлетворения требований интерфейса
         if (weightedRandomMap.isEmpty())
             return getRandomLevel(minLevel, maxLevel).toFloat()
 
@@ -68,8 +70,8 @@ class RandomLevellingStrategy : LevellingStrategy, Cloneable {
             }
         }
 
-        // populateWeightedRandom(..) should've populated randomArray but if weightedRandom
-        // was empty then it won't do anything
+        // populateWeightedRandom(..) должен был заполнить randomArray, но если weightedRandom
+        // было пусто, то оно ничего не сделает
         if (this.randomArray.isEmpty())
             return getRandomLevel(minLevel, maxLevel).toFloat()
 
@@ -101,8 +103,8 @@ class RandomLevellingStrategy : LevellingStrategy, Cloneable {
         val numbers = mutableListOf<MinAndMax>()
         val values = mutableListOf<Int>()
 
-        // first loop parses the number range string and counts totals
-        // so we know how big to size the array
+        // первый цикл анализирует строку диапазона номеров и подсчитывает итоговые значения
+        // поэтому мы знаем, насколько велик размер массива
         for ((range, value) in this.weightedRandomMap) {
             if (range.isEmpty()) continue
 
@@ -123,7 +125,7 @@ class RandomLevellingStrategy : LevellingStrategy, Cloneable {
         this.randomArray = IntArray(count)
         var newCount = 0
 
-        // now we actually populate the array
+        // теперь мы фактически заполняем массив
         for ((valuesCount, nums) in numbers.withIndex()) {
             for (i in nums.minAsInt..nums.maxAsInt) {
                 repeat(values[valuesCount]) {
@@ -164,11 +166,17 @@ class RandomLevellingStrategy : LevellingStrategy, Cloneable {
 
     override fun toString(): String {
         if (weightedRandomMap.isEmpty()) {
-            return if (this.autoGenerate) "Random Levelling (auto generate)"
-            else "Random Levelling"
+            return LocalizedMessages.text(
+                if (this.autoGenerate) "display.random-strategy.auto-generate"
+                else "display.random-strategy.name",
+                colorize = false
+            )
         }
 
-        val mergeMessage = if (shouldMerge) " (merge)" else ""
+        val mergeMessage = if (shouldMerge) LocalizedMessages.text(
+            "display.random-strategy.merge-suffix",
+            colorize = false
+        ) else ""
 
         return if (minLevel == 0)
             "$weightedRandomMap$mergeMessage"

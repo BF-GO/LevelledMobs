@@ -1,8 +1,8 @@
 package io.github.arcaneplugins.levelledmobs.misc
 
 /**
- * Holds the mob level and name when a mob is killed so
- * the information can be recorded
+ * Сохраняет уровень и имя моба, когда моба убивают, поэтому
+ * информация может быть записана
  *
  * @author stumper66
  * @since 3.2.1

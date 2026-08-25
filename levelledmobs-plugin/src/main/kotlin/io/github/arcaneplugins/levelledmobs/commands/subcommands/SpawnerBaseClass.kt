@@ -9,6 +9,7 @@ import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.MainCompanion
 import io.github.arcaneplugins.levelledmobs.misc.NamespacedKeys
 import io.github.arcaneplugins.levelledmobs.annotations.DoNotMerge
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.Log
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils.colorizeAll
 import io.github.arcaneplugins.levelledmobs.util.PaperUtils
@@ -25,7 +26,7 @@ import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
 
 /**
- * Provides common function between SpawnerSubCommand and SpawnerEggCommand
+ * Обеспечивает общую функцию между SpawnerSubCommand и SpawnerEggCommand.
  *
  * @author stumper66
  * @since 3.3.0
@@ -146,7 +147,11 @@ abstract class SpawnerBaseClass(
 
                     if (loreLine.isNotEmpty()) loreLine.append(", ")
 
-                    loreLine.append("&7${name}: &b${f[info]}&7")
+                    val label = LocalizedMessages.text(
+                        "display.spawner.${name.replace(Regex("([a-z])([A-Z])"), "$1-$2").lowercase()}",
+                        colorize = false
+                    )
+                    loreLine.append("&7${label}: &b${f[info]}&7")
                     itemsCount++
                 }
 

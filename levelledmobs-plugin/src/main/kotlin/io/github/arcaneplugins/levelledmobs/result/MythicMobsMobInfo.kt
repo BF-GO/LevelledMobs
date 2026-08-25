@@ -1,8 +1,8 @@
 package io.github.arcaneplugins.levelledmobs.result
 
 /**
- * Holds info that was obtained from internal
- * Mythic Mobs settings on a particular mob
+ * Содержит информацию, полученную из внутренних
+ * Настройки Mythic Mobs для конкретного моба
  *
  * @author stumper66
  * @since 3.6.0

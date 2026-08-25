@@ -3,8 +3,8 @@ package io.github.arcaneplugins.levelledmobs.rules
 import io.github.arcaneplugins.levelledmobs.util.Utils
 
 /**
- * Holds two int or float values that are usually used to
- * define a min and max value
+ * Содержит два значения int или float, которые обычно используются для
+ * определить минимальное и максимальное значение
  *
  * @author stumper66
  * @since 3.2.0

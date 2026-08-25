@@ -5,7 +5,7 @@ import io.github.arcaneplugins.levelledmobs.managers.ExternalCompatibilityManage
 import io.github.arcaneplugins.levelledmobs.enums.ExternalCompatibility
 
 /**
- * Holds function to generate metrics to be sent to bstats
+ * Содержит функцию для генерации показателей для отправки в bstats.
  *
  * @author stumper66
  * @since 3.1.0
@@ -76,23 +76,23 @@ class MetricsInfo {
     }
 
     fun getLevellingStrategy(): String {
-        // Random, Weighted Random, Spawn Distance, Blended, Y-Levelling
+        // Случайный, Взвешенный случайный, Расстояние появления, Смешанный, назначение уровня по координате Y
 
-        // TODO: fix this
+        // TODO: исправьте это
 //        if (defaultRule.levellingStrategy != null) {
 //            if (defaultRule.levellingStrategy is SpawnDistanceStrategy) {
 //                val sds = defaultRule.levellingStrategy as SpawnDistanceStrategy
 //                return if (sds.blendedLevellingEnabled == null || !sds.blendedLevellingEnabled!!) {
-//                    "Spawn Distance"
+// «Дистанция появления»
 //                } else {
-//                    "Blended"
+// «Смешанный»
 //                }
 //            } else if (defaultRule.levellingStrategy is YDistanceStrategy) {
-//                return "Y-Levelling"
+// вернуть «назначение уровня по координате Y»
 //            } else if (defaultRule.levellingStrategy is RandomLevellingStrategy) {
 //                val random = defaultRule.levellingStrategy as RandomLevellingStrategy
 //                if (random.weightedRandom.isNotEmpty()) {
-//                    return "Weighted Random"
+// вернуть «Взвешенный случайный»
 //                }
 //            }
 //        }

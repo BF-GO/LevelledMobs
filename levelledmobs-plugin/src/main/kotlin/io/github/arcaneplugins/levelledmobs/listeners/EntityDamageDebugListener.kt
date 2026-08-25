@@ -18,8 +18,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 
 /**
- * This class is used for debugging the plugin. When an entity is punched, a player with permission
- * will receive a bunch of data about the mob.
+ * Этот класс используется для отладки плагина. Когда объект ударяется, игрок с разрешения
+ * получит кучу данных о моб.
  *
  * @author lokka30
  * @since 2.4.0
@@ -27,14 +27,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 class EntityDamageDebugListener : Listener {
     private val cooldownMap = mutableMapOf<UUID, Cooldown>()
 
-    //This class is used to debug levellable mobs. It simply displays their current attributes, current health and current level.
+    //Этот класс используется для отладки уровневых мобов. Он просто отображает их текущие атрибуты, текущее здоровье и текущий уровень.
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     fun onEntityDamageByEntity(event: EntityDamageByEntityEvent) {
-        // Make sure debug entity damage is enabled
+        // Убедитесь, что повреждение объектов отладки включено.
         if (!LevelledMobs.instance.debugManager.damageDebugOutputIsEnabled)
             return
 
-        // Make sure the mob is a LivingEntity and the attacker is a Player
+        // Убедитесь, что моб — LivingEntity, а атакующий — игрок.
         if (event.entity !is LivingEntity || event.damager !is Player)
             return
 
@@ -49,13 +49,13 @@ class EntityDamageDebugListener : Listener {
         player: Player,
         lmEntity: LivingEntityWrapper
     ) {
-        // Make sure the mob is levelled
+        // Убедитесь, что моб имеет уровень
         if (!lmEntity.isLevelled) return
 
-        // Make sure the player has debug perm
+        // Убедитесь, что у игрока есть разрешение на отладку
         if (!player.hasPermission("levelledmobs.debug")) return
 
-        // Don't spam the player's chat
+        // Не спамьте в чате игрока
         val entityId = lmEntity.livingEntity.entityId.toString()
         if (cooldownMap.containsKey(player.uniqueId)) {
             val cooldown = cooldownMap[player.uniqueId]
@@ -68,7 +68,7 @@ class EntityDamageDebugListener : Listener {
             cooldownMap.remove(player.uniqueId)
         }
 
-        /* Now send them the debug message! :) */
+        /* Теперь отправьте им отладочное сообщение! :) */
         send(
             player,
             LocalizedMessages.text(
@@ -78,7 +78,7 @@ class EntityDamageDebugListener : Listener {
             false
         )
 
-        // Print non-attributes
+        // Вывести значения, не являющиеся атрибутами
         send(player, LocalizedMessages.text(
             "command.levelledmobs.debug.damage-global-values", colorize = false
         ), false)
@@ -104,7 +104,7 @@ class EntityDamageDebugListener : Listener {
             )
         }
 
-        // Print attributes
+        // Печать атрибутов
         player.sendMessage(" ")
         send(player, LocalizedMessages.text(
             "command.levelledmobs.debug.damage-attributes", colorize = false
@@ -155,7 +155,7 @@ class EntityDamageDebugListener : Listener {
         }
 
         if (lmEntity.livingEntity is Creeper) {
-            // Print unique values (per-mob)
+            // Печать уникальных значений (для каждого моба)
             player.sendMessage(" ")
             send(player, LocalizedMessages.text(
                 "command.levelledmobs.debug.damage-unique-values", colorize = false
@@ -172,7 +172,7 @@ class EntityDamageDebugListener : Listener {
             "command.levelledmobs.debug.damage-end", colorize = false
         ), false)
 
-        // Add them to a delay, and remove them after 2 seconds (40 ticks)
+        // Добавьте их к задержке и удалите через 2 секунды (40 тиков)
         cooldownMap[player.uniqueId] = Cooldown(System.currentTimeMillis(), entityId)
     }
 

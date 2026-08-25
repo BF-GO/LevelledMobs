@@ -10,10 +10,10 @@ import org.bukkit.entity.Entity
 import org.bukkit.scheduler.BukkitTask
 
 /**
- * This class is used for when code needs to be executed in a specific thread context.
- * It allows for Folia servers to have code executed in the correct scheduler while
- * providing compatibility for Paper / Spigot servers without needing to use
- * different methods per server type
+ * Этот класс используется, когда код необходимо выполнить в контексте определенного потока.
+ * Это позволяет серверам Folia выполнять код в правильном планировщике, пока
+ * обеспечение совместимости с серверами Paper/Spigot без необходимости использования
+ * разные методы для каждого типа сервера
  *
  * @author stumper66
  * @since 3.11.0
@@ -69,8 +69,8 @@ class SchedulerWrapper {
                 return
             }
 
-            // if you provided an entity in the constructor, it is assumed the main thread needs to be used
-            // since accessing entities asynchronously will usually result in an error
+            // если вы предоставили объект в конструкторе, предполагается, что необходимо использовать основной поток
+            // поскольку асинхронный доступ к объектам обычно приводит к ошибке
             bukkitTask = if (entity != null && !doRunAsync)
                 Bukkit.getScheduler().runTask(main, runnable!!)
             else
@@ -90,8 +90,8 @@ class SchedulerWrapper {
 
             return SchedulerResult(scheduledTask)
         } else {
-            // convert milliseconds into approximent ticks
-            // 1 tick = ~ 50ms
+            // конвертировать миллисекунды в приблизительные тики
+            // 1 тик = ~ 50мс
             val convertedDelay = initialDelayMS / 50L
             val convertedPeriod = repeatPeriodMS / 50L
             val bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(

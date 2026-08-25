@@ -1,7 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.rules.strategies
 
 /**
- * The type of levelling strategy to be used
+ * Тип стратегии назначения уровня, которая будет использоваться
  *
  * @author stumper66
  * @since 4.0.0

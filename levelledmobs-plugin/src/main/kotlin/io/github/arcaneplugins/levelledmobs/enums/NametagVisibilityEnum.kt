@@ -1,8 +1,8 @@
 package io.github.arcaneplugins.levelledmobs.enums
 
 /**
- * Holds the options used for presenting nametags
- * to players
+ * Содержит параметры, используемые для представления бейджей с именами.
+ * игрокам
  *
  * @author stumper66
  * @since 3.2.0

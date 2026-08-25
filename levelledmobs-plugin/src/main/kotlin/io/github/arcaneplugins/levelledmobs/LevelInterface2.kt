@@ -5,47 +5,47 @@ import io.github.arcaneplugins.levelledmobs.enums.LevellableState
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 
 /**
- * Welcome to the LevelInterface(2), this class is a 'global' interface for LM itself AND other plugins
- * to apply and modify the main functions of LevelledMobs.
+ * Добро пожаловать в LevelInterface(2), этот класс представляет собой «глобальный» интерфейс для самого LM и других плагинов, позволяющий
+ * применять и изменять основные функции LevelledMobs.
  *
  * @author lokka30, stumper66
  * @since 2.5
  */
 interface LevelInterface2 : LevelInterface {
     /**
-     * Check if an existing mob is allowed to be levelled, according to the user's configuration.
+     * Проверьте, разрешено ли повышать уровень существующего моба в соответствии с конфигурацией пользователя.
      *
      *
-     * Thread-safety intended, but not tested.
+     * Потокобезопасность предусмотрена, но не проверена.
      *
-     * @param lmInterface target mob
-     * @return if the mob is allowed to be levelled (yes/no), with reason
+     * @param lmInterface целевой моб
+     * @return разрешено ли назначать мобу уровень (да/нет), с указанием причины
      */
     fun getLevellableState(lmInterface: LivingEntityInterface): LevellableState
 
     /**
-     * This method generates a level for the mob. It utilises the levelling mode specified by the
-     * administrator through the settings.yml configuration.
+     * Этот метод генерирует уровень для моба. Он использует стратегию назначения уровня, указанный
+     * администратором через конфигурацию settings.yml.
      *
      *
-     * Thread-safety intended, but not tested.
+     * Потокобезопасность предусмотрена, но не проверена.
      *
-     * @param lmEntity the entity to generate a level for
-     * @return a level for the entity
+     * @param lmEntity сущность, генерирующая уровень для
+     * @return уровень для сущности
      */
     fun generateLevel(lmEntity: LivingEntityWrapper): Int
 
     /**
-     * This method generates a level for the mob. It utilises the levelling mode specified by the
-     * administrator through the settings.yml configuration.
+     * Этот метод генерирует уровень для моба. Он использует стратегию назначения уровня, указанный
+     * администратором через конфигурацию settings.yml.
      *
      *
-     * Thread-safety intended, but not tested.
+     * Потокобезопасность предусмотрена, но не проверена.
      *
-     * @param lmEntity the entity to generate a level for
-     * @param minLevel the minimum level to be used for the mob
-     * @param maxLevel the maximum level to be used for the mob
-     * @return a level for the entity
+     * @param lmEntity сущность, генерирующая уровень для
+     * @param minLevel минимальный уровень, который будет использоваться для моба
+     * @param maxLevel максимальный уровень, который будет использоваться для моба
+     * @return уровень для сущности
      */
     fun generateLevel(
         lmEntity: LivingEntityWrapper,
@@ -54,23 +54,23 @@ interface LevelInterface2 : LevelInterface {
     ): Int
 
     /**
-     * This method applies a level to the target mob.
+     * Этот метод применяет уровень к целевому мобу.
      *
-     * You can run this method on a mob regardless if they are already levelled or not.
+     * Метод можно вызвать независимо от того, имеет моб уровень или нет.
      *
-     * This method DOES NOT check if it is LEVELLABLE. It is assumed that plugins make sure this is
-     * the case (unless they intend otherwise).
+     * Метод не проверяет, можно ли назначить сущности уровень. Вызывающий плагин должен выполнить
+     * эту проверку самостоятельно, если намеренно не обходит ограничения.
      *
-     * It is highly recommended to leave bypassLimits = false, unless the desired behaviour is to
-     * override the user-configured limits.
+     * Рекомендуется оставить bypassLimits = false, если не требуется намеренно
+     * переопределить ограничения, заданные пользователем.
      *
-     * Thread-safety intended, but not tested.
+     * Потокобезопасность предусмотрена, но не проверена.
      *
-     * @param lmEntity                   target mob
-     * @param level                      the level the mob should have
-     * @param isSummoned                 if the mob was spawned by LevelledMobs, not by the server
-     * @param bypassLimits               whether LM should disregard max level, etc.
-     * @param additionalLevelInformation used to determine the source event
+     * @param lmEntity                   целевой моб
+     * @param level                      уровень, который должен быть у моба
+     * @param isSummoned                 если моб был создан LevelledMobs, а не сервером
+     * @param bypassLimits               должен ли LM игнорировать максимальный уровень и т. д.
+     * @param additionalLevelInformation используется для определения исходного события
      */
     fun applyLevelToMob(
         lmEntity: LivingEntityWrapper,
@@ -81,9 +81,9 @@ interface LevelInterface2 : LevelInterface {
     )
 
     /**
-     * Un-level a mob.
+     * Снять уровень моба.
      *
-     * @param lmEntity levelled mob to un-level
+     * @param lmEntity уровневый моб до снятия уровня
      */
     fun removeLevel(lmEntity: LivingEntityWrapper)
 }

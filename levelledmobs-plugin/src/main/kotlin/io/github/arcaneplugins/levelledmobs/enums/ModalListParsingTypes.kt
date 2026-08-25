@@ -1,8 +1,8 @@
 package io.github.arcaneplugins.levelledmobs.enums
 
 /**
- * Holds various info used for parsing rules.yml
- * relating to CachedModalList
+ * Содержит различную информацию, используемую для анализа rules.yml.
+ * относящийся к CachedModalList
  *
  * @author stumper66
  * @since 3.7.5

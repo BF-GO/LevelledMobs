@@ -3,7 +3,7 @@ package io.github.arcaneplugins.levelledmobs.misc
 import io.github.arcaneplugins.levelledmobs.util.Utils.isInteger
 
 /**
- * Used as a placeholder for when a number or a number-range is passed from a user argument
+ * Используется в качестве заполнителя, когда число или диапазон чисел передается из пользовательского аргумента.
  *
  * @author stumper66
  * @since 3.2.0

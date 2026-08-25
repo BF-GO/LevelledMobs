@@ -12,9 +12,9 @@ object RandomVarianceGenerator {
         lmEntity: LivingEntityWrapper,
         input: StringReplacer
     ){
-        // syntax:
-        // %rand_-5_10% = get number between -5 and 10
-        // %rand_20% = get number between 0 and 20
+        // синтаксис:
+        // %rand_-5_10% = получить число от -5 до 10
+        // %rand_20% = получить число от 0 до 20
         var text = input.text
         var count = 0
         var foundRand = false

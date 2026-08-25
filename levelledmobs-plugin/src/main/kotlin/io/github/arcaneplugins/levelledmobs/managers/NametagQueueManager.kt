@@ -23,7 +23,7 @@ import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 
 /**
- * Queues up mob nametag updates so they can be applied in a background thread
+ * Ставит обновления тегов мобов в очередь, чтобы их можно было применить в фоновом потоке.
  *
  * @author stumper66
  * @since 3.0.0
@@ -59,7 +59,7 @@ class NametagQueueManager {
         get() = this.nametagSender != null
 
     fun start() {
-        // folia will run directly
+        // фолия будет работать напрямую
         doThread = true
         if (LevelledMobs.instance.ver.isRunningFolia) return
 
@@ -118,7 +118,7 @@ class NametagQueueManager {
         item.lmEntity.inUseCount.getAndIncrement()
 
         if (LevelledMobs.instance.ver.isRunningFolia){
-            // folia runs directly
+            // фолия бежит напрямую
             preProcessItem(item)
         }
         else{
@@ -187,7 +187,7 @@ class NametagQueueManager {
 
     private fun processItem(item: QueueItem) {
         if (this.nametagSender == null) {
-            // this would happen if the Minecraft version isn't supported directly by NMS
+            // это произойдет, если версия Minecraft не поддерживается напрямую NMS.
             return
         }
 
@@ -198,7 +198,7 @@ class NametagQueueManager {
                 val nametagCooldownQueue: Map<Player, WeakHashMap<LivingEntity, Instant>> =
                     LevelledMobs.instance.nametagTimerChecker.nametagCooldownQueue
                 if (item.lmEntity.playersNeedingNametagCooldownUpdate != null) {
-                    // record which players should get the cooldown for this mob
+                    // запишите, какие игроки должны получить время восстановления для этого моба
                     // public Map<Player, WeakHashMap<LivingEntity, Instant>> nametagCooldownQueue;
                     for (player in item.lmEntity.playersNeedingNametagCooldownUpdate!!) {
                         if (!nametagCooldownQueue.containsKey(player))
@@ -209,7 +209,7 @@ class NametagQueueManager {
                             item.lmEntity.getNametagCooldownTime()
                     }
 
-                    // if any players already have a cooldown on this mob then don't remove the cooldown
+                    // если у кого-либо из игроков уже есть кулдаун этого моба, не удаляйте кулдаун
                     for ((player, value) in nametagCooldownQueue) {
                         if (item.lmEntity.playersNeedingNametagCooldownUpdate!!.contains(player))
                             continue
@@ -218,7 +218,7 @@ class NametagQueueManager {
                             item.lmEntity.playersNeedingNametagCooldownUpdate!!.add(player)
                     }
                 } else {
-                    // if there's any existing cooldowns we'll use them
+                    // если есть какие-либо кулдауны, мы будем их использовать
                     for ((key, value) in nametagCooldownQueue) {
                         if (value.containsKey(item.lmEntity.livingEntity)) {
                             if (item.lmEntity.playersNeedingNametagCooldownUpdate == null)
@@ -270,14 +270,14 @@ class NametagQueueManager {
         val loopCount = if (lmEntity.playersNeedingNametagCooldownUpdate == null) 1 else 2
 
         for (i in 0 until loopCount) {
-            // will loop again to update with nametag cooldown for only the specified players
+            // снова зациклится для обновления с перезарядкой именного тега только для указанных игроков
 
             val nametagVisibilityEnum = lmEntity.nametagVisibilityEnum
             val doAlwaysVisible = i == 1 || !nametag.isNullOrEmpty && lmEntity.livingEntity.isCustomNameVisible ||
                     nametagVisibilityEnum.contains(NametagVisibilityEnum.ALWAYS_ON)
 
             if (i == 0) {
-                // these players are not getting always on nametags unless always on has been configured for the mob
+                // эти игроки не всегда получают метки с именами, если для моба не настроено всегда включение
                 for (player in players) {
                     if (lmEntity.playersNeedingNametagCooldownUpdate != null
                         && lmEntity.playersNeedingNametagCooldownUpdate!!.contains(player)
@@ -285,7 +285,7 @@ class NametagQueueManager {
                         continue
                     }
                     
-                    /** Disable if Java or Bedrock */
+                    /** Отключить, если Java или Bedrock */
                     if (disableNametagBedrock && isBedrock(player)) return
                     if (disableNametagJava && !isBedrock(player)) return
 
@@ -295,10 +295,10 @@ class NametagQueueManager {
                     )
                 }
             } else {
-                // these players are getting always on nametags
+                // эти игроки всегда получают бейджики с именами
                 for (player in lmEntity.playersNeedingNametagCooldownUpdate!!) {
 
-                    /** Disable if Java or Bedrock */
+                    /** Отключить, если Java или Bedrock */
                     if (disableNametagBedrock && isBedrock(player)) return
                     if (disableNametagJava && !isBedrock(player)) return
 

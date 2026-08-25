@@ -2,6 +2,7 @@ package io.github.arcaneplugins.levelledmobs.misc
 
 import io.github.arcaneplugins.levelledmobs.enums.ExternalCompatibility
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
@@ -44,8 +45,13 @@ class ExternalPluginDetection(
         lmEntity: LivingEntityWrapper
     ): Boolean{
         if (this.isBuiltIn)
-            throw Exception("External plugin definition for $friendlyName is built-in. " +
-                    "Use it's corresponding internal methods")
+            throw Exception(
+                LocalizedMessages.text(
+                    "console.internal.built-in-plugin-definition",
+                    mapOf("plugin" to friendlyName),
+                    false
+                )
+            )
 
         var plugin = cachedPlugin
         if (plugin == null){
@@ -199,9 +205,15 @@ class ExternalPluginDetection(
     }
 
     override fun toString(): String {
-        var msg = "${friendlyName}: $keyName, keytype: ${requirement.toString().lowercase()}"
+        var msg = "$friendlyName: $keyName, " + LocalizedMessages.text(
+            "display.external-plugin.key-type",
+            colorize = false
+        ) + ": ${requirement.toString().lowercase()}"
         if (!placeholderName.isNullOrEmpty())
-            msg += " placeholder: $placeholderName"
+            msg += " " + LocalizedMessages.text(
+                "display.external-plugin.placeholder",
+                colorize = false
+            ) + ": $placeholderName"
 
         return msg
     }

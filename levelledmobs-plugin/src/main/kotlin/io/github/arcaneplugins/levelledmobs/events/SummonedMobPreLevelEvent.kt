@@ -7,8 +7,8 @@ import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
 /**
- * This event is fired *before* a mob has been levelled, but only if it was spawned using the `/lm
- * summon` command.
+ * Это событие запускается *до* уровня моба, но только если он был создан с использованием `/lm
+ * команда вызова.
  *
  * @author lokka30
  * @since 2.5.0

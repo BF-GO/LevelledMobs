@@ -13,8 +13,8 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
 /**
- * Listens for blocks being placed for the sole reason of transferring PDC data to a placed LM
- * spawner
+ * Прослушивает размещение блоков с единственной целью передачи данных PDC в размещенный LM.
+ * создатель
  *
  * @author stumper66
  * @since 3.1.2
@@ -39,7 +39,7 @@ class BlockPlaceListener : Listener {
             return
         }
 
-        // transfer PDC items from inventory spawner to placed spawner
+        // перенести предметы PDC из генератора инвентаря в размещенный генератор
         val cs = blockPlaced.state as CreatureSpawner
         val targetPdc = cs.persistentDataContainer
         val sourcePdc = meta.persistentDataContainer

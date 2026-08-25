@@ -21,7 +21,7 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.inventory.meta.ItemMeta
 
 /**
- * Provides function for APIs that are deprecated in Paper but required for use in Spigot
+ * Предоставляет функции для APIs, которые устарели в Paper, но необходимы для использования в Spigot.
  *
  * @author stumper66
  * @since 3.3.0

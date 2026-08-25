@@ -3,7 +3,7 @@ package io.github.arcaneplugins.levelledmobs.customdrops
 import io.github.arcaneplugins.levelledmobs.misc.CachedModalList
 
 /**
- * Holds all default values for either all custom drop items
+ * Содержит все значения по умолчанию для всех пользовательских элементов перетаскивания.
  *
  * @author stumper66
  * @since 2.4.0

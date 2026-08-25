@@ -1,7 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.rules
 
 /**
- * Holds results information when applying custom drops
+ * Сохраняет информацию о результатах при применении пользовательских капель.
  *
  * @author stumper66
  * @since 3.1.2

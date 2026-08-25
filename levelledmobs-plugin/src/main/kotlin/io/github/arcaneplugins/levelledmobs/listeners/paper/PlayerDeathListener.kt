@@ -17,8 +17,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 
 /**
- * Holds Paper server specific logic for processing the
- * player death event
+ * Содержит специфичную для сервера логику Paper для обработки
+ * событие смерти игрока
  *
  * @author stumper66
  * @since 3.3.0
@@ -100,7 +100,7 @@ class PlayerDeathListener {
         nametagResult: NametagResult
     ) {
         if (event.deathMessage() !is TranslatableComponent) {
-            // This can happen if another plugin destructively changes the death message.
+            // Это может произойти, если другой плагин деструктивно изменит сообщение о смерти.
             return
         }
         val tc = event.deathMessage() as TranslatableComponent
@@ -123,8 +123,8 @@ class PlayerDeathListener {
                 newCom = newCom.replaceText(displayName)
             }
         } else if (displayNameIndex < 0) {
-            // creature-death-nametag in rules.yml doesn't contain %displayname%
-            // so we'll just send the whole thing as text
+            // creature-death-nametag в rules.yml не содержит %displayname%
+            // поэтому мы просто отправим все это в виде текста
             newCom = Component.translatable(
                 tc.key(),
                 buildPlayerComponent(event.entity),
@@ -142,16 +142,16 @@ class PlayerDeathListener {
                 )
 
             newCom = if (mobInfo.itemComp == null) {
-                // mob wasn't using any weapon
-                // 2 arguments, example: "death.attack.mob": "%1$s was slain by %2$s"
+                // моб не использовал никакого оружия
+                // 2 аргумента, пример: "death.attack.mob": "%1$s был убит %2$s"
                 Component.translatable(
                     tc.key(),
                     buildPlayerComponent(event.entity),
                     leftComp.append(mobNameComponent)
                 ).append(rightComp)
             } else {
-                // mob had a weapon and it's details are stored in the itemComp component
-                // 3 arguments, example: "death.attack.mob.item": "%1$s was slain by %2$s using %3$s"
+                // у моба было оружие, и его данные хранятся в компоненте itemComp.
+                // 3 аргумента, пример: "death.attack.mob.item": "%1$s был убит %2$s с помощью %3$s"
                 Component.translatable(
                     tc.key(),
                     buildPlayerComponent(event.entity),
@@ -176,7 +176,7 @@ class PlayerDeathListener {
             val c = item as TranslationArgument
             val tc2 = c.asTranslationArgument().value() as? TranslatableComponent ?: continue
 
-            if ("chat.square_brackets" == tc2.key()) // this is when the mob was holding a weapon
+            if ("chat.square_brackets" == tc2.key()) // срабатывает, когда моб держал оружие
                 itemComp = tc2
             else
                 mobKey = tc2.key()
@@ -190,7 +190,7 @@ class PlayerDeathListener {
         if (LevelledMobs.instance.ver.minecraftVersion.isLessThan("26.2"))
             return buildPlayerComponentLegacy(player)
 
-        // 26.2 and newer changed the implementation, use reflection below
+        // 26.2 и новее изменили реализацию, используйте отражение ниже
 
         val def = LevelledMobs.instance.definitions
         val suggestCommand = LevelledMobs.instance.definitions.fieldSUGGESTCOMMAND!!.get(null)

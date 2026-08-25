@@ -13,17 +13,17 @@ import org.bukkit.util.FileUtil
 import org.yaml.snakeyaml.Yaml
 
 /**
- * Used to load various configuration files and migrate if necessary
+ * Используется для загрузки различных файлов конфигурации и миграции при необходимости.
  *
  * @author lokka30, stumper66
  * @since 2.4.0
  */
 object FileLoader {
-    const val SETTINGS_FILE_VERSION = 40 // Last changed: v4.5.3 b151
-    const val MESSAGES_FILE_VERSION = 10 // Russian catalog and configurable runtime messages
-    const val CUSTOMDROPS_FILE_VERSION = 12 // Last changed: v4.1.0 b44
-    const val RULES_FILE_VERSION = 5 // Last changed: v4.0.0 b1
-    const val EXTERNALPLUGINS_FILE_VERSION = 1 // Last changed: v4.0.0
+    const val SETTINGS_FILE_VERSION = 40 // Последнее изменение: v4.5.3 b151
+    const val MESSAGES_FILE_VERSION = 10 // Русский каталог и настраиваемые сообщения времени выполнения
+    const val CUSTOMDROPS_FILE_VERSION = 12 // Последнее изменение: v4.1.0 b44
+    const val RULES_FILE_VERSION = 5 // Последнее изменение: v4.0.0 b1
+    const val EXTERNALPLUGINS_FILE_VERSION = 1 // Последнее изменение: v4.0.0
 
     fun loadFile(
         plugin: Plugin,
@@ -78,7 +78,7 @@ object FileLoader {
                 "$useCfgName.v$fileVersion.old"
             )
 
-            // copy to old file
+            // скопировать в старый файл
             FileUtil.copy(file, backedupFile)
             Log.infKey(
                 "console.file-loader.backup-created",
@@ -102,12 +102,12 @@ object FileLoader {
                 return cfg
             }
 
-            // overwrite the file from new version
+            // перезаписать файл из новой версии
             if (!isRules) {
                 plugin.saveResource(file.name, true)
             }
 
-            // copy supported values from old file to new
+            // скопировать поддерживаемые значения из старого файла в новый
             if (!isRules){
                 Log.infKey(
                     "console.file-loader.migrating-file",
@@ -124,7 +124,7 @@ object FileLoader {
                 RulesSubcommand.resetRules(null, RulesSubcommand.ResetDifficulty.SILVER)
             }
 
-            // reload cfg from the updated values
+            // перезагрузите cfg с обновленными значениями
             cfg = YamlConfiguration.loadConfiguration(file)
         }
         else if (!isRules)

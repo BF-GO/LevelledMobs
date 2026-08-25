@@ -108,7 +108,7 @@ abstract class CommandBase(val basePermission: String) : MessagesBase() {
         return null
     }
 
-    // taken from:
+    // взято из:
     // https://stackoverflow.com/questions/2817646/javascript-split-string-on-space-or-on-quotes-to-array
     fun splitStringWithQuotes(
         myString: String,

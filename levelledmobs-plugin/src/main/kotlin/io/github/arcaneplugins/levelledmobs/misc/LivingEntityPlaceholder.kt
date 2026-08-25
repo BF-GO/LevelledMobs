@@ -4,13 +4,14 @@ import java.util.Stack
 import io.github.arcaneplugins.levelledmobs.LivingEntityInterface
 import io.github.arcaneplugins.levelledmobs.rules.RuleInfo
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapperBase
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.entity.EntityType
 
 /**
- * A wrapper for the LivingEntity class that provides various common function and settings used for
- * processing rules Used only with the summon command
+ * Обертка для класса LivingEntity, предоставляющая различные общие функции и настройки, используемые для
+ * правила обработки. Используется только с командой вызова.
  *
  * @author stumper66
  * @since 3.0.0
@@ -28,7 +29,9 @@ class LivingEntityPlaceholder : LivingEntityWrapperBase(), LivingEntityInterface
             val leph: LivingEntityPlaceholder
 
             if (location.world == null)
-                throw NullPointerException("World can't be null")
+                throw NullPointerException(
+                    LocalizedMessages.text("console.internal.world-required", colorize = false)
+                )
 
             synchronized(cachedplaceholdersLock) {
                 leph = if (cache.empty())

@@ -1,38 +1,38 @@
 ---
-name: Bug report
-about: Let us know about any unintentional flaws in the resource
-title: Untitled Bug Report
+name: Сообщение об ошибке
+about: Сообщите о непредусмотренном поведении плагина
+title: Сообщение об ошибке
 labels: bug, unconfirmed
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**Описание ошибки**
+Кратко и точно опишите обнаруженную ошибку.
 
-**Steps to Reproduce**
+**Шаги для воспроизведения**
 
 1. ...
 2. ...
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+**Ожидаемое поведение**
+Кратко и точно опишите ожидаемый результат.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Снимки экрана**
+При необходимости приложите снимки экрана, поясняющие проблему.
 
-**Server software**
-e.g. Paper, Spigot, Tuinity, CraftBukkit or Purpur
+**Серверное ПО**
+Например: Paper, Spigot, Tuinity, CraftBukkit или Purpur.
 
-**Server version**
-e.g. Minecraft 1.16.5
+**Версия сервера**
+Например: Minecraft 1.16.5.
 
-**LevelledMobs version**
-Please copy and paste the output of `/version LevelledMobs`.
+**Версия LevelledMobs**
+Скопируйте и вставьте результат команды `/version LevelledMobs`.
 
-**Config files, if applicable**
-Please insert a link of each configuration file that may be applicable to the issue.
-Use [paste.gg](https://paste.gg/) please.
+**Файлы конфигурации**
+Добавьте ссылки на файлы конфигурации, которые могут относиться к проблеме.
+Для публикации файлов можно использовать [paste.gg](https://paste.gg/).
 
-**Additional context**
-Add any other context about the problem here.
+**Дополнительные сведения**
+Укажите другие сведения, которые помогут воспроизвести или диагностировать проблему.

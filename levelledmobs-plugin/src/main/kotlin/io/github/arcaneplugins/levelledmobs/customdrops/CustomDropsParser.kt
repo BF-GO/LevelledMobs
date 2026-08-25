@@ -34,7 +34,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
 
 /**
- * Parses all data from customdrops.yml and places into the corresponding java classes
+ * Анализирует все данные из customdrops.yml и помещает их в соответствующие классы Java.
  *
  * @author stumper66
  * @since 3.0.0
@@ -103,17 +103,17 @@ class CustomDropsParser(
 
         val ymlParser = YmlParsingHelper(cs)
 
-        // configure bogus items so we can utilize the existing attribute parse logic
+        // настроить фиктивные элементы, чтобы мы могли использовать существующую логику анализа атрибутов
         val drop = CustomDropItem(this.defaults)
         drop.material = Material.AIR
         drop.isDefaultDrop = true
         dropInstance = CustomDropInstance(EntityType.AREA_EFFECT_CLOUD)
         dropInstance.customItems.add(drop)
 
-        // this sets the drop and dropinstance defaults
+        // это устанавливает значения по умолчанию для drop и dropinstance
         parseCustomDropsAttributes(drop, ymlParser)
 
-        // now we'll use the attributes here for defaults
+        // теперь мы будем использовать атрибуты здесь для значений по умолчанию
         defaults.setDefaultsFromDropItem(drop)
         defaults.override = dropInstance.getOverrideStockDrops
         defaults.overallChance = dropInstance.overallChance
@@ -133,7 +133,7 @@ class CustomDropsParser(
                 val itemGroups = ms.getValues(true)
 
                 for ((itemGroupName, value) in itemGroups) {
-                    dropInstance = CustomDropInstance(EntityType.AREA_EFFECT_CLOUD) // entity type doesn't matter
+                    dropInstance = CustomDropInstance(EntityType.AREA_EFFECT_CLOUD) // тип объекта не имеет значения
                     parseCustomDrops2(value as List<*>)
                     if (dropInstance.customItems.isNotEmpty() || dropInstance.getOverrideStockDrops) {
                         handler.customItemGroups[itemGroupName] = dropInstance
@@ -187,7 +187,7 @@ class CustomDropsParser(
                     }
                     dropInstance = CustomDropInstance(entityType, isBabyMob)
                 } else {
-                    // item groups, we processed them beforehand
+                    // группы товаров, мы их предварительно обработали
                     continue
                 }
 
@@ -196,10 +196,10 @@ class CustomDropsParser(
 
                 if (!isEntityTable) {
                     if (config.getList(item) != null) {
-                        // standard drop processing
+                        // стандартная обработка капель
                         parseCustomDrops2(config.getList(item))
                     } else if (config[item] is MemorySection) {
-                        // drop is using a item group
+                        // drop использует группу предметов
                         val csItem = YmlParsingHelper.objToCS(config, item) ?: continue
                         val useEntityDropId = YmlParsingHelper.getString(csItem, "usedroptable")
 
@@ -219,7 +219,7 @@ class CustomDropsParser(
                                 dropInstance.overrideStockDrops = true
                         }
                     }
-                } // end if not entity table
+                } // конец, если не таблица сущностей
 
 
                 if (dropInstance.customItems.isNotEmpty() || dropInstance.getOverrideStockDrops) {
@@ -245,8 +245,8 @@ class CustomDropsParser(
                         }
                     }
                 }
-            } // next mob or group
-        } // next root item from file
+            } // следующий моб или группа
+        } // следующий корневой элемент из файла
     }
 
     private fun parseCustomDrops2(itemConfigurations: List<*>?) {
@@ -254,7 +254,7 @@ class CustomDropsParser(
 
         for (itemObject in itemConfigurations) {
             if (itemObject is String) {
-                // just the string was given
+                // была дана только строка
                 val item = CustomDropItem(this.defaults)
 
                 if ("override".equals(itemObject, ignoreCase = true)) {
@@ -269,7 +269,7 @@ class CustomDropsParser(
             val itemsToCheck = itemConfiguration.getValues(false).entries
 
             if (itemsToCheck.isEmpty() && itemObject!!.javaClass == LinkedHashMap::class.java) {
-                // empty list means a material name was provided with no attributes
+                // пустой список означает, что имя материала было указано без атрибутов
                 val materials = itemObject as LinkedHashMap<String, Any>
                 var needsContinue = false
                 for (materialName in materials.keys) {
@@ -286,7 +286,7 @@ class CustomDropsParser(
             for (itemEntry in itemsToCheck) {
                 parseItem(itemEntry, itemConfiguration)
             }
-        } // next item
+        } // следующий элемент
     }
 
     private fun parseItem(
@@ -709,7 +709,7 @@ class CustomDropsParser(
 
         for ((enchantName, value) in enchantMap) {
             if (value is LinkedHashMap<*, *>) {
-                // contains enchantment chances
+                // содержит шансы на зачарование
 
                 val enchantment = Utils.getEnchantment(enchantName)
 
@@ -755,11 +755,11 @@ class CustomDropsParser(
 
         /*
         * ENCHANTMENTS:
-        *  sharpness:
+        * резкость:
         *    1: 0.4
         *    2: 0.5
         *    3: 0.6
-        *    default: 1
+        * по умолчанию: 1
         */
         for ((key, value) in enchantmentsMap) {
             if ("shuffle".equals(key.toString(), ignoreCase = true)) {
@@ -927,7 +927,7 @@ class CustomDropsParser(
         useMaterialName = Utils.replaceEx(useMaterialName, "mobhead", "player_head")
 
         if (useMaterialName.contains(":")) {
-            // this item is referencing a custom item from an external plugin, we will call LM_Items to get it
+            // этот элемент ссылается на пользовательский элемент из внешнего плагина, мы вызовем LM_Items, чтобы получить его
             if (ExternalCompatibilityManager.instance.doesLMIMeetVersionRequirement()) {
                 if (!handler.lmItemsParser!!.parseExternalItemAttributes(useMaterialName, item))
                     return false
@@ -1007,7 +1007,7 @@ class CustomDropsParser(
             sbMain.append("\n&4").append(msg).append("&r")
         }
 
-        // build string list to alphabeticalize the drops by entity type including babies
+        // создать список строк, чтобы отсортировать дроп в алфавитном порядке по типу объекта, включая младенцев
         val typeNames: SortedMap<String, EntityType> = TreeMap()
 
         for (ent in handler.getCustomDropsitems().keys) {
@@ -1149,7 +1149,7 @@ class CustomDropsParser(
         }
 
         if (item == null)
-            return sb.toString() // this shuts up the IDE for possible null reference
+            return sb.toString() // это закрывает IDE для возможной нулевой ссылки
 
         if (item.noMultiplier) sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-no-multiplier", colorize = false))
         if (item.lore != null && item.lore!!.isNotEmpty()) sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-has-lore", colorize = false))
@@ -1224,7 +1224,7 @@ class CustomDropsParser(
             sb.append(enchantmentLevels)
         }
 
-        // enchantment info here
+        // информация о зачаровании здесь
         if (item.itemStack != null) {
             val itemStack = item.itemStack!!
             val meta = itemStack.itemMeta

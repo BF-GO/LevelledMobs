@@ -13,6 +13,7 @@ import io.github.arcaneplugins.levelledmobs.commands.subcommands.SpawnerEggComma
 import io.github.arcaneplugins.levelledmobs.commands.subcommands.SpawnerSubcommand
 import io.github.arcaneplugins.levelledmobs.commands.subcommands.SummonSubcommand
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.Commands
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
@@ -29,7 +30,7 @@ object CommandHandler {
             LevelledMobs.instance.lifecycleManager.registerEventHandler(LifecycleEvents.COMMANDS) { commands ->
                 commands.registrar().register(
                     buildMainCommand(),
-                    "Manage the LevelledMobs plugin",
+                    LocalizedMessages.text("command.descriptions.main", colorize = false),
                     mutableListOf("lm", "lvlmobs", "leveledmobs")
                 )
             }

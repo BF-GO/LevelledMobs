@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
 /**
- * Holds info on which custom drops are equipped on a mob
+ * Содержит информацию о том, какие специальные предметы экипированы на мобе.
  *
  * @author stumper66
  * @since 3.3.3
@@ -25,7 +25,7 @@ class EquippedItemsInfo {
     var offhand: ItemStack? = null
 
     companion object{
-        // only used on spigot servers
+        // используется только на серверах-спиготах
         private val customEquippedItems = WeakHashMap<LivingEntity, EquippedItemsInfo>()
 
         fun getEntityEquippedItems(
@@ -103,7 +103,7 @@ class EquippedItemsInfo {
 
     private fun isItemAllowedForSerialization(itemStack: ItemStack?): Boolean{
         if (itemStack == null) return false
-        // maybe there will be more types later
+        // возможно, позже появятся еще типы
         if (itemStack.type == Material.AIR) return false
 
         return true

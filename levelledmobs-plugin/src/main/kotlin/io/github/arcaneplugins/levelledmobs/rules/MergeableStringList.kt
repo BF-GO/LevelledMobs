@@ -1,8 +1,8 @@
 package io.github.arcaneplugins.levelledmobs.rules
 
 /**
- * Provides a list of strings that can be optionally
- * merged together
+ * Предоставляет список строк, которые могут быть опционально
+ * слились вместе
  *
  * @author stumper66
  * @since 3.3.0

@@ -212,7 +212,7 @@ class YmlParsingHelper(
 
             val useName = getKeyNameFromConfig(cs, name)
             val results: MutableSet<String> = TreeSet(String.CASE_INSENSITIVE_ORDER)
-            // rather than use addAll we'll make sure there no empty strings
+            // вместо использования addAll мы позаботимся о том, чтобы не было пустых строк
             for (item in cs.getStringList(useName)) {
                 if (item.isNotEmpty())
                     results.add(item)
@@ -344,7 +344,7 @@ class YmlParsingHelper(
                 return key
             }
 
-            // key contains one or more periods
+            // ключ содержит одну или несколько точек
             val periodSplit = (key.split("\\."))
             val sb = StringBuilder(periodSplit.size)
             var keysFound = 0
@@ -369,7 +369,7 @@ class YmlParsingHelper(
                 if (!foundKey) break
             }
 
-            // if only some of the keys were found then add the remaining ones
+            // если найдены только некоторые ключи, то добавьте оставшиеся
             for (i in keysFound until periodSplit.size) {
                 if (sb.isNotEmpty()) sb.append(".")
 

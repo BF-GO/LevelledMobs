@@ -1,11 +1,12 @@
 package io.github.arcaneplugins.levelledmobs.customdrops
 
 import io.github.arcaneplugins.levelledmobs.misc.CustomUniversalGroups
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import org.bukkit.entity.EntityType
 
 /**
- * Holds a mob or group instance and associates it with a list of custom drop items. This is where
- * the override for a mob / group is set
+ * Содержит экземпляр моба или группы и связывает его со списком пользовательских выпадающих предметов. Вот где
+ * установлено переопределение для моба/группы
  *
  * @author stumper66
  * @since 2.4.0
@@ -52,7 +53,7 @@ class CustomDropInstance {
         else if (this.entityGroup != null)
             entityGroup!!.name
         else
-            "" // this return should never happen
+            "" // это возвращение никогда не должно произойти
     }
 
     val getOverrideStockDrops: Boolean
@@ -60,9 +61,15 @@ class CustomDropInstance {
 
     override fun toString(): String {
         return if (this.associatedMob != null)
-            if (getOverrideStockDrops) associatedMob!!.name + " - override" else associatedMob!!.name
+            if (getOverrideStockDrops) associatedMob!!.name + LocalizedMessages.text(
+                "display.customdrops.override-suffix",
+                colorize = false
+            ) else associatedMob!!.name
         else if (this.entityGroup != null)
-            if (getOverrideStockDrops) "$entityGroup - override" else entityGroup.toString()
+            if (getOverrideStockDrops) entityGroup.toString() + LocalizedMessages.text(
+                "display.customdrops.override-suffix",
+                colorize = false
+            ) else entityGroup.toString()
         else
             "CustomDropInstance"
     }

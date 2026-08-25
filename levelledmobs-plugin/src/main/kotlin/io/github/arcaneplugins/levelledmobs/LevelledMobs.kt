@@ -49,8 +49,8 @@ import org.bukkit.plugin.java.JavaPlugin
 
 
 /**
- * This is the main class of the plugin. Bukkit will call onLoad and onEnable on startup, and
- * onDisable on shutdown.
+ * Это основной класс плагина. Bukkit при запуске вызовет onLoad и onEnable, и
+ * onDisable при выключении.
  *
  * @author lokka30, stumper66
  * @since 1.0
@@ -85,12 +85,12 @@ class LevelledMobs : JavaPlugin() {
     val definitions = Definitions()
     val ver = ServerVersionInfo()
 
-    // Configuration
+    // Конфигурация
     var messagesCfg = YamlConfiguration()
         internal set
     val configUtils = ConfigUtils()
 
-    // Misc
+    // Разное
     val customMobGroups = mutableMapOf<String, MutableSet<String>>()
     var entityDamageDebugListener = EntityDamageDebugListener()
     private var loadTime = 0L
@@ -123,7 +123,7 @@ class LevelledMobs : JavaPlugin() {
         this.mainCompanion.load()
         (this.levelInterface as LevelManager).load()
         if (!mainCompanion.loadFiles()) {
-            // had fatal error reading required files
+            // произошла фатальная ошибка при чтении необходимых файлов
             Bukkit.getPluginManager().disablePlugin(this)
             return
         }

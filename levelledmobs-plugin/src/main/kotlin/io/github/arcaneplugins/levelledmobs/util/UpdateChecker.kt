@@ -9,7 +9,7 @@ import java.net.URI
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
- * An adapted version of the Update Checker from the SpigotMC.org Wiki.
+ * Адаптированная версия средства проверки обновлений из Wiki SpigotMC.org.
  *
  * @author lokka30
  * @see UpdateChecker#getLatestVersion(Consumer)
@@ -21,10 +21,10 @@ class UpdateChecker(
 ) {
 
     /**
-     * Credit to the editors of [this](https://www.spigotmc.org/wiki/creating-an-update-checker-that-checks-for-updates) wiki page. (sourced at 15th September 2020)
+     * Благодарность редакторам [этой](вики-страницы https://www.spigotmc.org/wiki/creating-an-update-checker-that-checks-for-updates). (источник: 15 сентября 2020 г.)
      *
-     * @param consumer what to do once an update checker result is found
-     * @since unknown
+     * @param consumer что делать, если найден результат проверки обновлений
+     * @since неизвестно
      */
     fun getLatestVersion(
         consumer: Consumer<String?>
@@ -57,7 +57,7 @@ class UpdateChecker(
     }
 
     /**
-     * @return the version string from the plugin's plugin.yml file, i.e., what the user is currently running.
+     * @return строка версии из файла plugin.yml плагина, т. е. то, что пользователь запускает в данный момент.
      */
     @Suppress("DEPRECATION")
     val currentVersion: String

@@ -3,33 +3,33 @@ package io.github.arcaneplugins.levelledmobs.enums
 enum class ExternalCompatibility {
     NOT_APPLICABLE,
 
-    // DangerousCaves plugin
+    // Плагин DangerousCaves
     DANGEROUS_CAVES,
 
-    // EcoBosses plugin
+    // Плагин EcoBosses
     ECO_BOSSES,
 
-    // MythicMobs plugin
+    // Плагин MythicMobs
     MYTHIC_MOBS,
 
-    // EliteMobs plugin
+    // Плагин EliteMobs
     ELITE_MOBS, ELITE_MOBS_NPCS, ELITE_MOBS_SUPER_MOBS,
 
-    // InfernalMobs plugin
+    // Плагин InfernalMobs
     INFERNAL_MOBS,
 
-    // Citizens plugin
+    // Плагин граждан
     CITIZENS,
 
-    // Shopkeepers plugin
+    // Плагин «Владельцы магазинов»
     SHOPKEEPERS,
 
-    // PlaceholderAPI plugin
+    // Плагин PlaceholderAPI
     PLACEHOLDER_API,
 
-    SIMPLE_PETS,  //SimplePets plugin
+    SIMPLE_PETS,  // Плагин SimplePets
 
-    ELITE_BOSSES,  //EliteBosses plugin
+    ELITE_BOSSES,  // Плагин EliteBosses
 
-    BLOOD_NIGHT // Blood Night plugin
+    BLOOD_NIGHT // Плагин «Кровавая ночь»
 }

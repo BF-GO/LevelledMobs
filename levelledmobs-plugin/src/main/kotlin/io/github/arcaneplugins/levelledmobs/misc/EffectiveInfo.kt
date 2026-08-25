@@ -3,9 +3,9 @@ package io.github.arcaneplugins.levelledmobs.misc
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 
 /**
- * If a class used in rules implements this interface then it will be
- * called when executing the 'rules show-effective' command rather
- * than a simple #toString() call
+ * Если класс, используемый в правилах, реализует этот интерфейс, то это будет
+ * вызывается при выполнении команды Rules show-effective, а не
+ * чем простой вызов #toString()
  *
  * @author stumper66
  * @since 4.4.0

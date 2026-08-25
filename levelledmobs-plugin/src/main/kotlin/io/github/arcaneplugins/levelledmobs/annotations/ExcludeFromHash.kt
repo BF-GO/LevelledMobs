@@ -1,8 +1,8 @@
 package io.github.arcaneplugins.levelledmobs.annotations
 
 /**
- * Used on various rules to exclude them from
- * the mob hash feature
+ * Используется в различных правилах, чтобы исключить их из
+ * функция хеширования мобов
  *
  * @author stumper66
  * @since 3.12.0

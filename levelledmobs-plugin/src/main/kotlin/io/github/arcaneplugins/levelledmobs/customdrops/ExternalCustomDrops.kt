@@ -3,8 +3,8 @@ package io.github.arcaneplugins.levelledmobs.customdrops
 import org.bukkit.entity.EntityType
 
 /**
- * Provides an interface for 3rd party plugins to
- * add custom drops
+ * Предоставляет интерфейс для сторонних плагинов для
+ * добавить собственный дроп
  *
  * @author stumper66
  * @since 3.7.0

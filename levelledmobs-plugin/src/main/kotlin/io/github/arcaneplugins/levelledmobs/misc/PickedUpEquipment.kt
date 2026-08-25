@@ -1,6 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.misc
 
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import org.bukkit.Material
 import org.bukkit.inventory.EntityEquipment
@@ -9,9 +10,9 @@ import org.bukkit.persistence.PersistentDataType
 import org.jetbrains.annotations.Contract
 
 /**
- * Holds various functions for interacting with items that
- * an entity has picked up previously and was record in
- * the entity's PDC
+ * Содержит различные функции для взаимодействия с предметами, которые
+ * организация получила ранее и была записана в
+ * PDC организации
  *
  * @author stumper66
  * @since 3.14.0
@@ -114,7 +115,7 @@ class PickedUpEquipment(
     }
 
     companion object {
-        // this code was originally from https://www.baeldung.com/java-byte-arrays-hex-strings
+        // этот код изначально был из https://www.baeldung.com/java-byte-arrays-hex-strings
         @Contract("_ -> new")
         private fun bytesToHex(bytes: ByteArray): String {
             val hexDigits = CharArray(bytes.size * 2)
@@ -129,7 +130,7 @@ class PickedUpEquipment(
             return String(hexDigits)
         }
 
-        // this code was originally from https://www.baeldung.com/java-byte-arrays-hex-strings
+        // этот код изначально был из https://www.baeldung.com/java-byte-arrays-hex-strings
         private fun hexToByte(hexString: String): ByteArray {
             val result = ByteArray(hexString.length / 2)
 
@@ -147,7 +148,13 @@ class PickedUpEquipment(
 
         private fun toDigit(hexChar: Char): Int {
             val digit = hexChar.digitToIntOrNull(16) ?: -1
-            require(digit != -1) { "Invalid Hexadecimal Character: $hexChar" }
+            require(digit != -1) {
+                LocalizedMessages.text(
+                    "console.internal.invalid-hex-character",
+                    mapOf("character" to hexChar),
+                    false
+                )
+            }
             return digit
         }
     }

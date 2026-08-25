@@ -1,20 +1,20 @@
 ---
-name: Feature request
-about: Suggest an idea for the plugin
-title: Untitled Feature Request
+name: Предложение функции
+about: Предложите новую возможность для плагина
+title: Предложение функции
 labels: enhancement
 assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+**Связано ли предложение с проблемой?**
+Кратко и точно опишите проблему, которую должна решить новая функция.
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**Желаемое решение**
+Кратко и точно опишите ожидаемое поведение.
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+**Рассмотренные альтернативы**
+Опишите другие решения или функции, которые вы рассматривали.
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+**Дополнительные сведения**
+Добавьте контекст или снимки экрана, относящиеся к предложению.

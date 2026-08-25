@@ -51,7 +51,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority
 
 /**
- * This class contains methods used by the main class.
+ * Этот класс содержит методы, используемые основным классом.
  *
  * @author lokka30, stumper66
  * @since 2.4.0
@@ -100,13 +100,13 @@ class MainCompanion{
         buildUniversalGroups()
     }
 
-    // Note: also called by the reload subcommand.
+    // Примечание: также вызывается подкомандой перезагрузки.
     fun loadFiles(): Boolean {
         Log.infKey("console.lifecycle.loading-files")
         val main = LevelledMobs.instance
         val configLoad = loadFile(main, "settings", FileLoader.SETTINGS_FILE_VERSION)
 
-        if (configLoad != null) // only load if settings were loaded successfully
+        if (configLoad != null) // загружать только в том случае, если настройки были успешно загружены
         {
             main.helperSettings.cs = configLoad
             main.messagesCfg = loadFile(
@@ -115,7 +115,7 @@ class MainCompanion{
             )!!
             LocalizedMessages.activate(main.messagesCfg)
         } else {
-            // had an issue reading the file.  Disable the plugin now
+            // возникла проблема с чтением файла.  Отключите плагин сейчас
             return false
         }
 
@@ -311,7 +311,7 @@ class MainCompanion{
         val chunkKeysToRemove = mutableListOf<Long>()
 
         for (chunkKey in entityDeathInChunkCounter.keys) {
-            //                                 Cooldown time, entity counts
+            // Время восстановления, количество сущностей
             val pairList = entityDeathInChunkCounter[chunkKey] ?: continue
 
             val now = Instant.now()
@@ -327,7 +327,7 @@ class MainCompanion{
             pairList.entries.removeIf { e: Map.Entry<EntityType, ChunkKillInfo> -> e.value.isEmpty }
 
             if (pairList.isEmpty()) {
-                // Remove the object to prevent iterate over exceed amount of empty pairList
+                // Удалите объект, чтобы предотвратить повторение превышения количества пустых pairList.
                 chunkKeysToRemove.add(chunkKey)
             }
         }
@@ -437,7 +437,7 @@ class MainCompanion{
         }
     }
 
-    // check for updates on the Hangar page.
+    // следите за обновлениями на странице Ангара.
     fun checkUpdates() {
         val main = LevelledMobs.instance
         if (main.helperSettings.getBoolean("use-update-checker", true)) {
@@ -470,8 +470,9 @@ class MainCompanion{
                         isNewerVersion = currentVersion.contains("indev")
                     }
                     if (isNewerVersion) {
-                        updateResult = mutableListOf(
-                            "Your LevelledMobs version is a pre-release. Latest release version is %latestVersion%. (You're running %currentVersion%)"
+                        updateResult = LocalizedMessages.lines(
+                            "other.update-notice.pre-release",
+                            colorize = false
                         )
 
                         updateResult = replaceAllInList(
@@ -486,17 +487,12 @@ class MainCompanion{
                             Log.war(message, false)
                         })
                     } else if (isOutOfDate) {
-                        // for some reason config#getStringList doesn't allow defaults??
+                        // по какой-то причине config#getStringList не допускает значений по умолчанию??
 
-                        updateResult = if (main.messagesCfg.contains("other.update-notice.messages"))
-                            main.messagesCfg.getStringList("other.update-notice.messages")
-                        else {
-                            mutableListOf(
-                                "LevelledMobs Update Checker Notice:",
-                                "Your LevelledMobs version is outdated! Please update to" +
-                                    "%latestVersion% as soon as possible. (You''re running v%currentVersion%)"
-                            )
-                        }
+                        updateResult = LocalizedMessages.lines(
+                            "other.update-notice.messages",
+                            colorize = false
+                        )
 
                         updateResult = replaceAllInList(
                             updateResult, "%currentVersion%", currentVersion
@@ -515,7 +511,7 @@ class MainCompanion{
                             })
                         }
 
-                        // notify any players that may be online already
+                        // уведомить всех игроков, которые уже могут быть онлайн
                         if (main.messagesCfg.getBoolean("other.update-notice.send-on-join", true)) {
                             Bukkit.getOnlinePlayers().forEach { onlinePlayer: Player? ->
                                 if (onlinePlayer!!.hasPermission(
@@ -525,7 +521,7 @@ class MainCompanion{
                                     for (msg in updateResult) {
                                         onlinePlayer.sendMessage(MessageUtils.colorizeAll(msg))
                                     }
-                                    //updateResult.forEach(onlinePlayer::sendMessage); //compiler didn't like this :(
+                                    //updateResult.forEach(onlinePlayer::sendMessage); // компилятор не принял этот вариант :(
                                 }
                             }
                         }
@@ -550,7 +546,7 @@ class MainCompanion{
     private fun buildUniversalGroups() {
         val versionInfo = LevelledMobs.instance.ver
 
-        // include interfaces: Monster, Boss
+        // включить интерфейсы: Monster, Boss
         hostileMobsGroup.addAll(mutableListOf(
             EntityType.ENDER_DRAGON,
             EntityType.GHAST,
@@ -560,7 +556,7 @@ class MainCompanion{
             EntityType.SLIME
         ))
 
-        // include interfaces: Animals, WaterMob
+        // включить интерфейсы: Животные, WaterMob
         passiveMobsGroup.addAll(mutableListOf(
             EntityType.IRON_GOLEM,
         ))
@@ -581,7 +577,7 @@ class MainCompanion{
         if (versionInfo.minorVersion >= 19)
             hostileMobsGroup.addAll(Compat119.getHostileMobs())
 
-        // include interfaces: WaterMob
+        // включить интерфейсы: WaterMob
         aquaticMobsGroup.addAll(mutableListOf(
             EntityType.DROWNED,
             EntityType.ELDER_GUARDIAN,

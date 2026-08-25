@@ -7,8 +7,8 @@ import io.github.arcaneplugins.levelledmobs.wrappers.SchedulerWrapper
 import org.bukkit.entity.Entity
 
 /**
- * Various methods for detecting or updating mobs using
- * Lib's Disguises
+ * Различные методы обнаружения или обновления мобов с помощью
+ * Маскировка Либа
  *
  * @author stumper66
  * @since 3.14.0
@@ -25,13 +25,13 @@ object LibsDisguisesUtils {
     ): Boolean {
         if (!hasLibsDisguises) return false
 
-        // now using reflection due to lib's maven repo being very unreliable
+        // теперь использую отражение из-за того, что репозиторий maven в lib очень ненадежен
         val clazzDisguise = Class.forName("me.libraryaddict.disguise.disguisetypes.Disguise")
         val clazzDisguiseAPI = Class.forName("me.libraryaddict.disguise.DisguiseAPI")
         val methodGetDisguise = clazzDisguiseAPI.getMethod("getDisguise", Entity::class.java)
         val methodIsDisguiseInUse = clazzDisguise.getMethod("isDisguiseInUse")
 
-        val disguise: Any? // me.libraryaddict.disguise.disguisetypes.Disguise?
+        val disguise: Any? // me.libraryaddict.disguise.disguisetypes.Маскировка?
 
         if (lmEntity.libsDisguiseCache != null)
             disguise = lmEntity.libsDisguiseCache

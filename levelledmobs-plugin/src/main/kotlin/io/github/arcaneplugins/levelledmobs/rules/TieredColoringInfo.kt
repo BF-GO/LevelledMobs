@@ -4,7 +4,7 @@ import io.github.arcaneplugins.levelledmobs.util.Log
 import io.github.arcaneplugins.levelledmobs.util.Utils.isInteger
 
 /**
- * Holds the values parsed from rules.yml used with the tiered placeholder for nametags
+ * Содержит значения, проанализированные из rules.yml, используемые с многоуровневым заполнителем для именных тегов.
  *
  * @author stumper66
  * @since 3.0.0

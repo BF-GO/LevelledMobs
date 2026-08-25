@@ -3,7 +3,7 @@ package io.github.arcaneplugins.levelledmobs.result
 import org.bukkit.entity.LivingEntity
 
 /**
- * Used to hold the result of getting or updating nametags
+ * Используется для хранения результатов получения или обновления именных тегов.
  *
  * @author stumper66
  * @since 3.7.0

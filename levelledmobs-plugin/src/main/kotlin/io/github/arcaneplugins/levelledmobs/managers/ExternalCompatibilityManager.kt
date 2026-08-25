@@ -8,6 +8,7 @@ import io.github.arcaneplugins.levelledmobs.misc.ExternalPluginDetection
 import io.github.arcaneplugins.levelledmobs.misc.VersionInfo
 import io.github.arcaneplugins.levelledmobs.result.PlayerHomeCheckResult
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import java.util.TreeMap
 import org.bukkit.Bukkit
@@ -21,7 +22,7 @@ import org.bukkit.entity.Player
 import org.bukkit.persistence.PersistentDataType
 
 /**
- * This class handles compatibility with other plugins such as EliteMobs and Citizens
+ * Этот класс обеспечивает совместимость с другими плагинами, такими как EliteMobs и Citizens.
  *
  * @author lokka30, stumper66
  * @since 2.4.0
@@ -114,7 +115,7 @@ class ExternalCompatibilityManager {
     }
 
     fun doesLMIMeetVersionRequirement(): Boolean {
-        // must be 1.1.0 or newer
+        // должна быть 1.1.0 или новее
         if (lmiMeetsVersionRequirement != null)
             return lmiMeetsVersionRequirement!!
 
@@ -134,7 +135,7 @@ class ExternalCompatibilityManager {
     }
 
     fun doesLMIMeetVersionRequirement2(): Boolean {
-        // must be 1.3.0 or newer
+        // должна быть версия 1.3.0 или новее
         if (lmiMeetsVersionRequirement2 != null) return lmiMeetsVersionRequirement2!!
 
         val lmi = Bukkit.getPluginManager().getPlugin("LM_Items") ?: return false
@@ -190,8 +191,12 @@ class ExternalCompatibilityManager {
 
                 var results = placeholder
                 val papiResults = PlaceholderAPI.setPlaceholders(player, inputList)
-                assert(inputList.size == papiResults.size){ 
-                    "getPapiPlaceholder: input size (${inputList.size}) did not match results size (${papiResults.size})"
+                assert(inputList.size == papiResults.size){
+                    LocalizedMessages.text(
+                        "console.internal.papi-result-size-mismatch",
+                        mapOf("input" to inputList.size, "result" to papiResults.size),
+                        false
+                    )
                 }
                 for (i in 0..<papiResults.size) {
                     val currentResult = papiResults[i]
@@ -223,7 +228,7 @@ class ExternalCompatibilityManager {
             if (plugin == null || !plugin.isEnabled)
                 return false
 
-            // version 5 uses the API, older versions we'll check for metadata
+            // версия 5 использует API, более старые версии мы проверим на наличие метаданных.
             if (plugin.description.version.startsWith("4")) {
                 for (meta in lmEntity.livingEntity.getMetadata("pet")) {
                     if (meta.asString().isNotEmpty()) return true
@@ -277,8 +282,8 @@ class ExternalCompatibilityManager {
         }
 
         /**
-         * @param lmEntity mob to check
-         * @return if MythicMobs compatibility enabled and entity is from MythicMobs
+         * @param lmEntity моб для проверки
+         * @return если включена совместимость с MythicMobs и объект взят из MythicMobs
          */
         private fun isMobOfMythicMobs(lmEntity: LivingEntityWrapper): Boolean {
             if (!hasMythicMobsInstalled) return false
@@ -292,13 +297,13 @@ class ExternalCompatibilityManager {
         }
 
         /**
-         * @param lmEntity mob to check
-         * @return if EliteMobs compatibility enabled and entity is from EliteMobs
+         * @param lmEntity моб для проверки
+         * @return если включена совместимость с EliteMobs и объект взят из EliteMobs
          */
         private fun isMobOfEliteMobs(lmEntity: LivingEntityWrapper): Boolean {
             val p = Bukkit.getPluginManager().getPlugin("EliteMobs")
             if (p != null) {
-                // 7.3.12 and newer uses a different namespaced key
+                // 7.3.12 и новее используют другой ключ в пространстве имен.
                 if (useNewerEliteMobsKey == null) {
                     val theDash = p.description.version.indexOf('-')
                     val version = if (theDash > 3) p.description.version.substring(0, theDash)
@@ -309,7 +314,7 @@ class ExternalCompatibilityManager {
                         useNewerEliteMobsKey = pluginVer.isGreaterThanOrEqual(cutoverVersion)
                     } catch (e: InvalidObjectException) {
                         Log.warKey("console.integration.elitemobs-version-error", mapOf("error" to (e.message ?: "-")))
-                        // default to newer version on error
+                        // по умолчанию используется более новая версия в случае ошибки
                         useNewerEliteMobsKey = true
                     }
                 }
@@ -332,8 +337,8 @@ class ExternalCompatibilityManager {
         }
 
         /**
-         * @param lmEntity mob to check
-         * @return if Citizens compatibility enabled and entity is from Citizens
+         * @param lmEntity моб для проверки
+         * @return если включена совместимость с Citizens и объект принадлежит Citizens
          */
         private fun isMobOfCitizens(lmEntity: LivingEntityWrapper): Boolean {
             val isExternalType = isMobOfCitizens(lmEntity.livingEntity)
@@ -380,7 +385,7 @@ class ExternalCompatibilityManager {
                 )
 
                 val methodGetPlugin = clazzPetCore.getDeclaredMethod("getPlugin")
-                // returns public class PetCore extends JavaPlugin implements IPetsPlugin
+                // возвращает общедоступный класс PetCore расширяет JavaPlugin реализует IPetsPlugin
                 val objIPetsPlugin = methodGetPlugin.invoke(null)
 
                 val methodIsPetEntity = clazzIPetsPlugin.getDeclaredMethod("isPetEntity", Entity::class.java)

@@ -2,13 +2,14 @@ package io.github.arcaneplugins.levelledmobs.nametag
 
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.misc.VersionInfo
+import io.github.arcaneplugins.levelledmobs.util.Log
 import java.util.regex.Pattern
 import org.bukkit.Bukkit
 import kotlin.text.split
 
 /**
- * Holds various parsed data on the server verion
- * that the server is running
+ * Содержит различные проанализированные данные на версии сервера.
+ * что сервер работает
  *
  * @author stumper66
  * @since 3.10.3
@@ -23,7 +24,7 @@ class ServerVersionInfo {
             useSimpleName = true
         }
 
-        // 1.21.6+ paper servers
+        // 1.21.6+ бумажные серверы
         useMojangMappings = minecraftVersion.isGreaterThanOrEqual("26.1") ||
                 isRunningPaper && minecraftVersion.isGreaterThanOrEqual("1.21.6")
     }
@@ -48,7 +49,7 @@ class ServerVersionInfo {
     var useSimpleName = true
         private set
 
-    // preliminary fabric support. not entirely there yet
+    // предварительная поддержка ткани. еще не совсем там
     private var _isRunningFabric: Boolean? = null
     private var _isRunningPaper: Boolean? = null
     private var _isRunningFolia: Boolean? = null
@@ -68,7 +69,7 @@ class ServerVersionInfo {
         allowStructureConditions =
             minorVersion == 20 && revision >= 4 || minorVersion >= 21
 
-        // 1.21.3 changed various enums to interfaces
+        // В 1.21.3 различные перечисления изменены на интерфейсы.
         useOldEnums = minecraftVersion.isLessThanOrEquals("1.21.3")
 
         useSimpleName = minecraftVersion.isGreaterThanOrEqual("26.1") ||
@@ -84,7 +85,7 @@ class ServerVersionInfo {
         if (dash > 0) // '1.21.9-rc1'
             minecraftVersion = minecraftVersion.take(dash)
         val space = minecraftVersion.indexOf(" ")
-        if (space > 0) // '1.21.9 Release Candidate 1'
+        if (space > 0) // «1.21.9 Релиз-кандидат 1»
             minecraftVersion = minecraftVersion.take(space)
 
         // 1.20.4
@@ -102,18 +103,18 @@ class ServerVersionInfo {
         if (isRunningFabric) return
         if (minecraftVersion.isGreaterThanOrEqual("26.1")) return
 
-        // example: 26.1-R0.1-SNAPSHOT
+        // пример: 26.1-R0.1-SNAPSHOT
         val nmsRegex = versionPattern.matcher(
             Bukkit.getServer().javaClass.canonicalName
         )
 
-        // example: v1_18_R2
+        // пример: v1_18_R2
         if (nmsRegex.find())
             this.nmsVersion = nmsRegex.group(1)
         else if (!isRunningPaper) {
-            LevelledMobs.instance.logger.warning(
-                "LevelledMobs: NMSHandler, Could not match regex for bukkit version: " + Bukkit.getServer()
-                    .javaClass.canonicalName
+            Log.warKey(
+                "console.nametag.bukkit-version-regex",
+                mapOf("version" to Bukkit.getServer().javaClass.canonicalName)
             )
         }
     }

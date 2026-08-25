@@ -17,8 +17,8 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 
 /**
- * Provides all NMS classes, fields and methods that are used for
- * nametags and some Mythic Mobs stuff
+ * Предоставляет все классы, поля и методы NMS, которые используются для
+ * бейджи с именами и некоторые вещи из мифических мобов
  *
  * @author stumper66
  * @since 3.9.2
@@ -75,12 +75,12 @@ class Definitions{
     var clazzNBTBase: Class<*>? = null
         private set
 
-    // mythic mobs:
+    // мифические мобы:
     private var clazzMMmobExecutor: Class<*>? = null
     private var clazzMMactiveMob: Class<*>? = null
     private var clazzMMmobType: Class<*>? = null
 
-    // methods:
+    // методы:
     var methodClickEvent: Method? = null
         private set
     var methodGetTranslationKey: Method? = null
@@ -141,11 +141,11 @@ class Definitions{
     var methodByteArrayTagSize: Method? = null
         private set
 
-    // mythic mobs:
+    // мифические мобы:
     var methodMMgetActiveMob: Method? = null
         private set
 
-    // fields
+    // поля
     var fieldSUGGESTCOMMAND: Field? = null
         private set
     var fieldDISCARDING: Field? = null
@@ -163,7 +163,7 @@ class Definitions{
     var fieldTags: Field? = null
         private set
 
-    // Constructors
+    // Конструкторы
     var ctorEntityDataAccessor: Constructor<*>? = null
         private set
     var ctorSynchedEntityData: Constructor<*>? = null
@@ -174,7 +174,7 @@ class Definitions{
         private set
     var ctorAttributeModifier: Constructor<*>? = null
 
-    // mythic mobs:
+    // мифические мобы:
     var fieldMMmobManager: Field? = null
         private set
     var fieldMMtype: Field? = null
@@ -186,7 +186,7 @@ class Definitions{
     var fieldMMinternalName: Field? = null
         private set
 
-    // Lib's Disguises
+    // Маскировка Либа
     var clazzDisguise: Class<*>? = null
         private set
     var clazzDisguiseAPI: Class<*>? = null
@@ -214,7 +214,7 @@ class Definitions{
         try {
             buildClasses()
 
-            // build methods
+            // методы сборки
             getMethodComponentAppend()
             getMethodTextComponents()
             getMethodTranslatable()
@@ -230,10 +230,10 @@ class Definitions{
     }
 
     private fun getClassName(classSuffix: String): String {
-        // suffix ------------------------->
+        // суффикс ------------------------->
         // "org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity"
 
-        // if running folia only use simple name if the version is 1.21+
+        // при запуске folia используйте только простое имя, если версия 1.21+
 
         return if (ver.useSimpleName)
             "org.bukkit.craftbukkit.$classSuffix"
@@ -368,14 +368,14 @@ class Definitions{
     }
 
     private fun buildNbtDumpRelatedStuff(){
-        // these reflection items go here because they are optional
-        // if they fail then only nbt-dump command will not be available
+        // эти элементы отражения помещаются сюда, потому что они не являются обязательными
+        // если они потерпят неудачу, то только команда nbt-dump будет недоступна
 
-        // 1.21.5 and older:
-        //    net.minecraft.nbt.CompoundTag saveWithoutId(net.minecraft.nbt.CompoundTag) -> h
+        // 1.21.5 и старше:
+        // net.minecraft.nbt.CompoundTag saveWithoutId(net.minecraft.nbt.CompoundTag) -> h
         // 1.21.6+:
-        //    void saveWithoutId(net.minecraft.world.level.storage.ValueOutput) -> d
-        if (!ver.isRunningPaper) return // paper only command
+        // void saveWithoutId(net.minecraft.world.level.storage.ValueOutput) -> d
+        if (!ver.isRunningPaper) return // команда только на бумаге
         val isTwentySixOneOrNewer = ver.minecraftVersion.isGreaterThanOrEqual("26.1")
 
         try {
@@ -413,7 +413,7 @@ class Definitions{
                 this.methodBuildResult = this.clazzTagValueOutput!!.getDeclaredMethod("buildResult")
             }
             else {
-                // pre 1.21.6:
+                // до 1.21.6:
                 this.clazzCompoundTag = Class.forName(
                     "net.minecraft.nbt.NBTTagCompound"
                 )
@@ -426,11 +426,11 @@ class Definitions{
     }
 
     private fun getMethodComponentAppend() {
-        if (ver.isRunningPaper) return // spigot only stuff here
+        if (ver.isRunningPaper) return // здесь только патрубки
 
         // # {"fileName":"MutableComponent.java","id":"sourceFile"}
-        // net.minecraft.network.chat.MutableComponent append(net.minecraft.network.chat.Component) ->
-        // 1.19.0 = a, everything else  = b
+        // net.minecraft.network.chat.MutableComponent add(net.minecraft.network.chat.Component) ->
+        // 1.19.0 = a, для остальных версий = b
 
         /*
         * val methodName = if (ver.minecraftVersion == 1.19 && ver.revision == 0
@@ -454,11 +454,11 @@ class Definitions{
     }
 
     private fun getMethodTextComponents() {
-        if (ver.isRunningPaper) return // spigot only stuff here
+        if (ver.isRunningPaper) return // здесь только патрубки
 
         // # {"fileName":"Component.java","id":"sourceFile"}
-        // net.minecraft.network.chat.Component ->
-        //     net.minecraft.network.chat.MutableComponent empty()
+        // net.minecraft.network.chat.Компонент ->
+        // net.minecraft.network.chat.MutableComponent пустой()
 
         if (ver.minecraftVersion.isGreaterThanOrEqual("26.1")) {
             this.methodEmptyComponent = clazzComponent!!.getDeclaredMethod("empty")
@@ -467,26 +467,26 @@ class Definitions{
         }
         else {
             this.methodEmptyComponent = clazzIChatBaseComponent!!.getDeclaredMethod("h")
-            // net.minecraft.network.chat.Component ->
-            //    net.minecraft.network.chat.Component nullToEmpty(java.lang.String) -> a
+            // net.minecraft.network.chat.Компонент ->
+            // net.minecraft.network.chat.Component nullToEmpty(java.lang.String) -> a
             this.methodTextComponent = clazzIChatBaseComponent!!.getDeclaredMethod(
                 "a", String::class.java)
         }
     }
 
     private fun getMethodTranslatable() {
-        if (ver.isRunningPaper) return // spigot only stuff here
+        if (ver.isRunningPaper) return // здесь только патрубки
 
         // # {"fileName":"Component.java","id":"sourceFile"}
-        // net.minecraft.network.chat.Component ->
-        // net.minecraft.network.chat.MutableComponent translatable(java.lang.String) ->
+        // net.minecraft.network.chat.Компонент ->
+        // net.minecraft.network.chat.MutableComponent переводимый (java.lang.String) ->
 
         if (ver.minecraftVersion.isGreaterThanOrEqual("26.1")) {
             this.methodTranslatable = clazzComponent!!.getDeclaredMethod(
                 "translatable", String::class.java
             )
-            // net.minecraft.network.chat.Component ->
-            // net.minecraft.network.chat.MutableComponent translatable(java.lang.String,java.lang.Object[]) ->
+            // net.minecraft.network.chat.Компонент ->
+            // net.minecraft.network.chat.MutableComponent переводимый (java.lang.String,java.lang.Object[]) ->
             this.methodTranslatableWithArgs = clazzComponent!!.getDeclaredMethod(
                 "translatable",
                 String::class.java, Array<Any>::class.java
@@ -506,8 +506,8 @@ class Definitions{
 
     @Suppress("DEPRECATION")
     fun getTranslationKey(livingEntity: LivingEntity): String {
-        // only needed for spigot. paper has a built-in method
-        // String EntityType#getTranslationKey()
+        // нужен только для патрубка. в статье есть встроенный метод
+        // Строка EntityType#getTranslationKey()
 
         return methodGetTranslationKey!!.invoke(livingEntity.type) as String
     }
@@ -545,16 +545,16 @@ class Definitions{
 
         // # {"fileName":"ChunkStatusUpdateListener.java","id":"sourceFile"}
         // net.minecraft.world.level.entity.EntityAccess ->
-        //   int getId() ->
+        // int getId() ->
         methodName =
             if (ver.useMojangMappings)
                 "getId"
-            else if (ver.revision >= 11) // 1.21.x
+            else if (ver.revision >= 11) // 1.21.х
                 "aA"
             else if (ver.revision >= 9)
                 "az"
             else if (ver.revision == 5)
-                "ao" // 1.21.5 only
+                "ao" // только 1.21.5
             else if (ver.revision >= 2)
                 "ar" // 1.21.2 - 1.21.4, 1.21.6+
             else
@@ -572,21 +572,21 @@ class Definitions{
             NmsMappings.getMapping("methodDataWatcherBuilderBuild")
         )
 
-        // int id() ->
+        // интервал идентификатор() ->
         methodDataWatcherGetId = clazzDataWatcherValue!!.getDeclaredMethod(
             NmsMappings.getMapping("methodDataWatcherGetId")
         )
 
         this.methodPlayergetHandle = clazzCraftPlayer!!.getDeclaredMethod("getHandle")
 
-        // starting with 1.20.2 it is:
+        // начиная с 1.20.2 это:
         // # {"fileName":"ServerCommonPacketListenerImpl.java","id":"sourceFile"}
         // net.minecraft.server.network.ServerCommonPacketListenerImpl ->
 
-        // 1.20.1 and older:
+        // 1.20.1 и старше:
         // net.minecraft.server.network.ServerGamePacketListenerImpl ->
 
-        //    void send(net.minecraft.network.protocol.Packet) ->
+        // void send(net.minecraft.network.protocol.Packet) ->
         methodName =
             if (ver.useMojangMappings)
                 "send"
@@ -597,7 +597,7 @@ class Definitions{
 
         // # {"fileName":"SynchedEntityData.java","id":"sourceFile"}
         // net.minecraft.network.syncher.SynchedEntityData ->
-        //    set(net.minecraft.network.syncher.EntityDataAccessor,java.lang.Object) ->
+        // set(net.minecraft.network.syncher.EntityDataAccessor,java.lang.Object) ->
         methodName = if (ver.useMojangMappings) "set" else "a"
 
         this.methodDefine = clazzDataWatcher!!.getDeclaredMethod(
@@ -626,7 +626,7 @@ class Definitions{
             NmsMappings.getMapping("methodGetDescriptionId")
         )
 
-        // the methods here were added in 1.19.3
+        // методы здесь были добавлены в версии 1.19.3
 
         // java.util.List getNonDefaultValues() ->
 
@@ -651,7 +651,7 @@ class Definitions{
         methodDataWatcherGetItem!!.setAccessible(true)
 
         // net.minecraft.network.syncher.SynchedEntityData$DataItem ->
-        //       net.minecraft.network.syncher.SynchedEntityData$DataValue value() ->
+        // net.minecraft.network.syncher.SynchedEntityData$DataValue value() ->
         this.methodDataWatcherItemValue = clazzDataWatcherItem!!.getDeclaredMethod(
             NmsMappings.getMapping("methodDataWatcherItemValue")
         )
@@ -684,7 +684,7 @@ class Definitions{
 
         // # {"fileName":"ServerPlayer.java","id":"sourceFile"}
         // net.minecraft.server.level.ServerPlayer ->
-        //    net.minecraft.server.network.ServerGamePacketListenerImpl connection ->
+        // соединение net.minecraft.server.network.ServerGamePacketListenerImpl ->
         val fieldName =
             if (ver.useMojangMappings)
                 "connection"
@@ -698,11 +698,11 @@ class Definitions{
         this.fieldConnection = clazzEntityPlayer!!.getDeclaredField(fieldName)
 
         // net.minecraft.network.syncher.SynchedEntityData ->
-        // pre 1.20.5:
-        //   it.unimi.dsi.fastutil.ints.Int2ObjectMap itemsById ->
+        // до 1.20.5:
+        // it.unimi.dsi.fastutil.ints.Int2ObjectMap itemsById ->
         // 1.20.5+:
-        //    net.minecraft.network.syncher.SynchedEntityData$DataItem[] itemsById ->
-        // (decompiled) private final Int2ObjectMap<DataWatcher.Item<?>> itemsById
+        // net.minecraft.network.syncher.SynchedEntityData$DataItem[] itemsById ->
+        // (декомпилированный) частный окончательный Int2ObjectMap<DataWatcher.Item<?>> itemsById
 
         val methodName = NmsMappings.getMapping("fieldInt2ObjectMap")
         this.fieldInt2ObjectMap = clazzDataWatcher!!.getDeclaredField(methodName)
@@ -725,7 +725,7 @@ class Definitions{
 
         this.ctorSynchedEntityDataBuilder = clazzDataWatcherBuilder!!.getConstructor(clazzSyncedDataHolder)
 
-        // starting with 1.19.3 use this one:
+        // начиная с 1.19.3 используйте этот:
         // public net.minecraft.network.protocol.game.PacketPlayOutEntityMetadata(int,java.util.List<DataWatcher.b<?>>)
         this.ctorPacket = clazzClientboundSetEntityDataPacket!!.getConstructor(
             Int::class.javaPrimitiveType, MutableList::class.java
@@ -760,15 +760,15 @@ class Definitions{
         fieldMMtype!!.setAccessible(true)
         this.fieldMMpreventOtherDrops = clazzMMmobType!!.getDeclaredField(
             "preventOtherDrops"
-        ) // boolean
+        ) // логическое значение
         fieldMMpreventOtherDrops!!.setAccessible(true)
         this.fieldMMpreventRandomEquipment = clazzMMmobType!!.getDeclaredField(
             "preventRandomEquipment"
-        ) // boolean
+        ) // логическое значение
         fieldMMpreventRandomEquipment!!.setAccessible(true)
         this.fieldMMinternalName = clazzMMmobType!!.getDeclaredField(
             "internalName"
-        ) // string
+        ) // строка
         fieldMMinternalName!!.setAccessible(true)
     }
 

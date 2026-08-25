@@ -78,7 +78,7 @@ import kotlin.math.roundToInt
 
 
 /**
- * Generates levels and manages other functions related to levelling mobs
+ * Генерирует уровни и управляет другими функциями, связанными с прокачкой мобов.
  *
  * @author lokka30, stumper66, CoolBoy, Esophose, 7smile7, Shevchik, Hugo5551, limzikiki
  * @since 2.4.0
@@ -102,7 +102,7 @@ class LevelManager : LevelInterface2 {
     private val attributeStringList = mutableMapOf<String, Attribute>()
     private val strategyPlaceholders = mutableMapOf<String, StrategyType>()
     /**
-     * The following entity types *MUST NOT* be levellable.
+     * Следующим типам сущностей нельзя назначать уровень.
      */
     var forcedBlockedEntityTypes = mutableSetOf<EntityType>()
 
@@ -207,30 +207,30 @@ class LevelManager : LevelInterface2 {
     }
 
     /**
-     * This method generates a level for the mob. It utilises the levelling mode specified by the
-     * administrator through the settings.yml configuration.
+     * Этот метод генерирует уровень для моба. Он использует стратегию назначения уровня, указанный
+     * администратором через конфигурацию settings.yml.
      *
      *
-     * Thread-safety intended, but not tested.
+     * Потокобезопасность предусмотрена, но не проверена.
      *
-     * @param lmEntity the entity to generate a level for
-     * @return a level for the entity
+     * @param lmEntity сущность, генерирующая уровень для
+     * @return уровень для сущности
      */
     override fun generateLevel(lmEntity: LivingEntityWrapper): Int {
         return generateLevel(lmEntity, -1, -1)
     }
 
     /**
-     * This method generates a level for the mob. It utilises the levelling mode specified by the
-     * administrator through the settings.yml configuration.
+     * Этот метод генерирует уровень для моба. Он использует стратегию назначения уровня, указанный
+     * администратором через конфигурацию settings.yml.
      *
      *
-     * Thread-safety intended, but not tested.
+     * Потокобезопасность предусмотрена, но не проверена.
      *
-     * @param lmEntity     the entity to generate a level for
-     * @param minLevel the minimum level to be used for the mob
-     * @param maxLevel the maximum level to be used for the mob
-     * @return a level for the entity
+     * @param lmEntity     сущность, генерирующая уровень для
+     * @param minLevel минимальный уровень, который будет использоваться для моба
+     * @param maxLevel максимальный уровень, который будет использоваться для моба
+     * @return уровень для сущности
      */
     override fun generateLevel(
         lmEntity: LivingEntityWrapper,
@@ -286,7 +286,7 @@ class LevelManager : LevelInterface2 {
             DebugManager.endLongMessage(debugId, DebugType.STRATEGY_RESULT, lmEntity)
         }
 
-        // if no levelling strategy was selected then we just use a random number between min and max
+        // если стратегия назначения уровня не была выбрана, мы просто используем случайное число между минимальным и максимальным значением.
         if (useMinLevel == useMaxLevel) return useMinLevel
 
         val generatedLevel = constructLevel(numberResult, lmEntity)
@@ -450,8 +450,8 @@ class LevelManager : LevelInterface2 {
     }
 
     fun getMinAndMaxLevels(lmInterface: LivingEntityInterface): MinAndMaxHolder {
-        // final EntityType entityType, final boolean isAdultEntity, final String worldName
-        // if called from summon command then lmEntity is null
+        // финальное EntityType entityType, финальное логическое значение isAdultEntity, финальная строка worldName
+        // если вызывается из команды вызова, то lmEntity имеет значение null
 
         val main = LevelledMobs.instance
         var minLevel = main.rulesManager.getRuleMobMinLevel(lmInterface)
@@ -463,14 +463,14 @@ class LevelManager : LevelInterface2 {
         return MinAndMaxHolder(minLevel, maxLevel)
     }
 
-    // This sets the levelled currentDrops on a levelled mob that just died.
+    // Это устанавливает уровневый currentDrops на уровневого моба, который только что умер.
     fun setLevelledItemDrops(
         lmEntity: LivingEntityWrapper,
         currentDrops: MutableList<ItemStack>,
         disableItemBoost: Boolean
     ) {
         val vanillaDrops = currentDrops.size
-        // this accomodates chested animals, saddles and armor on ridable creatures
+        // сюда входят животные с грудью, седла и доспехи на ездовых существах.
         //val dropsToMultiply = getDropsToMultiply(lmEntity, currentDrops)
         val customDrops = mutableListOf<ItemStack>()
         //currentDrops.clear()
@@ -481,7 +481,7 @@ class LevelManager : LevelInterface2 {
         var hasOverride = false
 
         if (lmEntity.lockedCustomDrops != null || main.rulesManager.getRuleUseCustomDropsForMob(lmEntity).useDrops) {
-            // custom drops also get multiplied in the custom drops handler
+            // пользовательский дроп также умножается в обработчике пользовательского дропа.
             val dropResult = main.customDropsHandler.getCustomItemDrops(
                 lmEntity,
                 customDrops, false
@@ -499,7 +499,7 @@ class LevelManager : LevelInterface2 {
         var additionUsed = 0
 
         if (!doNotMultiplyDrops && currentDrops.isNotEmpty()) {
-            // Get currentDrops added per level valu
+            // Добавляйте currentDrops за значение уровня.
             val additionValue = main.mobDataManager.getAdditionsForLevel(
                 lmEntity,
                 Addition.CUSTOM_ITEM_DROP, 2.0f
@@ -516,11 +516,11 @@ class LevelManager : LevelInterface2 {
             val itemsToNotMultiply = mutableListOf<ItemStack>()
 
             if (lmEntity.livingEntity.equipment != null){
-                // make sure we don't multiply anything it has picked up
+                // убедитесь, что мы не умножаем ничего, что он подобрал
                 itemsToNotMultiply.addAll(removePickedUpItems(lmEntity, currentDrops))
             }
 
-            // Modify current drops
+            // Изменить текущие падения
             for (currentDrop in currentDrops) {
                 var skipItem = false
                 val iterator = itemsToNotMultiply.iterator()
@@ -624,7 +624,7 @@ class LevelManager : LevelInterface2 {
         if (hadSaddle) drops.add(ItemStack(Material.SADDLE))
     }
 
-    //Calculates the XP dropped when a levellable creature dies.
+    //Вычисляет XP, выпадающий при смерти уровневого моба.
     fun getLevelledExpDrops(
         lmEntity: LivingEntityWrapper,
         xp: Double
@@ -700,7 +700,7 @@ class LevelManager : LevelInterface2 {
             }
         }
 
-        // ignore if 'disabled'
+        // игнорировать, если «отключено»
         if (nametag.isEmpty) {
             val useCustomNameForNametags = main.helperSettings.getBoolean(
                 "use-customname-for-mob-nametags"
@@ -709,7 +709,7 @@ class LevelManager : LevelInterface2 {
                 NametagResult(lmEntity.typeName)
             else {
                 @Suppress("DEPRECATION")
-                NametagResult(lmEntity.livingEntity.customName) // CustomName can be null, that is meant to be the case.
+                NametagResult(lmEntity.livingEntity.customName) // CustomName может иметь значение null, так и должно быть.
             }
         }
         if (!lmEntity.isLevelled) nametag.text = ""
@@ -763,7 +763,7 @@ class LevelManager : LevelInterface2 {
             )
 
         val result = NametagResult(nametag.text)
-        // this field is only used for sending nametags to client
+        // это поле используется только для отправки бейджей клиенту
         result.overriddenName = overridenName
         result.customDeathMessage = customDeathMessage
         result.killerMob = lmEntity.livingEntity
@@ -922,7 +922,7 @@ class LevelManager : LevelInterface2 {
         var tieredPlaceholder = rm.getRuleTieredPlaceholder(lmEntity)
         if (tieredPlaceholder == null) tieredPlaceholder = ""
 
-        // replace them placeholders ;)
+        // заменить эти плейсхолдеры ;)
         text.replaceIfExists("%displayname%") {
             val overridenName = if (lmEntity.lockedOverrideName == null)
                 rm.getRuleEntityOverriddenName(lmEntity, false)
@@ -993,8 +993,8 @@ class LevelManager : LevelInterface2 {
         maxHealth: Double
     ): Double{
         try{
-            // have run into an issue where a mob is reporting 'Infinity' health
-            // and will cause the exception caught below
+            // столкнулись с проблемой, когда моб сообщает о здоровье «Бесконечности»
+            // и вызовет исключение, обнаруженное ниже
             return (entityHealth / maxHealth * 100.0).roundToInt().toDouble()
         }
         catch (e: IllegalArgumentException){
@@ -1078,7 +1078,7 @@ class LevelManager : LevelInterface2 {
         val main = LevelledMobs.instance
         val period = main.helperSettings.getInt(
             "async-task-update-period",6
-        ).toLong() // run every ? seconds.
+        ).toLong() // бегать каждые? секунды.
         this.doCheckMobHash = main.helperSettings.getBoolean("check-mob-hash", true)
 
         val runnable = Runnable {
@@ -1193,12 +1193,12 @@ class LevelManager : LevelInterface2 {
         player: Player,
         entityToPlayer: MutableMap<LivingEntityWrapper, MutableList<Player>>
     ) {
-        if (!entity.isValid) return  // async task, entity can despawn whilst it is running
+        if (!entity.isValid) return  // асинхронная задача, объект может исчезнуть во время работы
 
-        // Mob must be a livingentity that is ...living.
+        // Моб должен быть живым существом, которое... живое.
         if (entity !is LivingEntity || entity is Player || !entity.isValid)
             return
-        // this is mostly so for spawner mobs and spawner egg mobs as they have a 20 tick delay in before proessing
+        // в основном это касается мобов-спаунеров и мобов-спаунеров яиц, поскольку перед обработкой у них есть задержка в 20 тиков.
         if (entity.ticksLived < 30) return
 
         var wrapperHasReference = false
@@ -1254,12 +1254,12 @@ class LevelManager : LevelInterface2 {
                     .has(NamespacedKeys.wasBabyMobKey, PersistentDataType.INTEGER)
             }
             if (lmEntity.isPopulated
-            ) { // a hack to prevent a null exception that was reported
+            ) { // хак, позволяющий предотвратить нулевое исключение, о котором было сообщено
                 val levellableState = main.levelInterface.getLevellableState(
                     lmEntity
                 )
                 if (!lmEntity.isBabyMob && wasBabyMob && levellableState == LevellableState.ALLOWED) {
-                    // if the mob was a baby at some point, aged and now is eligable for levelling, we'll apply a level to it now
+                    // если моб в какой-то момент был ребенком, постарел и теперь имеет право на прокачку, мы присвоим ему уровень сейчас
                     DebugManager.log(DebugType.ENTITY_MISC, lmEntity) {
                         ("&b" + lmEntity.typeName
                                 + LocalizedMessages.text("command.levelledmobs.debug.runtime.d074", colorize = false))
@@ -1320,7 +1320,7 @@ class LevelManager : LevelInterface2 {
 
         if (closestPlayer == null) return
 
-        // if player has been logged in for less than 5 seconds then ignore
+        // если игрок вошел в систему менее 5 секунд, игнорируйте
         val logonTime =  MainCompanion.instance.getRecentlyJoinedPlayerLogonTime(closestPlayer)
         if (logonTime != null) {
             if (Utils.getMillisecondsFromInstant(logonTime) < 5000L)
@@ -1343,7 +1343,7 @@ class LevelManager : LevelInterface2 {
     ) {
         if (!lmEntity.livingEntity.isValid) return
 
-        // square the distance we are using Location#distanceSquared. This is because it is faster than Location#distance since it does not need to sqrt which is taxing on the CPU.
+        // возведите в квадрат расстояние, которое мы используем Location#distanceSquared. Это связано с тем, что он быстрее, чем Location#distance, поскольку не требуется sqrt, что обременяет CPU.
         val maxDistance = 128.0.pow(2.0)
         val location = player.location
         val main = LevelledMobs.instance
@@ -1355,16 +1355,16 @@ class LevelManager : LevelInterface2 {
             && main.rulesManager.getRuleMobCustomNameStatus(lmEntity)
             === MobCustomNameStatus.NOT_NAMETAGGED
         ) {
-            // mob has a nametag but is levelled so we'll remove it
+            // у моба есть бейдж, но он уровневый, поэтому мы его удалим
             main.levelInterface.removeLevel(lmEntity)
         } else if (lmEntity.isMobTamed
             && main.rulesManager.getRuleMobTamedStatus(lmEntity) === MobTamedStatus.NOT_TAMED
         ) {
-            // mob is tamed with a level but the rules don't allow it, remove the level
+            // моб приручен с помощью уровня, но правила этого не позволяют, удалите уровень
             main.levelInterface.removeLevel(lmEntity)
         } else if (lmEntity.livingEntity.isValid && location.world != null && location.world == lmEntity.world
             && lmEntity.location.distanceSquared(location) <= maxDistance) {
-            //if within distance, update nametag.
+            //если вы находитесь на расстоянии, обновите именной бейдж.
             val nametag = main.levelManager.getNametag(lmEntity, isDeathNametag = false, preserveMobName = true)
             main.nametagQueueManager.addToQueue(
                 QueueItem(lmEntity, nametag, mutableListOf(player))
@@ -1481,7 +1481,10 @@ class LevelManager : LevelInterface2 {
                         Utils.getAttribute(AttributeNames.SPAWN_REINFORCEMENTS)
                 }
                 else -> throw IllegalStateException(
-                    "Addition must be an Attribute, if so, it has not been considered in this method"
+                    LocalizedMessages.text(
+                        "console.internal.addition-must-be-attribute",
+                        colorize = false
+                    )
                 )
             }
 
@@ -1532,7 +1535,7 @@ class LevelManager : LevelInterface2 {
 
         val tuning = main.rulesManager.getFineTuningAttributes(lmEntity)
         if (tuning == null) {
-            // make sure creeper explosion is at vanilla defaults incase of a relevel, etc
+            // убедитесь, что взрыв крипера происходит по умолчанию в ванильном случае на случай повторного уровня и т. д.
             if (creeper.explosionRadius != 3)
                 creeper.explosionRadius = 3
 
@@ -1563,26 +1566,26 @@ class LevelManager : LevelInterface2 {
     }
 
     /**
-     * Add configured equipment to the levelled mob LivingEntity MUST be a levelled mob
+     * Добавьте настроенное оборудование к уровневому мобу LivingEntity должна быть уровневым мобом
      *
      *
-     * Thread-safety unknown.
+     * Потокобезопасность неизвестна.
      *
-     * @param lmEntity a levelled mob to apply levelled equipment to
-     * @param level    the level of the levelled mob
+     * @param lmEntity уровневый моб, к которому можно применить уровневое снаряжение
+     * @param level    уровень уровневого моба
      */
     private fun applyLevelledEquipment(
         lmEntity: LivingEntityWrapper,
         level: Int
     ) {
         if (!lmEntity.isLevelled) {
-            // if you summon a mob and it isn't levelled due to a config rule (baby zombies exempt for example)
-            // then we'll be here with a non-levelled entity
+            // если вы вызываете моба, и ему не назначается уровень из-за правила конфигурации (например, зомби-детеныши освобождены)
+            // тогда мы будем здесь с сущностью без уровня
             return
         }
         if (level < 1) return
 
-        // Custom Drops must be enabled.
+        // Пользовательские Drops должны быть включены.
         val customDropsRuleSet: CustomDropsRuleSet = LevelledMobs.instance.rulesManager.getRuleUseCustomDropsForMob(lmEntity)
         if (!customDropsRuleSet.useDrops) return
 
@@ -1719,9 +1722,9 @@ class LevelManager : LevelInterface2 {
         lmInterface: LivingEntityInterface
     ): LevellableState {
         /*
-        Certain entity types are force-blocked, regardless of what the user has configured.
-        This is also ran in getLevellableState(EntityType), however it is important that this is ensured
-        before all other checks are made.
+        Некоторые типы сущностей принудительно запрещены независимо от пользовательских настроек.
+        Та же проверка выполняется в getLevellableState(EntityType), но здесь она должна пройти
+        до всех остальных проверок.
          */
         val main = LevelledMobs.instance
         if (forcedBlockedEntityTypes.contains(lmInterface.entityType))
@@ -1747,9 +1750,9 @@ class LevelManager : LevelInterface2 {
         }
 
         /*
-        Check 'No Level Conditions'
+        Проверка условий, запрещающих назначение уровня.
          */
-        // Nametagged mobs.
+        // Мобы с именами.
         @Suppress("DEPRECATION")
         if (lmInterface.livingEntity.customName != null &&
             main.rulesManager.getRuleMobCustomNameStatus(lmInterface)
@@ -1772,27 +1775,27 @@ class LevelManager : LevelInterface2 {
     }
 
     /**
-     * This method applies a level to the target mob.
+     * Этот метод применяет уровень к целевому мобу.
      *
      *
-     * You can run this method on a mob regardless if they are already levelled or not.
+     * Метод можно вызвать независимо от того, имеет моб уровень или нет.
      *
      *
-     * This method DOES NOT check if it is LEVELLABLE. It is assumed that plugins make sure this is
-     * the case (unless they intend otherwise).
+     * Этот метод НЕ проверяет, можно ли назначить сущности уровень. Предполагается, что плагины следят за этим.
+     * случае (если они не намерены иначе).
      *
      *
-     * It is highly recommended to leave bypassLimits = false, unless the desired behaviour is to
-     * override the user-configured limits.
+     * Настоятельно рекомендуется оставить bypassLimits = false, если только желаемое поведение не
+     * переопределить ограничения, заданные пользователем.
      *
      *
-     * Thread-safety intended, but not tested.
+     * Потокобезопасность предусмотрена, но не проверена.
      *
-     * @param lmEntity                   target mob
-     * @param level                      the level the mob should have
-     * @param isSummoned                 if the mob was spawned by LevelledMobs, not by the server
-     * @param bypassLimits               whether LM should disregard max level, etc.
-     * @param additionalLevelInformation used to determine the source event
+     * @param lmEntity                   целевой моб
+     * @param level                      уровень, который должен быть у моба
+     * @param isSummoned                 если моб был создан LevelledMobs, а не сервером
+     * @param bypassLimits               должен ли LM игнорировать максимальный уровень и т. д.
+     * @param additionalLevelInformation используется для определения исходного события
      */
     override fun applyLevelToMob(
         lmEntity: LivingEntityWrapper,
@@ -1801,7 +1804,7 @@ class LevelManager : LevelInterface2 {
         bypassLimits: Boolean,
         additionalLevelInformation: MutableSet<AdditionalLevelInformation>?
     ) {
-        // this thread runs in async.  if adding any functions make sure they can be run in this fashion
+        // этот поток работает асинхронно.  при добавлении каких-либо функций убедитесь, что их можно запустить таким образом
         val main = LevelledMobs.instance
 
         if (!main.ver.isRunningFolia && Bukkit.isPrimaryThread()){
@@ -1827,7 +1830,7 @@ class LevelManager : LevelInterface2 {
             && main.rulesManager.getRulePassengerMatchLevel(lmEntity)
             && lmEntity.livingEntity.vehicle is LivingEntity
         ) {
-            // entity is a passenger. grab the level from the "vehicle" entity
+            // лицо является пассажиром. возьмите уровень объекта «транспортное средство»
             val vehicle = LivingEntityWrapper.getInstance(
                 lmEntity.livingEntity.vehicle as LivingEntity
             )
@@ -1928,11 +1931,20 @@ class LevelManager : LevelInterface2 {
             Bukkit.getPluginManager()
                 .callEvent(MobPostLevelEvent(lmEntity, levelCause, additionalLevelInformation))
 
-            val sb = StringBuilder().append("world: ").append(lmEntity.worldName).append(", level: ").append(useLevel)
+            val sb = StringBuilder().append(
+                LocalizedMessages.text(
+                    "command.levelledmobs.debug.runtime.d205",
+                    mapOf("world" to lmEntity.worldName, "level" to useLevel),
+                    false
+                )
+            )
             if (isSummoned)
-                sb.append(" (summoned)")
+                sb.append(LocalizedMessages.text(
+                    "command.levelledmobs.debug.runtime.d206",
+                    colorize = false
+                ))
             if (bypassLimits)
-                sb.append(" (limit bypass)")
+                sb.append(LocalizedMessages.text("display.limit-bypass", colorize = false))
 
             DebugManager.log(DebugType.APPLY_LEVEL_RESULT, lmEntity, true, sb::toString)
         }
@@ -2022,14 +2034,14 @@ class LevelManager : LevelInterface2 {
     }
 
     /**
-     * Check if a LivingEntity is a levelled mob or not. This is determined *after*
+     * Проверьте, является ли LivingEntity уровневым мобом или нет. Это определяется *после*
      * MobPreLevelEvent.
      *
      *
-     * Thread-safety intended, but not tested.
+     * Потокобезопасность предусмотрена, но не проверена.
      *
-     * @param livingEntity living entity to check
-     * @return if the mob is levelled or not
+     * @param livingEntity живое существо для проверки
+     * @return есть ли у моба уровень
      */
     override fun isLevelled(livingEntity: LivingEntity): Boolean {
         var hadError = false
@@ -2067,13 +2079,13 @@ class LevelManager : LevelInterface2 {
     }
 
     /**
-     * Retrieve the level of a levelled mob.
+     * Получите уровень уровневого моба.
      *
      *
-     * Thread-safety intended, but not tested.
+     * Потокобезопасность предусмотрена, но не проверена.
      *
-     * @param livingEntity the levelled mob to get the level of
-     * @return the mob's level
+     * @param livingEntity уровневый моб, чтобы получить уровень
+     * @return уровень моба
      */
     override fun getLevelOfMob(livingEntity: LivingEntity): Int {
         synchronized(livingEntity.persistentDataContainer) {
@@ -2088,13 +2100,13 @@ class LevelManager : LevelInterface2 {
     }
 
     /**
-     * Un-level a mob.
+     * Снять уровень моба.
      *
-     * @param lmEntity levelled mob to un-level
+     * @param lmEntity уровневый моб до снятия уровня
      */
     override fun removeLevel(lmEntity: LivingEntityWrapper) {
         assert(lmEntity.isLevelled)
-        // remove PDC value
+        // удалить значение PDC
         val main = LevelledMobs.instance
         synchronized(lmEntity.livingEntity.persistentDataContainer) {
             if (lmEntity.pdc.has(NamespacedKeys.levelKey, PersistentDataType.INTEGER))
@@ -2107,7 +2119,7 @@ class LevelManager : LevelInterface2 {
             }
         }
 
-        // reset attributes
+        // сбросить атрибуты
         synchronized(main.attributeSyncObject) {
             for (attributeName in AttributeNames.entries) {
                 val attribute = Utils.getAttribute(attributeName) ?: continue
@@ -2129,7 +2141,7 @@ class LevelManager : LevelInterface2 {
 
         lmEntity.invalidateCache()
 
-        // update nametag
+        // обновить бейдж
         main.levelManager.updateNametag(lmEntity)
     }
 

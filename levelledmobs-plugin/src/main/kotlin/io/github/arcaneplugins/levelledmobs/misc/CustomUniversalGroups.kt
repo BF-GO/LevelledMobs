@@ -1,7 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.misc
 
 /**
- * This is the list of groups that can be associated with one of more custom drop items
+ * Это список групп, которые могут быть связаны с одним или несколькими настраиваемыми элементами перетаскивания.
  *
  * @author stumper66
  * @since 2.6.0

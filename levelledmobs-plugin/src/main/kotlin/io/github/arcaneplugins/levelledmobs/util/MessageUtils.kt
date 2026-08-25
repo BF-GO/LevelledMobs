@@ -7,11 +7,11 @@ import net.md_5.bungee.api.ChatColor
 import org.bukkit.Bukkit
 
 /**
- * This class contains a bunch of methods which
- * make it very easy to translate '&'-based color
- * codes in messages. You can colorize standard codes
- * (&a, &b, &1, &2, etc), and even hex codes (&#abccdef),
- * and also both in one method :)
+ * Этот класс содержит набор методов, которые
+ * упростить перевод цвета на основе '&'
+ * коды в сообщениях. Вы можете раскрасить стандартные коды
+ * (&a, &b, &1, &2 и т. д.) и даже шестнадцатеричные коды (&#abccdef),
+ * и то и другое в одном методе :)
  *
  * @author lokka30, Sullivan_Bognar, imDaniX
  * @since 1.0.0
@@ -19,15 +19,15 @@ import org.bukkit.Bukkit
 @SuppressWarnings("deprecation")
 object MessageUtils {
     /**
-     * Colorize a message, using '&' color codes - e.g. '&a' for ChatColor.GREEN.
-     * If the server is 1.16 or newer, then it will also translate hex codes - e.g. '&#abcdef'.
+     * Раскрасьте сообщение, используя цветовые коды «&», например: '&a' для ChatColor.GREEN.
+     * Если сервер версии 1.16 или новее, он также будет переводить шестнадцатеричные коды - например. '&#abcdef'.
      *
-     * @param msg the message to translate color codes from.
-     * @return the color-translated message.
+     * @param msg сообщение, из которого нужно перевести цветовые коды.
+     * @return сообщение после преобразования цветовых кодов.
      * @author lokka30
      * @see MessageUtils#colorizeHexCodes(String)
      * @see MessageUtils#colorizeStandardCodes(String)
-     * @since unknown
+     * @since неизвестно
      */
     fun colorizeAll(
         msg: String?
@@ -58,13 +58,13 @@ object MessageUtils {
     }
 
     /**
-     * This defaults the 'startTag' to '&#' and endTag to '' (nothing) to colorizeHexCodes.
+     * По умолчанию для startTag установлено значение «&#», а для endTag — значение «» (ничего) — colorizeHexCodes.
      *
-     * @param message message to translate
-     * @return the translated string
+     * @param message сообщение для перевода
+     * @return переведенная строка
      * @author lokka30
      * @see MessageUtils#colorizeHexCodes(String, String, String)
-     * @since unknown
+     * @since неизвестно
      */
     private fun colorizeHexCodes(
         message: String
@@ -90,15 +90,15 @@ object MessageUtils {
     }
 
     /**
-     * This does NOT colorize hex codes, ONLY standard codes.
-     * This translated all standard codes in a message. Standard codes are prefixed by '&', e.g. '&a'.
+     * Преобразует только стандартные цветовые коды, не затрагивая шестнадцатеричные.
+     * Стандартные коды имеют префикс «&», например `&a`.
      *
      * @author lokka30
      *
-     * @param msg the message to translate standard color codes from.
-     * @return the color-translated message.
+     * @param msg сообщение, из которого нужно перевести стандартные цветовые коды.
+     * @return сообщение после преобразования цветовых кодов.
      *
-     * @since unknown
+     * @since неизвестно
      */
     fun colorizeStandardCodes(msg: String?): String {
         return if (Bukkit.getName()

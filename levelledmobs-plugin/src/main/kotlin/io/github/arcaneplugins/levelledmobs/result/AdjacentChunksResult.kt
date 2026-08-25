@@ -1,7 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.result
 
 /**
- * Used in conjunction with the chunk kill count feature
+ * Используется в сочетании с функцией подсчета уничтожений фрагментов.
  *
  * @author stumper66
  * @since 3.4.0

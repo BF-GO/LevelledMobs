@@ -44,14 +44,14 @@ import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
 /**
- * A wrapper for the LivingEntity class that provides various common function and settings used for
- * processing rules
+ * Обертка для класса LivingEntity, предоставляющая различные общие функции и настройки, используемые для
+ * правила обработки
  *
  * @author stumper66
  * @since 3.0.0
  */
 class LivingEntityWrapper private constructor() : LivingEntityWrapperBase(), LivingEntityInterface {
-    // privates:
+    // рядовые:
     private var applicableGroups: MutableSet<String> = TreeSet(String.CASE_INSENSITIVE_ORDER)
     private var hasCache = false
     private var isClearingData = false
@@ -71,7 +71,7 @@ class LivingEntityWrapper private constructor() : LivingEntityWrapperBase(), Liv
     private val cacheLock = ReentrantLock()
     private val pdcLock = ReentrantLock()
 
-    // publics:
+    // паблики:
     var prevChanceRuleResults: MutableMap<String, Boolean>? = null
         private set
     var chunkKillcount = 0
@@ -249,7 +249,7 @@ class LivingEntityWrapper private constructor() : LivingEntityWrapperBase(), Liv
                 ExternalCompatibilityManager.getWGRegionsAtLocation(this)
 
             this.hasCache = true
-            // the lines below must remain after hasCache = true to prevent stack overflow
+            // строки ниже должны оставаться после hasCache = true, чтобы предотвратить переполнение стека
             cachePrevChanceResults()
             val applicableRulesResult = main.rulesManager.getApplicableRules(this)
             this.applicableRules.clear()
@@ -272,7 +272,7 @@ class LivingEntityWrapper private constructor() : LivingEntityWrapperBase(), Liv
 
     private fun getPDCLock(): Boolean {
         try {
-            // try up to 3 times to get a lock
+            // попробуйте до 3 раз, чтобы получить блокировку
             var retryCount = 0
             while (true) {
                 if (pdcLock.tryLock(15, TimeUnit.MILLISECONDS))
@@ -853,7 +853,7 @@ class LivingEntityWrapper private constructor() : LivingEntityWrapperBase(), Liv
         if (flyingMobNames.contains(eType.name.uppercase()))
             groups.add(CustomUniversalGroups.ALL_FLYING_MOBS.toString())
 
-        // why bats aren't part of Flying interface is beyond me
+        // почему летучие мыши не являются частью интерфейса Flying, мне непонятно
         if (!flyingMobNames.contains(eType.name.uppercase()) && livingEntity !is WaterMob
                     && livingEntity !is Boss
         ) {

@@ -8,8 +8,8 @@ import org.bukkit.entity.Player
 
 
 /**
- * Holds information on used for creating a spawner cube, egg
- * or mob summon
+ * Содержит информацию об использованных для создания кубика спавнера, яйце
+ * или вызов моба
  *
  * @author stumper66
  * @since 3.2.3

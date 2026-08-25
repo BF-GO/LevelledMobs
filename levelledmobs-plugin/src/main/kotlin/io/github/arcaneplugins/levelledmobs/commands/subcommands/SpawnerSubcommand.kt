@@ -18,13 +18,13 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 /**
- * Gives the user a specialized spawner that only spawns mobs within certain level criteria
+ * Предоставляет пользователю специализированный спаунер, который порождает мобов только в пределах определенных критериев уровня.
  *
  * @author stumper66
  * @since 3.0.0
  */
 object SpawnerSubcommand : SpawnerBaseClass("levelledmobs.command.spawner") {
-    override val description = "Various commands for creating spawner cubes."
+    override val description = LocalizedMessages.text("command.descriptions.spawner", colorize = false)
 
     fun buildCommand() : LiteralCommandNode<CommandSourceStack> {
         return createLiteralCommand("spawner")
@@ -134,7 +134,7 @@ object SpawnerSubcommand : SpawnerBaseClass("levelledmobs.command.spawner") {
 
         if ("on".equals(value, ignoreCase = true)) {
             if (main.mainCompanion.spawnerCopyIds.contains(playerId)) {
-                // can't have both enabled.  We'll disable copy first
+                // не может быть включено оба.  Сначала мы отключим копирование
                 copyGotDisabled(playerId)
             }
 
@@ -162,7 +162,7 @@ object SpawnerSubcommand : SpawnerBaseClass("levelledmobs.command.spawner") {
 
         if ("on".equals(value, ignoreCase = true)) {
             if (main.mainCompanion.spawnerInfoIds.contains(playerId)) {
-                // can't have both enabled.  We'll disable info first
+                // не может быть включено оба.  Сначала мы отключим информацию
                 infoGotDisabled(playerId)
             }
 
@@ -193,7 +193,7 @@ object SpawnerSubcommand : SpawnerBaseClass("levelledmobs.command.spawner") {
         val info = CustomSpawnerInfo(false)
         if (sender is Player) info.player = sender
 
-        // arguments with no values go here:
+        // сюда идут аргументы без значений:
         for (i in 1 until args.size) {
             val arg = args[i]
             if ("/nolore".equals(arg, ignoreCase = true)) {
@@ -275,7 +275,7 @@ object SpawnerSubcommand : SpawnerBaseClass("levelledmobs.command.spawner") {
 
         val item = ItemStack(Material.SPAWNER)
         val meta = item.itemMeta
-        val defaultName = "LM Spawner"
+        val defaultName = LocalizedMessages.text("display.spawner.levelledmobs", colorize = false)
         setMetadata(item, info, defaultName)
         setMetaItems(meta, info, defaultName)
         giveItemToPlayer(item, info)

@@ -3,13 +3,13 @@ package io.github.arcaneplugins.levelledmobs.result
 import java.time.Instant
 
 /**
- * Records entity deaths for use in the chunk kill max feature
+ * Записывает смерти объектов для использования в функции максимального уничтожения фрагментов.
  *
  * @author stumper66
  * @since 3.4.0
  */
 class ChunkKillInfo {
-    // timestamp of death, max cooldown time
+    // временная метка смерти, максимальное время восстановления
     val entityCounts = mutableMapOf<Instant, Int>()
 
     val entrySet: Set<Map.Entry<Instant, Int>>

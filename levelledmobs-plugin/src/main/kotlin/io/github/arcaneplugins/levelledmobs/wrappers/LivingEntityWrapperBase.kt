@@ -6,8 +6,8 @@ import org.bukkit.Location
 import org.bukkit.World
 
 /**
- * Baseclass for LivingEntityWrapper and LivingEntityPlaceholder to hold various information about
- * mobs
+ * Базовый класс для LivingEntityWrapper и LivingEntityPlaceholder для хранения различной информации о
+ * мобы
  *
  * @author stumper66
  * @since 3.1.0

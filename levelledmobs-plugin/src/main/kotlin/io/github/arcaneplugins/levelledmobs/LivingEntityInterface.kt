@@ -6,7 +6,7 @@ import org.bukkit.World
 import org.bukkit.entity.EntityType
 
 /**
- * Interace used for wrapping LivingEntity to provide additions common commands and information
+ * Интерфейс, используемый для оболочки LivingEntity для предоставления дополнительных общих команд и информации.
  *
  * @author stumper66
  * @since 3.0.0

@@ -7,6 +7,7 @@ import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.customdrops.CustomDropItem
 import io.github.arcaneplugins.levelledmobs.debug.DebugType
 import io.github.arcaneplugins.levelledmobs.result.NBTApplyResult
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 
 /**
@@ -68,7 +69,10 @@ object NBTManager {
                 formulateChangedJson(jsonBefore!!, jsonAfter, result)
 
                 if (jsonBefore == jsonAfter)
-                    result.exceptionMessage = "No NBT data changed.  Make sure you have used proper NBT strings"
+                    result.exceptionMessage = LocalizedMessages.text(
+                        "console.nbt.no-data-changed",
+                        colorize = false
+                    )
             }
         } catch (e: Exception) {
             result.exceptionMessage = e.message

@@ -28,13 +28,13 @@ import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 
 /**
- * Parses commands for various debug stuff
+ * Разбирает команды для различных отладочных материалов
  *
  * @author stumper66
  * @since 3.2.0
  */
 object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
-    override val description = "Various commands for debugging."
+    override val description = LocalizedMessages.text("command.descriptions.debug", colorize = false)
 
     fun buildCommand() : LiteralCommandNode<CommandSourceStack> {
         return createLiteralCommand("debug")
@@ -1016,7 +1016,7 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
             }
 
             ListTypes.PLAYERS -> {
-                // for players we'll allow invalid player names because they might join later
+                // для игроков мы разрешим указывать недействительные имена игроков, поскольку они могут присоединиться позже
                 if (isAdd) {
                     dm.filterPlayerNames.addAll(items)
                     optionsAddedOrRemoved.addAll(items)
@@ -1177,7 +1177,7 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         val prefix = StringBuilder()
         val existingItems = mutableListOf<String>()
         // 0  1     2              3         4
-        // lm debug filter-results set-debug add apply_multipliers
+        // lm debug filter-results set-debug добавить apply_multipliers
         for (i in 5..<input.size){
             existingItems.add(input[i].lowercase())
             if (prefix.isNotEmpty()) prefix.append(' ')

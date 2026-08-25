@@ -20,10 +20,10 @@ import org.bukkit.event.entity.EntitySpawnEvent
 import org.bukkit.event.entity.EntityTransformEvent
 
 /**
- * Listens for when a mob transforms so the applicable rules can be applied
+ * Слушает, когда моб трансформируется, чтобы можно было применить применимые правила.
  *
  * @author stumper66
- * @version 2.4.0
+ * @версия 2.4.0
  */
 class EntityTransformListener : Listener {
     private var lastPriority: EventPriority? = null
@@ -60,7 +60,7 @@ class EntityTransformListener : Listener {
     }
 
     private fun onTransform(event: EntityTransformEvent) {
-        // is the original entity a living entity
+        // является ли исходное существо живым существом
         if (event.entity !is LivingEntity) {
             DebugManager.log(DebugType.ENTITY_MISC, event.entity, false) {
                 LocalizedMessages.text("command.levelledmobs.debug.runtime.d047", colorize = false)
@@ -69,7 +69,7 @@ class EntityTransformListener : Listener {
         }
 
         val main = LevelledMobs.instance
-        // is the original entity levelled
+        // исходная сущность имеет уровень
         if (!main.levelManager.isLevelled(event.entity as LivingEntity)) {
             DebugManager.log(DebugType.ENTITY_MISC, event.entity, false) {
                 LocalizedMessages.text("command.levelledmobs.debug.runtime.d048", colorize = false)

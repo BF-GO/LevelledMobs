@@ -2,9 +2,10 @@ package io.github.arcaneplugins.levelledmobs.misc
 
 import java.io.InvalidObjectException
 import io.github.arcaneplugins.levelledmobs.util.Utils
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 
 /**
- * A custom implementation for comparing program versions
+ * Пользовательская реализация для сравнения версий программы
  *
  * @author stumper66
  * @since 2.6.0
@@ -16,7 +17,7 @@ class VersionInfo(
     val version: String
 
     init {
-        val buildNum = versionInput.indexOf("build") // 26.1.1.build.15
+        val buildNum = versionInput.indexOf("build") // 26.1.1.сборка.15
         version = if (buildNum > 0)
             versionInput.substring(0, buildNum)
         else
@@ -25,7 +26,9 @@ class VersionInfo(
         val split = version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         for (numTemp in split) {
             if (!Utils.isDouble(numTemp))
-                throw InvalidObjectException("Version can only contain numbers and periods")
+                throw InvalidObjectException(
+                    LocalizedMessages.text("console.internal.invalid-version-format", colorize = false)
+                )
 
             val intD = numTemp.toInt()
             thisVerSplit.add(intD)

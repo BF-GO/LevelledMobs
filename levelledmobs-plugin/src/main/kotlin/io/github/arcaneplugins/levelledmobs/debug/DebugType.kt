@@ -1,60 +1,60 @@
 package io.github.arcaneplugins.levelledmobs.debug
 
 /**
- * Holds the enums used for showing debug data
+ * Содержит перечисления, используемые для отображения отладочных данных.
  *
  * @author lokka30, stumper66
  * @since 2.5.0
  */
 enum class DebugType {
     /**
-     * Logged when LM is checking if a mob can have a level applied to it, and whether it was
-     * successful
+     * Записывается, когда LM проверяет, можно ли применить к мобу уровень и был ли он
+     * успешный
      */
     APPLY_LEVEL_RESULT,
 
     /**
-     * Logged when LM analyses a mob that spawns on the server.
+     * Записывается, когда LM анализирует моба, который появляется на сервере.
      */
     ENTITY_SPAWN,
 
     /**
-     * Logged when LM adjusts the ranged damage amounts from projectiles and guardians through
-     * events (Minecraft doesn't have attributes for these)
+     * Записывается, когда LM регулирует величину урона в дальнем бою от снарядов и стражей до
+     * события (для них в Minecraft нет атрибутов)
      */
     RANGED_DAMAGE_MODIFICATION,
 
     CREEPER_BLAST_RADIUS,
 
     /**
-     * Logged when LM processes a tamed entity, which may require re-levelling
+     * Записывается, когда LM обрабатывает прирученный объект, для чего может потребоваться повторное назначение уровня.
      */
     ENTITY_TAME,
 
     /**
-     * Logged when LM is adjusting the amount of drops a mob creates
+     * Записывается, когда LM регулирует количество дропа, создаваемых мобом.
      */
     SET_LEVELLED_ITEM_DROPS,
 
     SET_LEVELLED_XP_DROPS,
 
     /**
-     * Misc events related to an entity
+     * Различные события, связанные с сущностью
      */
     ENTITY_MISC,
 
     /**
-     * When custom commands are being executed
+     * Когда выполняются пользовательские команды
      */
     CUSTOM_COMMANDS,
 
     /**
-     * When applying NBT to a mob
+     * При применении NBT к мобу
      */
     NBT_APPLICATION,
 
     /**
-     * Logged when LM is processing a mob from a creature spawner
+     * Записывается, когда LM обрабатывает моба из генератора существ.
      */
     LM_MOB_SPAWNER,
 

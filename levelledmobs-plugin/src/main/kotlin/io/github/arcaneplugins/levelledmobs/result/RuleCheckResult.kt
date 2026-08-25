@@ -1,7 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.result
 
 /**
- * Holds rule results in order to preserve the chance rule state
+ * Сохраняет результаты правил, чтобы сохранить состояние случайного правила.
  *
  * @author stumper66
  * @since 3.1.2

@@ -4,8 +4,8 @@ import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 
 /**
- * Holds mappings for spigot and mojang to be used with
- * the field names in Definitions class
+ * Содержит сопоставления для Spigot и Mojang, которые будут использоваться с
+ * имена полей в классе определений
  *
  * @author stumper66
  * @since 4.3.2

@@ -2,10 +2,11 @@ package io.github.arcaneplugins.levelledmobs.misc
 
 import java.util.TreeSet
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import org.bukkit.generator.structure.Structure
 
 /**
- * A standardized list used for holding various rule lists
+ * Стандартизированный список, используемый для хранения различных списков правил.
  *
  * @author stumper66
  * @since 3.0.0
@@ -55,15 +56,15 @@ class CachedModalList<T> : Cloneable {
         input: MutableSet<T>,
         sb: StringBuilder
     ){
-        // if certain types need special handling to format the output
-        // visually then define them here
+        // если определенные типы требуют специальной обработки для форматирования вывода
+        // визуально, затем определите их здесь
 
         var isFirst = true
         for (item in input){
             if (!isFirst) sb.append(", ")
 
             if (item is Structure) {
-                // TODO: make this not use a deprecated method
+                // TODO: сделать так, чтобы не использовался устаревший метод.
                 @Suppress("removal")
                 sb.append(item.key().value())
             }
@@ -86,38 +87,42 @@ class CachedModalList<T> : Cloneable {
         if (includedList.isNotEmpty()) {
             if (sb.isNotEmpty()) sb.append(", ")
 
-            sb.append("lst: ")
+            sb.append(LocalizedMessages.text("display.modal-labels.included-list", colorize = false))
+                .append(" ")
             applySpecialFormatting(this.includedList, sb)
         }
         if (this.includeAll) {
             if (sb.isNotEmpty()) sb.append(", ")
 
-            sb.append("all included")
+            sb.append(LocalizedMessages.text("display.modal.all-included", colorize = false))
         }
 
         if (includedGroups.isNotEmpty()) {
             if (sb.isNotEmpty()) sb.append(", ")
 
-            sb.append("grps: ")
+            sb.append(LocalizedMessages.text("display.modal-labels.included-groups", colorize = false))
+                .append(" ")
             sb.append(this.includedGroups)
         }
 
         if (this.excludeAll) {
             if (sb.isNotEmpty()) sb.append(", ")
 
-            sb.append("all excluded")
+            sb.append(LocalizedMessages.text("display.modal.all-excluded", colorize = false))
         }
 
         if (excludedList.isNotEmpty()) {
             if (sb.isNotEmpty()) sb.append(", ")
 
-            sb.append("ex-lst: ")
+            sb.append(LocalizedMessages.text("display.modal-labels.excluded-list", colorize = false))
+                .append(" ")
             applySpecialFormatting(this.excludedList, sb)
         }
         if (excludedGroups.isNotEmpty()) {
             if (sb.isNotEmpty()) sb.append(", ")
 
-            sb.append("ex-grps: ")
+            sb.append(LocalizedMessages.text("display.modal-labels.excluded-groups", colorize = false))
+                .append(" ")
             sb.append(this.excludedGroups)
         }
 

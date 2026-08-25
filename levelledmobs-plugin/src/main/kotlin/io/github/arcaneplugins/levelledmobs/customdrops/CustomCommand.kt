@@ -1,7 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.customdrops
 
 /**
- * Holds any custom commands as parsed from customdrops.yml
+ * Содержит любые пользовательские команды, полученные из customdrops.yml.
  *
  * @author stumper66
  * @since 3.0.0

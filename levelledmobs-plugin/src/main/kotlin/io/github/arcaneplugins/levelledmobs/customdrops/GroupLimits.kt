@@ -1,8 +1,8 @@
 package io.github.arcaneplugins.levelledmobs.customdrops
 
 /**
- * Holds settings used for the group-limits feature
- * of custom drops
+ * Содержит настройки, используемые для функции group-limits.
+ * пользовательских капель
  *
  * @author stumper66
  * @since 3.13.0

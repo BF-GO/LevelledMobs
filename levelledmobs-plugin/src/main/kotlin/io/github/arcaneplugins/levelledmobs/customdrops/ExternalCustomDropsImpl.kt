@@ -4,7 +4,7 @@ import java.util.TreeMap
 import org.bukkit.entity.EntityType
 
 /**
- * This class allows 3rd parties to add custom drops directly to LevelledMobs
+ * Этот класс позволяет сторонним организациям добавлять собственный дроп непосредственно в LevelledMobs.
  *
  * @author stumper66
  * @since 3.7.0

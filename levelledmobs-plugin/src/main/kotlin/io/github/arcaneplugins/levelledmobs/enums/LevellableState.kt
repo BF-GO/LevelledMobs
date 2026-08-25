@@ -1,43 +1,42 @@
 package io.github.arcaneplugins.levelledmobs.enums
 
 /**
- * This provides information on if a mob is levellable or not, and if not, a reason is supplied. A
- * mob is levellable if their LevellableState = ALLOW.
+ * Содержит результат проверки возможности назначить мобу уровень и причину отказа.
+ * Уровень можно назначить, если получено состояние LevellableState.ALLOWED.
  *
  * @author lokka30
  * @since 2.4.0
  */
 enum class LevellableState {
     /**
-     * The entity is ALLOWED to be levelled. Note to developers: there must only be one 'ALLOWED'
-     * constant.
+     * Сущности разрешено назначить уровень. В перечислении должна быть только одна константа ALLOWED.
      */
     ALLOWED,
 
     /**
-     * the plugin force blocked an entity type, such as a PLAYER or ARMOR STAND which are not meant
-     * to be 'levelled mobs'.
+     * плагин принудительно заблокировал тип объекта, например PLAYER или ARMOR STAND, которые не предназначены
+     * быть уровневым мобом.
      */
     DENIED_FORCE_BLOCKED_ENTITY_TYPE,
 
     /**
-     * settings.yml has been configured to block mobs of such entity type from being levelled
+     * settings.yml настроен так, чтобы блокировать повышение уровня мобов такого типа.
      */
     DENIED_CONFIGURATION_BLOCKED_ENTITY_TYPE,
 
     /**
-     * A rule has been configured to block nametagged mobs from being levelled.
+     * Было настроено правило, блокирующее повышение уровня мобов с тегами имен.
      */
     DENIED_CONFIGURATION_CONDITION_NAMETAGGED,
 
     /**
-     * If no rules in the rule list applied to the mob then it will be denied
+     * Если к мобу не применяются никакие правила в списке правил, то ему будет отказано.
      */
     DENIED_NO_APPLICABLE_RULES,
 
     /**
-     * When a reason is not applicable, use this. Please contact a lead developer if you believe you
-     * must resort to using this.
+     * Если причина неприменима, используйте это. Если вы верите, пожалуйста, свяжитесь с ведущим разработчиком
+     * придется прибегнуть к этому.
      */
     DENIED_OTHER,
 

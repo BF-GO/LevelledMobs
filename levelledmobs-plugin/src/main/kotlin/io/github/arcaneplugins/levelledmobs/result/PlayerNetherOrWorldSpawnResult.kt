@@ -3,8 +3,8 @@ package io.github.arcaneplugins.levelledmobs.result
 import org.bukkit.Location
 
 /**
- * Used to hold info that is used for various
- * custom placeholders
+ * Используется для хранения информации, которая используется для различных
+ * пользовательские заполнители
  *
  * @author stumper66
  * @since 3.6.0

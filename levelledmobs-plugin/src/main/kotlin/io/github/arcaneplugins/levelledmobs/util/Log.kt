@@ -6,15 +6,15 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.Bukkit
 
 /**
- * Writes messages to the console
+ * Пишет сообщения в консоль
  *
  * @author lokka30, stumper66
  * @since 4.0
  */
 object Log {
     private const val PREFIX = "&b[LevelledMobs]&7 "
-    // use this function for testing messages so you will remember to remove them later
-    @Deprecated("Remove before releasing", ReplaceWith("inf(msg)", "io.github.arcaneplugins.levelledmobs.util.Log.inf"))
+    // используйте эту функцию для тестирования сообщений, чтобы не забыть удалить их позже
+    @Deprecated("Удалить перед выпуском", ReplaceWith("inf(msg)", "io.github.arcaneplugins.levelledmobs.util.Log.inf"))
     fun infTemp(msg: String?) {
         inf(msg)
     }
@@ -32,7 +32,9 @@ object Log {
 
     fun war(msg: String, recordError: Boolean = true) {
         if (LevelledMobs.instance.ver.isRunningPaper)
-            sendMessagePaper("&e[WARN] $msg")
+            sendMessagePaper(
+                LocalizedMessages.text("console.log.warning-prefix", colorize = false) + msg
+            )
         else
             Bukkit.getServer().consoleSender.sendMessage(MessageUtils.colorizeAll(PREFIX + msg))
 
@@ -50,7 +52,9 @@ object Log {
 
     fun sev(msg: String) {
         if (LevelledMobs.instance.ver.isRunningPaper)
-            sendMessagePaper("&e[SEVERE] $msg")
+            sendMessagePaper(
+                LocalizedMessages.text("console.log.severe-prefix", colorize = false) + msg
+            )
         else
             Bukkit.getServer().consoleSender.sendMessage(MessageUtils.colorizeAll(PREFIX + msg))
 

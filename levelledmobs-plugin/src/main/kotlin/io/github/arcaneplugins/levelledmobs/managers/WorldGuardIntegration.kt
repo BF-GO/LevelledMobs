@@ -8,7 +8,7 @@ import io.github.arcaneplugins.levelledmobs.LivingEntityInterface
 import org.bukkit.Bukkit
 
 /**
- * Manages communication to WorldGuar for the purposes of obtaining region and flag information
+ * Управляет связью с WorldGuar с целью получения информации о регионе и флаге.
  *
  * @author Eyrian, lokka30, stumper66
  * @since 2.4.0

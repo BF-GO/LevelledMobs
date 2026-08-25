@@ -4,8 +4,8 @@ import java.util.TreeSet
 import org.bukkit.entity.EntityType
 
 /**
- * Holds lists of entity types that are only present in minecraft 1.19 and newer.  Must be a
- * separate class to maintain compatibility with older versions
+ * Содержит списки типов объектов, которые присутствуют только в Minecraft 1.19 и новее.  Должно быть
+ * отдельный класс для обеспечения совместимости со старыми версиями
  *
  * @author stumper66
  * @since 3.6.0

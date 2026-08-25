@@ -1,10 +1,12 @@
 package io.github.arcaneplugins.levelledmobs.customdrops
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
+
 import org.bukkit.enchantments.Enchantment
 
 /**
- * Used in conjunction with custom drops for handling
- * enchantment level chances
+ * Используется в сочетании с пользовательским дропом для обработки.
+ * шансы на уровень зачарования
  *
  * @author stumper66
  * @since 3.7.0
@@ -22,6 +24,10 @@ class EnchantmentChances {
     }
 
     override fun toString(): String {
-        return "EnchantmentChances, ${items.size} items"
+        return LocalizedMessages.text(
+            "display.customdrops.enchantment-chances",
+            mapOf("count" to items.size),
+            false
+        )
     }
 }

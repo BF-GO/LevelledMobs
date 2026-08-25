@@ -5,7 +5,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
 /**
- * A common interface for sending nametag packets
+ * Общий интерфейс для отправки пакетов именной метки.
  *
  * @author PenalBuffalo (aka stumper66)
  * @since 3.6.0

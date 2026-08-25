@@ -1,8 +1,8 @@
 package io.github.arcaneplugins.levelledmobs.rules
 
 /**
- * Used in rules to manipulate the various
- * mob multipliers
+ * Используется в правилах для управления различными
+ * множители мобов
  *
  * @author stumper66
  * @since 3.9.0

@@ -14,13 +14,13 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 /**
- * Gives the user a specialized spawn egg that only spawns mobs within certain level criteria
+ * Дает пользователю специализированное яйцо призывания, которое порождает только мобов определенного уровня.
  *
  * @author stumper66
  * @since 3.3.0
  */
 object SpawnerEggCommand : SpawnerBaseClass("levelledmobs.command.spawner-egg") {
-    override val description = "Various commands for creating spawner egg."
+    override val description = LocalizedMessages.text("command.descriptions.spawner-egg", colorize = false)
 
     fun buildCommand() : LiteralCommandNode<CommandSourceStack>{
         val commandName = "spawner-egg"
@@ -70,7 +70,7 @@ object SpawnerEggCommand : SpawnerBaseClass("levelledmobs.command.spawner-egg") 
         val info = CustomSpawnerInfo(true)
         if (commandSender is Player) info.player = commandSender!! as Player
 
-        // arguments with no values go here:
+        // сюда идут аргументы без значений:
         for (i in 0 until args.size) {
             val arg = args[i]
             if ("/nolore".equals(arg, ignoreCase = true)) {
@@ -151,7 +151,7 @@ object SpawnerEggCommand : SpawnerBaseClass("levelledmobs.command.spawner-egg") 
         val materialName = info.spawnType.name + "_SPAWN_EGG"
         val material = Material.getMaterial(materialName)
         if (material == null) {
-            // should never see this message:
+            // никогда не должен видеть это сообщение:
             LocalizedMessages.send(
                 commandSender!!, "command.levelledmobs.spawn_egg.invalid-material",
                 mapOf("material" to materialName)
@@ -159,7 +159,11 @@ object SpawnerEggCommand : SpawnerBaseClass("levelledmobs.command.spawner-egg") 
             return
         }
         val item = ItemStack(material)
-        setMetadata(item, info, "LM Spawn Egg")
+        setMetadata(
+            item,
+            info,
+            LocalizedMessages.text("display.spawner.spawn-egg", colorize = false)
+        )
         giveItemToPlayer(item, info)
     }
 }

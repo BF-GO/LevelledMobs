@@ -40,7 +40,7 @@ import kotlin.math.roundToInt
 
 
 /**
- * Holds common utilities
+ * Содержит общие коммунальные услуги
  *
  * @author lokka30, stumper66
  * @since 2.5.0
@@ -49,10 +49,10 @@ object Utils {
     private val timeUnitPattern: Pattern = Pattern.compile("(\\d+\\.?\\d+|\\d+)?(\\w+)")
 
     /**
-     * Rounds value to 2 decimal points.
+     * Округляет значение до 2 десятичных знаков.
      *
-     * @param value value to round
-     * @return rounded value
+     * @param value значение для округления
+     * @return округленное значение
      */
     fun round(value: Double): Double {
         return (value * 100).roundToInt() / 100.00
@@ -96,7 +96,7 @@ object Utils {
 
     fun getAttribute(attributeName: AttributeNames): Attribute?{
         if (LevelledMobs.instance.ver.useOldEnums){
-            // 1.21.1 and older go here
+            // 1.21.1 и старше перейдите сюда
             return when (attributeName){
                 AttributeNames.MAX_HEALTH -> Registry.ATTRIBUTE.get(NamespacedKey.minecraft("generic.max_health")) // GENERIC_MAX_HEALTH
                 AttributeNames.ATTACK_DAMAGE -> Registry.ATTRIBUTE.get(NamespacedKey.minecraft("generic.attack_damage"))
@@ -118,7 +118,7 @@ object Utils {
             }
         }
 
-        // 1.21.2+ go here
+        // 1.21.2+ иди сюда
         return when (attributeName){
             AttributeNames.MAX_HEALTH -> Attribute.MAX_HEALTH
             AttributeNames.ATTACK_DAMAGE -> Attribute.ATTACK_DAMAGE
@@ -136,12 +136,12 @@ object Utils {
     }
 
     /**
-     * Replaces content of a message with case insensitivity.
+     * Заменяет содержимое сообщения с учетом регистра.
      *
-     * @param message     message that should be edited
-     * @param replaceWhat the text to be replaced
-     * @param replaceTo   the text to replace with
-     * @return modified message
+     * @param message     сообщение, которое следует отредактировать
+     * @param replaceWhat текст, который нужно заменить
+     * @param replaceTo   текст, который нужно заменить
+     * @return измененное сообщение
      * @author stumper66
      */
     fun replaceEx(
@@ -176,10 +176,10 @@ object Utils {
     }
 
     /**
-     * Check if str is an integer
+     * Проверьте, является ли str целым числом
      *
-     * @param str str to check
-     * @return if str is an integer (e.g. "1234" = true, "hello" = false)
+     * @param str ул для проверки
+     * @return является ли строка целым числом (например, "1234" = true, "hello" = false)
      */
     fun isInteger(str: String?): Boolean {
         if (str.isNullOrEmpty()) return false
@@ -236,28 +236,28 @@ object Utils {
     }
 
     /**
-     * Puts the string into lowercase and makes every character that starts a word a capital
-     * letter.
+     * Переводит строку в нижний регистр и делает каждый символ, с которого начинается слово, заглавным.
+     * письмо.
      *
      *
-     * e.g. from: wiTheR sKeLeTOn to: Wither Skeleton
+     * например от: wiTheR sKeLeTOn к: Скелет-иссушитель
      *
-     * @param str string to capitalize
-     * @return a string with each word capitalized
+     * @param str строка для капитализации
+     * @return строка, в которой каждое слово пишется с заглавной буквы
      */
     fun capitalize(str: String): String {
         val builder = StringBuilder()
         val words = str.lowercase().split(" ".toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray() // each word separated from str
+            .toTypedArray() // каждое слово отделено от str
         for (i in words.indices) {
             val word = words[i]
             if (word.isEmpty()) continue
 
-            builder.append(word[0].toString().uppercase()) // capitalize first letter
+            builder.append(word[0].toString().uppercase()) // сделать первую букву заглавной
             if (word.length > 1)
-                builder.append(word.substring(1)) // append the rest of the word
+                builder.append(word.substring(1)) // добавить остальную часть слова
 
-            // if there is another word to capitalize, then add a space
+            // если есть другое слово, которое нужно писать с заглавной буквы, добавьте пробел
             if (i < words.size - 1) builder.append(" ")
         }
 
@@ -280,7 +280,7 @@ object Utils {
                 return false
         }
 
-        // for denies we'll check for both baby and adult variants regardless of baby-mobs-inherit-adult-setting
+        // в случае отклонений мы проверим варианты как для детей, так и для взрослых, независимо от baby-mobs-inherit-adult-setting
         if (list.excludedList.contains(lmEntity.typeName) || list.excludedList.contains(
                 lmEntity.nameIfBaby
             ) || lmEntity.isBabyMob && list.excludedList.contains("baby_")
@@ -360,7 +360,7 @@ object Utils {
         if (list.excludeAll) return false
         if (list.isEmpty()) return true
 
-        // note: no group support
+        // примечание: нет групповой поддержки
         if (list.excludedList.contains(cause))
             return false
 
@@ -412,7 +412,7 @@ object Utils {
         return "${location.chunk.x},${location.chunk.z}"
     }
 
-    // take from https://www.techiedelight.com/five-alternatives-pair-class-java/
+    // взять из https://www.techiedelight.com/five-alternatives-pair-class-java/
     @Contract(value = "_, _ -> new", pure = true)
     fun <T, U> getPair(first: T, second: U): Map.Entry<T, U> {
         return AbstractMap.SimpleEntry(first, second)
@@ -458,8 +458,16 @@ object Utils {
     }
 
     private fun showLocation(location: Location): String {
-            return "${location.world.name} at " +
-                    "${location.blockX},${location.blockY},${location.blockZ}"
+        return LocalizedMessages.text(
+            "display.location",
+            mapOf(
+                "world" to location.world.name,
+                "x" to location.blockX,
+                "y" to location.blockY,
+                "z" to location.blockZ
+            ),
+            false
+        )
     }
 
     fun checkIfMobHashChanged(
@@ -489,8 +497,8 @@ object Utils {
                 }
             }
 
-            // also setting the PDC key here because if the mob is not eligable for levelling then it will
-            // run this same code repeatidly
+            // также установите здесь ключ PDC, потому что, если моб не имеет права на получение уровня, он будет
+            // запускайте этот же код повторно
             lmEntity.pdc
                 .set(NamespacedKeys.mobHash, PersistentDataType.STRING, main.rulesManager.currentRulesHash)
         } else {
@@ -527,7 +535,7 @@ object Utils {
         var unit = if (match.group(1) != null) match.group(2).lowercase() else ""
 
         if (isInteger(input)) {
-            // number only, no time unit was specified
+            // только число, единица времени не указана
             numberPart = input
             unit = ""
         }
@@ -634,7 +642,7 @@ object Utils {
             )
         }
         else{
-            // legacy versions < 1.21
+            // устаревшие версии < 1.21
             @Suppress("DEPRECATION")
             enchantment = Registry.ENCHANTMENT.get(
                 NamespacedKey.minecraft(enchantName.lowercase())

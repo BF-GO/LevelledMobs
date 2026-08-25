@@ -2,10 +2,11 @@ package io.github.arcaneplugins.levelledmobs.rules
 
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.max
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 
 /**
- * Holds settings relating to the custom
- * death messages feature
+ * Содержит настройки, относящиеся к пользовательскому
+ * функция сообщений о смерти
  *
  * @author stumper66
  * @since 3.7.0
@@ -33,9 +34,19 @@ class DeathMessages {
         get() = messages.isEmpty()
 
     override fun toString(): String {
-        if (!this.isEnabled) return "DeathMessages (disabled)"
-        if (this.isEmpty) return "DeathMessages"
+        if (!this.isEnabled) return LocalizedMessages.text(
+            "display.rules.death-messages-disabled",
+            colorize = false
+        )
+        if (this.isEmpty) return LocalizedMessages.text(
+            "display.rules.death-messages-empty",
+            colorize = false
+        )
 
-        return "DeathMessages (${messages.size} defined)"
+        return LocalizedMessages.text(
+            "display.rules.death-messages-count",
+            mapOf("count" to messages.size),
+            false
+        )
     }
 }

@@ -8,7 +8,7 @@ import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
 /**
- * This event is fired *after* a mob is levelled. Other plugins can cancel this event.
+ * Это событие запускается *после* назначения уровня мобу. Другие плагины могут отменить это событие.
  *
  * @author lokka30
  * @since 2.5.0
@@ -33,12 +33,12 @@ class MobPostLevelEvent(
     }
 
     /**
-     * When a mob is levelled, the following enum is used to allow plugins to find the cause of the
-     * mob being levelled.
+     * При назначении уровня мобу, используется следующее перечисление, позволяющее плагинам найти причину
+     * моб получает уровень.
      *
      *
-     * NORMAL: Spawned naturally, by a spawn egg, etc. CHANGED_LEVEL: When an existing levelled mob
-     * has its level changed.
+     * NORMAL: Порождается естественным путем, яйцом призыва и т. д. CHANGED_LEVEL: Когда существующий уровневый моб
+     * изменился его уровень.
      */
     enum class LevelCause {
         NORMAL,

@@ -4,7 +4,7 @@ import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import org.bukkit.scheduler.BukkitTask
 
 /**
- * Holds info on a scheduled task that was executed
+ * Содержит информацию о запланированной задаче, которая была выполнена.
  *
  * @see SchedulerWrapper
  * @author stumper66

@@ -15,7 +15,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityTameEvent
 
 /**
- * Listens when an entity is tamed so various rules can be applied
+ * Слушает, когда сущность приручается, поэтому можно применять различные правила.
  *
  * @author stumper66
  * @since 2.4.0
@@ -37,7 +37,7 @@ class EntityTameListener : Listener {
         if (main.rulesManager.getRuleMobTamedStatus(lmEntity) === MobTamedStatus.NOT_TAMED) {
             DebugManager.log(DebugType.ENTITY_TAME, lmEntity) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d044", colorize = false) }
 
-            // if mob was levelled then remove it
+            // если моб имел уровень, то удалите его
             main.levelInterface.removeLevel(lmEntity)
 
             DebugManager.log(DebugType.ENTITY_TAME, lmEntity) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d045", colorize = false) }

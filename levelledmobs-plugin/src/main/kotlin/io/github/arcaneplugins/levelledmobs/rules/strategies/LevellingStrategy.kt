@@ -3,7 +3,7 @@ package io.github.arcaneplugins.levelledmobs.rules.strategies
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 
 /**
- * Interface for the various levelling systems
+ * Интерфейс для различных стратегий назначения уровня.
  *
  * @author lokka30
  * @since 3.0.0

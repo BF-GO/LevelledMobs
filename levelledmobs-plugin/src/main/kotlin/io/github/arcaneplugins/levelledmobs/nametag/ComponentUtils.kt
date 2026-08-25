@@ -3,8 +3,8 @@ package io.github.arcaneplugins.levelledmobs.nametag
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 
 /**
- * Provides methods for manipulating internal text
- * components
+ * Предоставляет методы для управления внутренним текстом.
+ * компоненты
  *
  * @author stumper66
  * @since 3.9.3

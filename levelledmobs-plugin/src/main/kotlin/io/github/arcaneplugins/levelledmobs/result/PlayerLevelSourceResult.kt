@@ -1,7 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.result
 
 /**
- * Used for PlayerLevelling options
+ * Используется для опций PlayerLevelling.
  *
  * @author stumper66
  * @since 3.3.0

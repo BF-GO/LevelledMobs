@@ -16,6 +16,7 @@ import io.github.arcaneplugins.levelledmobs.rules.strategies.CustomStrategy
 import io.github.arcaneplugins.levelledmobs.rules.strategies.LevellingStrategy
 import io.github.arcaneplugins.levelledmobs.rules.strategies.StrategyType
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import java.util.Objects
 import java.util.TreeMap
 import org.bukkit.Particle
@@ -25,7 +26,7 @@ import kotlin.collections.iterator
 
 
 /**
- * Holds rules parsed from rules.yml to make up a list of rules
+ * Содержит правила, проанализированные из rules.yml, для составления списка правил.
  *
  * @author stumper66
  * @since 3.0.0
@@ -33,155 +34,155 @@ import kotlin.collections.iterator
 @Suppress("UNCHECKED_CAST")
 class RuleInfo(
     @DoNotMerge @ExcludeFromHash @DoNotShow
-    internal var ruleName: String = "Unnamed"
+    internal var ruleName: String = "Без имени"
 ) {
     @field:DoNotMerge @field:DoNotShow
     var ruleIsEnabled = true
-    @field:RuleFieldInfo("construct level", RuleType.APPLY_SETTING)
+    @field:RuleFieldInfo("display.rules.fields.construct-level", RuleType.APPLY_SETTING)
     var constructLevel: String? = null
-    @field:DoNotShowFalse @field:DoNotMerge @field:ExcludeFromHash @field:RuleFieldInfo("is temp disabled", RuleType.MISC)
+    @field:DoNotShowFalse @field:DoNotMerge @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.is-temp-disabled", RuleType.MISC)
     var isTempDisabled = false
-    @field:DoNotShowFalse @field:ExcludeFromHash @field:RuleFieldInfo("use no spawner particles", RuleType.APPLY_SETTING)
+    @field:DoNotShowFalse @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.use-no-spawner-particles", RuleType.APPLY_SETTING)
     var useNoSpawnerParticles: Boolean? = null
-    @field:RuleFieldInfo("baby mobs inherit adult settings", RuleType.APPLY_SETTING)
+    @field:RuleFieldInfo("display.rules.fields.baby-mobs-inherit-adult-settings", RuleType.APPLY_SETTING)
     var babyMobsInheritAdultSetting: Boolean? = null
-    @field:RuleFieldInfo("mob level inheritance", RuleType.APPLY_SETTING)
+    @field:RuleFieldInfo("display.rules.fields.mob-level-inheritance", RuleType.APPLY_SETTING)
     var mobLevelInheritance: Boolean? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("use custom drops", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.use-custom-drops", RuleType.APPLY_SETTING)
     var customDropsUseForMobs: Boolean? = null
-    @field:RuleFieldInfo("stop proessing rules", RuleType.APPLY_SETTING)
+    @field:RuleFieldInfo("display.rules.fields.stop-proessing-rules", RuleType.APPLY_SETTING)
     var stopProcessingRules: Boolean? = null
     @field:ExcludeFromHash @field:DoNotShow
     var mergeEntityNameOverrides: Boolean? = null
-    @field:RuleFieldInfo("passenger match level", RuleType.APPLY_SETTING)
+    @field:RuleFieldInfo("display.rules.fields.passenger-match-level", RuleType.APPLY_SETTING)
     var passengerMatchLevel: Boolean? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("lock entity", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.lock-entity", RuleType.APPLY_SETTING)
     var lockEntity: Boolean? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("spawner particles count", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.spawner-particles-count", RuleType.APPLY_SETTING)
     var spawnerParticlesCount: Int? = null
-    @RuleFieldInfo("max random variance", RuleType.STRATEGY)
+    @RuleFieldInfo("display.rules.fields.max-random-variance", RuleType.STRATEGY)
     var maxRandomVariance: Int? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("creeper max damage radius", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.creeper-max-damage-radius", RuleType.APPLY_SETTING)
     var creeperMaxDamageRadius: Int? = null
-    @field:RuleFieldInfo("minlevel", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.minlevel", RuleType.CONDITION)
     var conditionsMinLevel: Int? = null
-    @field:RuleFieldInfo("maxlevel", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.maxlevel", RuleType.CONDITION)
     var conditionsMaxLevel: Int? = null
-    @field:RuleFieldInfo("minlevel", RuleType.APPLY_SETTING)
+    @field:RuleFieldInfo("display.rules.fields.minlevel", RuleType.APPLY_SETTING)
     var restrictionsMinLevel: Int? = null
-    @field:RuleFieldInfo("maxlevel", RuleType.APPLY_SETTING)
+    @field:RuleFieldInfo("display.rules.fields.maxlevel", RuleType.APPLY_SETTING)
     var restrictionsMaxLevel: Int? = null
-    @field:RuleFieldInfo("apply above Y", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.apply-above-y", RuleType.CONDITION)
     var conditionsApplyAboveY: Int? = null
-    @field:RuleFieldInfo("apply below Y", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.apply-below-y", RuleType.CONDITION)
     var conditionsApplyBelowY: Int? = null
-    @field:RuleFieldInfo("min distance from spawn", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.min-distance-from-spawn", RuleType.CONDITION)
     var conditionsMinDistanceFromSpawn: Int? = null
-    @field:RuleFieldInfo("max distance from spawn", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.max-distance-from-spawn", RuleType.CONDITION)
     var conditionsMaxDistanceFromSpawn: Int? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("nametag visible time", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.nametag-visible-time", RuleType.APPLY_SETTING)
     var nametagVisibleTime: Long? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("max death in chunk threshold", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.max-death-in-chunk-threshold", RuleType.APPLY_SETTING)
     var maximumDeathInChunkThreshold: Int? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("chunk max cooldown time", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.chunk-max-cooldown-time", RuleType.APPLY_SETTING)
     var chunkMaxCoolDownTime: Int? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("max adjacent chunks", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.max-adjacent-chunks", RuleType.APPLY_SETTING)
     var maxAdjacentChunks: Int? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("cooldown time", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.cooldown-time", RuleType.APPLY_SETTING)
     var conditionsCooldownTime: Long? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("times to cooldown activation", RuleType.CONDITION)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.times-to-cooldown-activation", RuleType.CONDITION)
     var conditionsTimesToCooldownActivation: Int? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("rule chance", RuleType.CONDITION)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.rule-chance", RuleType.CONDITION)
     var conditionsChance: Float? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("sunlight burn amount", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.sunlight-burn-amount", RuleType.APPLY_SETTING)
     var sunlightBurnAmount: Double? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("nametag", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.nametag", RuleType.APPLY_SETTING)
     var nametag: String? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("creature death nametag", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.creature-death-nametag", RuleType.APPLY_SETTING)
     var nametagCreatureDeath: String? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("nametag placeholder levelled", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.nametag-placeholder-levelled", RuleType.APPLY_SETTING)
     var nametagPlaceholderLevelled: String? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("nametag placeholder unlevelled", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.nametag-placeholder-unlevelled", RuleType.APPLY_SETTING)
     var nametagPlaceholderUnlevelled: String? = null
     @field:DoNotMerge @field:ExcludeFromHash @field:DoNotShow
     var presetName: String? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("drop table ids", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.drop-table-ids", RuleType.APPLY_SETTING)
     val customDropDropTableIds = mutableListOf<String>()
-    @field:ExcludeFromHash @field:RuleFieldInfo("health indicator", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.health-indicator", RuleType.APPLY_SETTING)
     var healthIndicator: HealthIndicator? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("invalid placeholder replacement", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.invalid-placeholder-replacement", RuleType.APPLY_SETTING)
     var invalidPlaceholderReplacement: String? = null
-    @field:RuleFieldInfo("mob customname", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.mob-customname", RuleType.CONDITION)
     var conditionsMobCustomnameStatus = MobCustomNameStatus.NOT_SPECIFIED
-    @field:RuleFieldInfo("mob tamed status", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.mob-tamed-status", RuleType.CONDITION)
     var conditionsMobTamedStatus = MobTamedStatus.NOT_SPECIFIED
-    @field:RuleFieldInfo("levelling strategy", RuleType.STRATEGY)
+    @field:RuleFieldInfo("display.rules.fields.levelling-strategy", RuleType.STRATEGY)
     val levellingStrategy = mutableMapOf<StrategyType, LevellingStrategy>()
-    @field:RuleFieldInfo("custom strategy", RuleType.STRATEGY)
+    @field:RuleFieldInfo("display.rules.fields.custom-strategy", RuleType.STRATEGY)
     val customStrategy: MutableMap<String, CustomStrategy> = TreeMap(String.CASE_INSENSITIVE_ORDER)
-    @field:ExcludeFromHash @field:RuleFieldInfo("entity name overrides with level", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.entity-name-overrides-with-level", RuleType.APPLY_SETTING)
     var entityNameOverridesLevel: MutableMap<String, MutableList<LevelTierMatching>>? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("entity name overrides", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.entity-name-overrides", RuleType.APPLY_SETTING)
     var entityNameOverrides: MutableMap<String, LevelTierMatching>? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("custom death messages", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.custom-death-messages", RuleType.APPLY_SETTING)
     var deathMessages: DeathMessages? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("nametag visibility options", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.nametag-visibility-options", RuleType.APPLY_SETTING)
     var nametagVisibilityEnum: MutableList<NametagVisibilityEnum>? = null
     @field:DoNotMerge @field:ExcludeFromHash @field:DoNotShow
     val ruleSourceNames = mutableMapOf<String, String>()
-    @field:ExcludeFromHash @field:RuleFieldInfo("spawner particle", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.spawner-particle", RuleType.APPLY_SETTING)
     var spawnerParticle: Particle? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("tiered coloring info", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.tiered-coloring-info", RuleType.APPLY_SETTING)
     var tieredColoringInfos: MutableList<TieredColoringInfo>? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("enabled compatibilities", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.enabled-compatibilities", RuleType.APPLY_SETTING)
     var enabledExtCompats: MutableMap<ExternalCompatibility, Boolean>? = null
-    @field:RuleFieldInfo("mob nbt data", RuleType.APPLY_SETTING)
+    @field:RuleFieldInfo("display.rules.fields.mob-nbt-data", RuleType.APPLY_SETTING)
     var mobNBTData: MergeableStringList? = null
-    @field:RuleFieldInfo("skylight level", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.skylight-level", RuleType.CONDITION)
     var conditionsSkyLightLevel: MinAndMax? = null
-    @field:RuleFieldInfo("worlds", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.worlds", RuleType.CONDITION)
     var conditionsWorlds: CachedModalList<String>? = null
-    @field:RuleFieldInfo("entities", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.entities", RuleType.CONDITION)
     var conditionsEntities: CachedModalList<String>? = null
-    @field:RuleFieldInfo("biomes", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.biomes", RuleType.CONDITION)
     var conditionsBiomes: CachedModalList<Biome>? = null
-    @field:RuleFieldInfo("external plugins", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.external-plugins", RuleType.CONDITION)
     var conditionsExternalPlugins: CachedModalList<String>? = null
-    @field:RuleFieldInfo("custom names", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.custom-names", RuleType.CONDITION)
     var conditionsCustomNames: CachedModalList<String>? = null
-    @field:RuleFieldInfo("no drop entities", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.no-drop-entities", RuleType.CONDITION)
     var conditionsNoDropEntities: CachedModalList<String>? = null
-    @field:RuleFieldInfo("worldguard regions", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.worldguard-regions", RuleType.CONDITION)
     var conditionsWGregions: CachedModalList<String>? = null
-    @field:RuleFieldInfo("worldguard region owners", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.worldguard-region-owners", RuleType.CONDITION)
     var conditionsWGregionOwners: CachedModalList<String>? = null
-    @field:RuleFieldInfo("mythic mobs names", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.mythic-mobs-names", RuleType.CONDITION)
     var conditionsMMnames: CachedModalList<String>? = null
-    @field:RuleFieldInfo("spawner names", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.spawner-names", RuleType.CONDITION)
     var conditionsSpawnerNames: CachedModalList<String>? = null
-    @field:RuleFieldInfo("spawner egg names", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.spawner-egg-names", RuleType.CONDITION)
     var conditionsSpawnegEggNames: CachedModalList<String>? = null
-    @field:RuleFieldInfo("scoreboard tags", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.scoreboard-tags", RuleType.CONDITION)
     var conditionsScoreboardTags: CachedModalList<String>? = null
-    @field:RuleFieldInfo("world tick time", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.world-tick-time", RuleType.CONDITION)
     var conditionsWorldTickTime: CachedModalList<MinAndMax>? = null
-    @field:RuleFieldInfo("vanilla bonuses", RuleType.APPLY_SETTING)
+    @field:RuleFieldInfo("display.rules.fields.vanilla-bonuses", RuleType.APPLY_SETTING)
     var vanillaBonuses: CachedModalList<VanillaBonusEnum>? = null
-    @field:RuleFieldInfo("spawn reasons", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.spawn-reasons", RuleType.CONDITION)
     var conditionsSpawnReasons: CachedModalList<String>? = null
-    @field:RuleFieldInfo("structures", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.structures", RuleType.CONDITION)
     var conditionsStructure: CachedModalList<Structure>? = null
-    @field:RuleFieldInfo("player permissions", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.player-permissions", RuleType.CONDITION)
     var conditionsPermission: CachedModalList<String>? = null
-    @field:RuleFieldInfo("player names", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.player-names", RuleType.CONDITION)
     var conditionsPlayerNames: CachedModalList<String>? = null
-    @field:RuleFieldInfo("Gamemode", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.gamemode", RuleType.CONDITION)
     var conditionsGamemode: CachedModalList<String>? = null
-    @field:RuleFieldInfo("within coordinates", RuleType.CONDITION)
+    @field:RuleFieldInfo("display.rules.fields.within-coordinates", RuleType.CONDITION)
     var conditionsWithinCoords: WithinCoordinates? = null
-    @field:RuleFieldInfo("mob multipliers", RuleType.APPLY_SETTING)
+    @field:RuleFieldInfo("display.rules.fields.mob-multipliers", RuleType.APPLY_SETTING)
     var mobMultipliers: FineTuningAttributes? = null
-    @field:ExcludeFromHash @field:RuleFieldInfo("chunk kill options", RuleType.APPLY_SETTING)
+    @field:ExcludeFromHash @field:RuleFieldInfo("display.rules.fields.chunk-kill-options", RuleType.APPLY_SETTING)
     var chunkKillOptions: ChunkKillOptions? = null
 
     companion object{
@@ -201,7 +202,9 @@ class RuleInfo(
             ){
                 if (!hadConditions){
                     hadConditions = true
-                    sb.append("\n&lConditions:&r")
+                    sb.append("\n").append(
+                        LocalizedMessages.text("display.rules.conditions-heading", colorize = false)
+                    )
                 }
                 sb.append("\n   ").append(item.key.fieldName)
                     .append(": ").append(item.value)
@@ -214,7 +217,9 @@ class RuleInfo(
             ){
                 if (!hadApplySettings){
                     hadApplySettings = true
-                    sb.append("\n&lApply Settings&r:")
+                    sb.append("\n").append(
+                        LocalizedMessages.text("display.rules.apply-settings-heading", colorize = false)
+                    )
                 }
                 sb.append("\n   ").append(item.key.fieldName)
                     .append(": ").append(item.value)
@@ -227,7 +232,9 @@ class RuleInfo(
             ){
                 if (!hadStrategies){
                     hadStrategies = true
-                    sb.append("\n&lStrategies:&r")
+                    sb.append("\n").append(
+                        LocalizedMessages.text("display.rules.strategies-heading", colorize = false)
+                    )
                 }
                 sb.append("\n   ").append(item.key.fieldName)
                     .append(": ").append(item.value)
@@ -243,7 +250,9 @@ class RuleInfo(
             ){
                 if (!hadMisc){
                     hadMisc = true
-                    sb.append("\n&lMisc:&r")
+                    sb.append("\n").append(
+                        LocalizedMessages.text("display.rules.misc-heading", colorize = false)
+                    )
                 }
                 sb.append("\n   ").append(item.key.fieldName)
                     .append(": ").append(item.value)
@@ -383,13 +392,15 @@ class RuleInfo(
         val values = mutableMapOf<RuleSortingInfo, String>()
         val sb = StringBuilder()
 
-        sb.append("\n&lId:&r ")
+        sb.append("\n").append(
+            LocalizedMessages.text("display.rules.id-heading", colorize = false)
+        )
         if (this.presetName.isNullOrEmpty())
             sb.append(ruleName)
         else
             sb.append(this.presetName)
         if (!this.ruleIsEnabled)
-            sb.append("&6(disabled)&r")
+            sb.append(LocalizedMessages.text("display.rules.disabled-suffix", colorize = false))
         else
             sb.append("&r")
 
@@ -406,7 +417,10 @@ class RuleInfo(
                 val ruleTypeInfo = f.getAnnotation(RuleFieldInfo::class.java)
                 if (ruleTypeInfo != null) {
                     ruleInfoType = ruleTypeInfo.ruleType
-                    ruleName = ruleTypeInfo.value
+                    ruleName = if (isForHash) f.name else LocalizedMessages.text(
+                        ruleTypeInfo.value,
+                        colorize = false
+                    )
                 }
 
                 if (!isForHash && f.isAnnotationPresent(DoNotShowFalse::class.java) &&

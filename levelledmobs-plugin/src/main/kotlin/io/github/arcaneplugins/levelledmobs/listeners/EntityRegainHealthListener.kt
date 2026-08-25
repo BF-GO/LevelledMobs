@@ -10,18 +10,18 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityRegainHealthEvent
 
 /**
- * Listens for when an entity regains health so the nametag can be updated accordingly
+ * Прослушивает, когда объект восстанавливает здоровье, чтобы можно было соответствующим образом обновить бейдж.
  *
  * @author konsolas, lokka30
  * @since 2.4.0
  */
 class EntityRegainHealthListener : Listener {
-    // When the mob regains health, try to update their nametag.
+    // Когда моб восстановит здоровье, попробуйте обновить его бейдж.
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     fun onEntityRegainHealth(event: EntityRegainHealthEvent) {
         if (event.entity !is LivingEntity) return
 
-        // Make sure the mob is levelled
+        // Убедитесь, что моб имеет уровень
         if (!LevelledMobs.instance.levelManager.isLevelled(event.entity as LivingEntity))
             return
 

@@ -10,8 +10,8 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 
 /**
- * Accesses the Essentials API if installed via reflection
- * Coded against version 2.20.1
+ * Доступ к Essentials API, если он установлен через отражение.
+ * Закодировано для версии 2.20.1.
  *
  * @author stumper66
  * @since 4.3.0

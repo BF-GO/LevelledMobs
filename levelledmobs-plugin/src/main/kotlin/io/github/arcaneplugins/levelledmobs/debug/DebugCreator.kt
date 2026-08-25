@@ -15,7 +15,7 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 
 /**
- * Creates debug.zip for troubleshooting purposes
+ * Создает debug.zip для устранения неполадок.
  *
  * @author stumper66
  * @since 3.2.0
@@ -105,31 +105,39 @@ object DebugCreator {
         sb.append(main.description.name).append(" ")
         sb.append(main.description.version)
         sb.append(System.lineSeparator())
-        sb.append("file size: ").append(String.format("%,d", lmFile.length()))
+        sb.append(LocalizedMessages.text("display.debug-archive.file-size", colorize = false))
+            .append(" ").append(String.format("%,d", lmFile.length()))
         sb.append(System.lineSeparator())
-        sb.append("sha256 hash: ")
+        sb.append(LocalizedMessages.text("display.debug-archive.sha256-hash", colorize = false))
+            .append(" ")
         if (shaDigest != null)
             sb.append(getFileChecksum(shaDigest, lmFile))
         else
-            sb.append("(error)")
+            sb.append(LocalizedMessages.text("display.debug-archive.error", colorize = false))
 
         sb.append(System.lineSeparator())
 
-        sb.append("server build: ").append(Bukkit.getServer().version)
+        sb.append(LocalizedMessages.text("display.debug-archive.server-build", colorize = false))
+            .append(" ").append(Bukkit.getServer().version)
         sb.append(System.lineSeparator())
-        sb.append("bukkit version: ").append(Bukkit.getBukkitVersion())
+        sb.append(LocalizedMessages.text("display.debug-archive.bukkit-version", colorize = false))
+            .append(" ").append(Bukkit.getBukkitVersion())
         sb.append(System.lineSeparator())
-        sb.append("player count: ").append(Bukkit.getOnlinePlayers().size)
+        sb.append(LocalizedMessages.text("display.debug-archive.player-count", colorize = false))
+            .append(" ").append(Bukkit.getOnlinePlayers().size)
         sb.append("/")
         sb.append(main.maxPlayersRecorded)
         sb.append(System.lineSeparator()).append(System.lineSeparator())
-        sb.append("plugins:\n")
+        sb.append(LocalizedMessages.text("display.debug-archive.plugins", colorize = false))
+            .append("\n")
 
         val plugins: MutableList<String> = ArrayList(Bukkit.getPluginManager().plugins.size)
         val sbPlugins = StringBuilder()
         for (p in Bukkit.getPluginManager().plugins) {
             sbPlugins.setLength(0)
-            if (!p.isEnabled) sbPlugins.append("(disabled) ")
+            if (!p.isEnabled) sbPlugins.append(
+                LocalizedMessages.text("display.debug-archive.disabled", colorize = false)
+            )
 
             sbPlugins.append(p.name).append(" ")
             sbPlugins.append(p.description.version)
@@ -152,7 +160,7 @@ object DebugCreator {
         digest: MessageDigest,
         file: File
     ): String? {
-        // taken from https://howtodoinjava.com/java/io/sha-md5-file-checksum-hash/
+        // взято из https://howtodoinjava.com/java/io/sha-md5-file-checksum-hash/
 
         val byteArray = ByteArray(1024)
         var bytesCount: Int

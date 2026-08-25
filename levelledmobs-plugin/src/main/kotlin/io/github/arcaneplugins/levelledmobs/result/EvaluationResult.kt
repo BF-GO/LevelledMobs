@@ -1,7 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.result
 
 /**
- * Holds the results of a formula evaluation
+ * Содержит результаты оценки формулы.
  *
  * @author stumper66
  * @since 4.0

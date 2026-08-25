@@ -34,14 +34,14 @@ import org.bukkit.entity.ZombieVillager
 import org.bukkit.metadata.FixedMetadataValue
 
 /**
- * Allows you to kill LevelledMobs with various options including all levelled mobs, specific worlds
- * or levelled mobs in your proximity
+ * Удаляет уровневых мобов с учётом выбранного режима и мира.
+ * или уровневые мобы поблизости
  *
  * @author stumper66
  * @since 2.0
  */
 object KillSubcommand : CommandBase("levelledmobs.command.kill") {
-    override val description = "Various commands for killing LevelledMobs mobs."
+    override val description = LocalizedMessages.text("command.descriptions.kill", colorize = false)
 
     fun buildCommand() : LiteralCommandNode<CommandSourceStack> {
         return createLiteralCommand("kill")
@@ -73,7 +73,7 @@ object KillSubcommand : CommandBase("levelledmobs.command.kill") {
     ){
         val sender = ctx.source.sender
         commandSender = sender
-        //TODO: make this work in Folia
+        //TODO: сделайте это в Folia.
         if (LevelledMobs.instance.ver.isRunningFolia) {
             LocalizedMessages.send(sender, "common.not-available-on-folia")
             return
@@ -403,11 +403,11 @@ object KillSubcommand : CommandBase("levelledmobs.command.kill") {
                 return true
         }
 
-        // Tamed
+        // Прирученный
         if (livingEntity is Tameable && skc.isTamed)
             return true
 
-        // Leashed
+        // на поводке
         if (livingEntity.isLeashed && skc.isLeashed)
             return true
 

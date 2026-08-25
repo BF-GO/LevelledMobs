@@ -38,7 +38,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 /**
- * Manages all rules that are parsed from rules.yml and applied to various defined mobs
+ * Управляет всеми правилами, которые анализируются из rules.yml и применяются к различным определенным мобам.
  *
  * @author stumper66
  * @since 3.0.0
@@ -185,8 +185,8 @@ class RulesManager {
     fun getRuleIsMobAllowedInEntityOverride(
         lmInterface: LivingEntityInterface
     ): Boolean {
-        // check if it should be denied thru the entity override list
-        var babyMobsInheritAdultSetting = true // default
+        // проверьте, следует ли отклонять его через список переопределения объекта
+        var babyMobsInheritAdultSetting = true // по умолчанию
         var allowedEntitiesList: CachedModalList<String>? = null
         for (ruleInfo in lmInterface.getApplicableRules()) {
             if (ruleInfo.conditionsEntities != null)
@@ -599,7 +599,7 @@ class RulesManager {
         )
 
         if (namesInfo.size > 1) {
-            // set a PDC key with the name otherwise the name will constantly change
+            // установите ключ PDC с именем, иначе имя будет постоянно меняться
             lmEntity.overridenEntityName = result
         }
 
@@ -655,7 +655,7 @@ class RulesManager {
                 result = ruleInfo.spawnerParticlesCount!!
         }
 
-        // max limit of 100 counts which would take 5 seconds to show
+        // максимальный лимит в 100 отсчетов, для отображения которого потребуется 5 секунд.
         if (result > 100) result = 100
 
         return result
@@ -722,7 +722,7 @@ class RulesManager {
         if (this.lastRulesCheck == null
             || Duration.between(this.lastRulesCheck, Instant.now()).toMillis() > 100
         ) {
-            // check temp disabled rules every 100ms minimum
+            // проверять отключенные временные правила минимум каждые 100 мс
             checkTempDisabledRules()
             this.lastRulesCheck = Instant.now()
         }
@@ -787,7 +787,7 @@ class RulesManager {
         if (lmInterface !is LivingEntityWrapper)
             return
 
-        // don't increment the count when just checking nametags, etc
+        // не увеличивайте счетчик при проверке бейджей и т. д.
         if (!lmInterface.isNewlySpawned && !lmInterface.isRulesForceAll)
             return
 
@@ -843,7 +843,7 @@ class RulesManager {
         if (ri.conditionsWithinCoords != null && !ri.conditionsWithinCoords!!.isEmpty &&
             !meetsMaxDistanceCriteria(lmEntity, ri)
         ) {
-            // debug entries are inside the last function
+            // записи отладки находятся внутри последней функции
             return false
         }
 
@@ -1150,7 +1150,7 @@ class RulesManager {
 
                 if (!result) return RuleCheckResult(false)
             } else {
-                // can't check groups if not a living entity wrapper
+                // невозможно проверить группы, если это не оболочка живого объекта
                 val result = ri.conditionsEntities!!.isIncludedInList(
                     lmInterface.typeName, null
                 )
@@ -1297,7 +1297,7 @@ class RulesManager {
 
         if (ri.conditionsChance != null && ri.conditionsChance!! < 1.0) {
             if (lmInterface is LivingEntityWrapper) {
-                // find out if this entity previously lost or won the chance previously and use that result if present
+                // выясните, теряла ли эта сущность ранее или выиграла этот шанс, и используйте этот результат, если он есть.
                 val prevChanceResults = lmInterface.prevChanceRuleResults
                 if (prevChanceResults != null && prevChanceResults.containsKey(ri.ruleName)) {
                     val prevResult = prevChanceResults[ri.ruleName]!!
@@ -1466,7 +1466,7 @@ class RulesManager {
 
         val ruleLocker = Any()
 
-        // taken from https://www.baeldung.com/sha-256-hashing-java
+        // взято из https://www.baeldung.com/sha-256-hashing-java
         private fun bytesToHex(hash: ByteArray): String {
             val hexString = StringBuilder(2 * hash.size)
             for (b in hash) {
