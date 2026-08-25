@@ -18,7 +18,7 @@ subprojects {
 }
 
 val javadocJar = tasks.register<Jar>("javadocJar") {
-    description = "LevelledMobs javadocs"
+    description = "Документация API LevelledMobs"
     archiveClassifier.set("javadoc")
 }
 

@@ -1,28 +1,28 @@
 #   -------------------------------------------------------------------------------------
 #   ----------------------------------------  -  ----------------------------------------
 #    _                   _ _          _       |
-#   | |    _____   _____| | | ___  __| |      |   Developer: PenalBuffalo
+#   | |    _____   _____| | | ___  __| |      |   Разработчик: PenalBuffalo
 #   | |   / _ \ \ / / _ \ | |/ _ \/ _` |      |   ko-fi.com/penalbuffalo
 #   | |__|  __/\ V /  __/ | |  __/ (_| |      |
-#   |_____\___| \_/ \___|_|_|\___|\__,_|_     |   Original Author: Lokka30
+#   |_____\___| \_/ \___|_|_|\___|\__,_|_     |   Автор оригинала: Lokka30
 #            |  \/  | ___ | |__  ___| || |    |   ko-fi.com/lokka30
 #            | |\/| |/ _ \| '_ \/ __| || |_   |
-#            | |  | | (_) | |_) \__ \__   _|  |   Support & Wiki: UltimaOath
+#            | |  | | (_) | |_) \__ \__   _|  |   Поддержка и wiki: UltimaOath
 #            |_|  |_|\___/|_.__/|___/  |_|    |   ko-fi.com/ultimaoath
 #
-#   ----------------------   The Ultimate Mob Levelling Solution   ----------------------
+#   -----------------------   Решение для уровневых мобов   ------------------------
 #
-#   Documentation                             |   Support
+#   Документация                             |   Поддержка
 #   . Wiki: tinyurl.com/lm4-wiki              |   . Discord: discord.gg/RQ8M4A5
-#   . FAQ: tinyurl.com/lm4-wiki-faq           |   Please review our plugin!
-#   . Ex. Rules: tinyurl.com/lm4-ex-rules     |   . Hangar - tinyurl.com/lm-hangar
-#   . Ex. Drops: tinyurl.com/lm4-ex-drops     |   . SpigotMC - tinyurl.com/lm-spigotmc
+#   . FAQ: tinyurl.com/lm4-wiki-faq           |   Оцените наш плагин!
+#   . Примеры правил: tinyurl.com/lm4-ex-rules |   . Hangar - tinyurl.com/lm-hangar
+#   . Примеры дропа: tinyurl.com/lm4-ex-drops  |   . SpigotMC - tinyurl.com/lm-spigotmc
 #                                             |
 #   ----------------------------------------  -  ----------------------------------------
 #   -------------------------------------------------------------------------------------
 #
 #   ---------------  -  ------------------------------
-#        Section 01  |  Default CustomDrop Settings
+# Раздел 01 |  Настройки пользовательского дропа по умолчанию
 #   ---------------  -  ------------------------------
 #
 defaults:
@@ -49,7 +49,7 @@ defaults:
     cap-total: -1
     cap-equipped: -1
     retries: 0
-  #The following are for CustomCommand Drops only:
+  # Следующие параметры относятся только к пользовательским командам:
   run-on-spawn: false
   run-on-death: true
   delay: 0
@@ -57,7 +57,7 @@ defaults:
 
 #
 #   ---------------  -  ------------------------------
-#        Section 02  |  Group CustomDrops
+# Раздел 02 |  Группы пользовательского дропа
 #   ---------------  -  ------------------------------
 #
 all_mobs:
@@ -90,7 +90,7 @@ all_aquatic_mobs:
 
 #
 #   ---------------  -  ------------------------------
-#        Section 03  |  Entity CustomDrops
+# Раздел 03 |  Пользовательский дроп по типу сущности
 #   ---------------  -  ------------------------------
 #
 ALLAY:
@@ -333,7 +333,7 @@ ZOMBIFIED_PIGLIN:
 
 #
 #   ---------------  -  ------------------------------
-#        Section 04  |  Drop Tables
+# Раздел 04 |  Удаление таблиц
 #   ---------------  -  ------------------------------
 #
 drop-table:
@@ -374,7 +374,7 @@ drop-table:
 
 #
 #   ---------------  -  ------------------------------
-#        Section 05  |  Developer Settings / Do Not Edit Beyond This Point
+# Раздел 05 |  Настройки разработчика / Не редактировать дальше этого момента
 #   ---------------  -  ------------------------------
 #
 file-version: 12

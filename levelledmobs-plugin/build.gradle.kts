@@ -115,8 +115,8 @@ publishing {
             artifactId = artifactId.toString()
             pom {
                 //name.set("…")
-                description.set("The Ultimate RPG Mob Levelling Solution")
-                url.set("https://github.com/ArcanePlugins/LevelledMobs")
+                description.set("Техническое решение для уровневых мобов")
+                url.set("https://github.com/BF-GO/LevelledMobs")
                 licenses {
                     license {
                         name.set("GNU")
@@ -135,7 +135,7 @@ publishing {
                     }
                 }
                 scm {
-                    url.set("https://github.com/ArcanePlugins/LevelledMobs")
+                    url.set("https://github.com/BF-GO/LevelledMobs")
                 }
             }
 

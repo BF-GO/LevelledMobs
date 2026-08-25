@@ -1,28 +1,28 @@
 #   -------------------------------------------------------------------------------------
 #   ----------------------------------------  -  ----------------------------------------
 #    _                   _ _          _       |
-#   | |    _____   _____| | | ___  __| |      |   Developer: PenalBuffalo
+#   | |    _____   _____| | | ___  __| |      |   Разработчик: PenalBuffalo
 #   | |   / _ \ \ / / _ \ | |/ _ \/ _` |      |   ko-fi.com/penalbuffalo
 #   | |__|  __/\ V /  __/ | |  __/ (_| |      |
-#   |_____\___| \_/ \___|_|_|\___|\__,_|_     |   Original Author: Lokka30
+#   |_____\___| \_/ \___|_|_|\___|\__,_|_     |   Автор оригинала: Lokka30
 #            |  \/  | ___ | |__  ___| || |    |   ko-fi.com/lokka30
 #            | |\/| |/ _ \| '_ \/ __| || |_   |
-#            | |  | | (_) | |_) \__ \__   _|  |   Support & Wiki: UltimaOath
+#            | |  | | (_) | |_) \__ \__   _|  |   Поддержка и wiki: UltimaOath
 #            |_|  |_|\___/|_.__/|___/  |_|    |   ko-fi.com/ultimaoath
 #
-#   ----------------------   The Ultimate Mob Levelling Solution   ----------------------
+#   -----------------------   Решение для уровневых мобов   ------------------------
 #
-#   Documentation                             |   Support
+#   Документация                             |   Поддержка
 #   . Wiki: tinyurl.com/lm4-wiki              |   . Discord: discord.gg/RQ8M4A5
-#   . FAQ: tinyurl.com/lm4-wiki-faq           |   Please review our plugin!
-#   . Ex. Rules: tinyurl.com/lm4-ex-rules     |   . Hangar - tinyurl.com/lm-hangar
-#   . Ex. Drops: tinyurl.com/lm4-ex-drops     |   . SpigotMC - tinyurl.com/lm-spigotmc
+#   . FAQ: tinyurl.com/lm4-wiki-faq           |   Оцените наш плагин!
+#   . Примеры правил: tinyurl.com/lm4-ex-rules |   . Hangar - tinyurl.com/lm-hangar
+#   . Примеры дропа: tinyurl.com/lm4-ex-drops  |   . SpigotMC - tinyurl.com/lm-spigotmc
 #                                             |
 #   ----------------------------------------  -  ----------------------------------------
 #   -------------------------------------------------------------------------------------
 #
 #   ---------------  -  ------------------------------
-#        Section 01  |  External Plugin Support
+# Раздел 01 |  Поддержка внешних плагинов
 #   ---------------  -  ------------------------------
 #
 infernal-mobs:
@@ -31,7 +31,7 @@ infernal-mobs:
   key-name: 'infernalMetadata'
   key-type: 'metadata'
   requirement: 'exists'
-#  placeholder-name: '%infernal-mobs-name%'
+# placeholder-name: '%infernal-mobs-name%'
 
 shop-keepers:
   friendly-name: 'shop-keepers'
@@ -39,7 +39,7 @@ shop-keepers:
   key-name: 'shopkeeper'
   key-type: 'metadata'
   requirement: 'exists'
-#  placeholder-name: '%shop-keeper-name%'
+# placeholder-name: '%shop-keeper-name%'
 
 blood-night:
   friendly-name: 'blood-night'
@@ -47,7 +47,7 @@ blood-night:
   key-name: 'mobtype'
   key-type: 'PDC'
   requirement: 'exists'
-#  placeholder-name: '%blood-night-name%'
+# placeholder-name: '%blood-night-name%'
 
 eco-bosses:
   friendly-name: 'eco-bosses'
@@ -55,7 +55,7 @@ eco-bosses:
   key-name: 'boss'
   key-type: 'PDC'
   requirement: 'exists'
-#  placeholder-name: '%eco-bosses-name%'
+# placeholder-name: '%eco-bosses-name%'
 
 combat-pets:
   friendly-name: 'combat-pets'
@@ -64,7 +64,7 @@ combat-pets:
   key-type: 'PDC'
   key-valuetype: 'double'
   requirement: 'exists'
-#  placeholder-name: '%combat-pets-name%'
+# placeholder-name: '%combat-pets-name%'
 
 Deadly-Disasters:
   friendly-name: 'deadly-disasters'
@@ -72,7 +72,7 @@ Deadly-Disasters:
   key-name: 'customentity'
   key-type: 'PDC'
   requirement: 'exists'
-#  placeholder-name: '%deadly-disasters-name%'
+# placeholder-name: '%deadly-disasters-name%'
 
 gadgets-menu:
   friendly-name: 'gadgets-menu'
@@ -80,7 +80,7 @@ gadgets-menu:
   key-name: 'GadgetsMenu-Pet'
   key-type: 'metadata'
   requirement: 'exists'
-#  placeholder-name: '%gadgets-menu-name%'
+# placeholder-name: '%gadgets-menu-name%'
 
 my-pet:
   friendly-name: 'my-pet'
@@ -88,11 +88,11 @@ my-pet:
   key-name: 'MyPet'
   key-type: 'metadata'
   requirement: 'exists'
-#  placeholder-name: '%mypet-menu-name%'
+# placeholder-name: '%mypet-menu-name%'
 
 #
 #   ---------------  -  ------------------------------
-#        Section 02  |  Developer Settings / Do Not Edit Beyond This Point
+# Раздел 02 |  Настройки разработчика / Не редактировать дальше этого момента
 #   ---------------  -  ------------------------------
 #
 file-version: 1

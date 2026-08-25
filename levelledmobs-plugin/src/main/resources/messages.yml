@@ -1,28 +1,28 @@
 #   -------------------------------------------------------------------------------------
 #   ----------------------------------------  -  ----------------------------------------
 #    _                   _ _          _       |
-#   | |    _____   _____| | | ___  __| |      |   Developer: PenalBuffalo
+#   | |    _____   _____| | | ___  __| |      |   Разработчик: PenalBuffalo
 #   | |   / _ \ \ / / _ \ | |/ _ \/ _` |      |   ko-fi.com/penalbuffalo
 #   | |__|  __/\ V /  __/ | |  __/ (_| |      |
-#   |_____\___| \_/ \___|_|_|\___|\__,_|_     |   Original Author: Lokka30
+#   |_____\___| \_/ \___|_|_|\___|\__,_|_     |   Автор оригинала: Lokka30
 #            |  \/  | ___ | |__  ___| || |    |   ko-fi.com/lokka30
 #            | |\/| |/ _ \| '_ \/ __| || |_   |
-#            | |  | | (_) | |_) \__ \__   _|  |   Support & Wiki: UltimaOath
+#            | |  | | (_) | |_) \__ \__   _|  |   Поддержка и wiki: UltimaOath
 #            |_|  |_|\___/|_.__/|___/  |_|    |   ko-fi.com/ultimaoath
 #
-#   ----------------------   The Ultimate Mob Levelling Solution   ----------------------
+#   -----------------------   Решение для уровневых мобов   ------------------------
 #
-#   Documentation                             |   Support
+#   Документация                             |   Поддержка
 #   . Wiki: tinyurl.com/lm4-wiki              |   . Discord: discord.gg/RQ8M4A5
-#   . FAQ: tinyurl.com/lm4-wiki-faq           |   Please review our plugin!
-#   . Ex. Rules: tinyurl.com/lm4-ex-rules     |   . Hangar - tinyurl.com/lm-hangar
-#   . Ex. Drops: tinyurl.com/lm4-ex-drops     |   . SpigotMC - tinyurl.com/lm-spigotmc
+#   . FAQ: tinyurl.com/lm4-wiki-faq           |   Оцените наш плагин!
+#   . Примеры правил: tinyurl.com/lm4-ex-rules |   . Hangar - tinyurl.com/lm-hangar
+#   . Примеры дропа: tinyurl.com/lm4-ex-drops  |   . SpigotMC - tinyurl.com/lm-spigotmc
 #                                             |
 #   ----------------------------------------  -  ----------------------------------------
 #   -------------------------------------------------------------------------------------
 #
 #   ---------------  -  ------------------------------
-#        Section 01  |  Common Messages
+# Раздел 01 |  Общие сообщения
 #   ---------------  -  ------------------------------
 #
 common:
@@ -45,7 +45,7 @@ common:
 
 #
 #   ---------------  -  ------------------------------
-#        Section 02  |  Default Command Messages
+# Раздел 02 |  Командные сообщения по умолчанию
 #   ---------------  -  ------------------------------
 #
 command:
@@ -66,7 +66,7 @@ command:
 
     #
     #   ---------------  -  ------------------------------
-    #        Section 03  |  Summon Command Messages
+    # Раздел 03 |  Командные сообщения вызова
     #   ---------------  -  ------------------------------
     #
     summon:
@@ -90,12 +90,12 @@ command:
         usage:
           - '%prefix% Использование: &b/%label% summon <amount> <entity> <level> here'
         success:
-          - '%prefix% Призвано сущностей &b%entity%&7: &b%amount%&7, уровень &f%level%&7, в текущей позиции.'
+          - '%prefix% Призвано сущностей &b%entity%: &b%amount%&7, уровень &f%level%&7, в текущей позиции.'
       atLocation:
         usage:
           - '%prefix% Использование: &b/%label% summon <amount> <entity> <level> atLocation <x> <y> <z> [world]'
         success:
-          - '%prefix% Призвано сущностей &b%entity%&7: &b%amount%&7, уровень &f%level%&7, координаты &8(&b%x%&7, &b%y%&7, &b%z%&7, мир ''&b%world%&7''&8)&7.'
+          - '%prefix% Призвано сущностей &b%entity%: &b%amount%&7, уровень &f%level%&7, координаты &8(&b%x%&7, &b%y%&7, &b%z%&7, мир ''&b%world%&7''&8)&7.'
         usage-console:
           - '%prefix% Использование из консоли: &b/%label% summon <amount> <entity> <level> atLocation <x> <y> <z> <world>'
         invalid-world:
@@ -106,7 +106,7 @@ command:
         usage:
           - '%prefix% Использование: &b/%label% summon <amount> <entityType> <level> atPlayer <player>'
         success:
-          - '%prefix% Призвано сущностей &b%entity%&7: &b%amount%&7, уровень &f%level%&7, возле игрока &r%targetDisplayname%&7.'
+          - '%prefix% Призвано сущностей &b%entity%: &b%amount%&7, уровень &f%level%&7, возле игрока &r%targetDisplayname%&7.'
       usage:
         - '%prefix% Синтаксис команды призыва:'
         - '&8 &m->&b /%label% summon <amount> <entity> <level> here'
@@ -128,7 +128,7 @@ command:
 
     #
     #   ---------------  -  ------------------------------
-    #        Section 04  |  Kill Command Messages
+    # Раздел 04 |  Сообщения команды уничтожения
     #   ---------------  -  ------------------------------
     #
     kill:
@@ -142,7 +142,7 @@ command:
         invalid-world:
           - '%prefix% Некорректный мир: ''&b%world%&7''.'
         success:
-          - '%prefix% Удалено уровневых мобов: &b%killed%&7; миров: &b%worlds%&7; пропущено: &b%skipped%&7.'
+          - '%prefix% Удалено уровневых мобов: &b%killed%&7; миров: &b%worlds%&7 &8(&b%skipped%&7 пропущено&8)&7.'
         usage:
           - '%prefix% Использование: &b/%label% kill all [world/*]'
         usage-console:
@@ -155,14 +155,14 @@ command:
         invalid-radius-max:
           - '%prefix% Радиус уменьшен до максимального значения &8(&b%maxRadius%&8)&7.'
         success:
-          - '%prefix% В радиусе &b%radius%&7 блоков удалено уровневых мобов: &b%killed%&7; пропущено: &b%skipped%&7.'
+          - '%prefix% В радиусе &b%radius%&7 блоков удалено уровневых мобов: &b%killed%&7 &8(&b%skipped%&7 пропущено&8)&7.'
         usage:
           - '%prefix% Использование: &b/%label% kill near <radius>'
 
 
     #
     #   ---------------  -  ------------------------------
-    #        Section 05  |  Spawner Command Messages
+    # Раздел 05 |  Командные сообщения спавнера
     #   ---------------  -  ------------------------------
     #
     spawner:
@@ -221,7 +221,7 @@ command:
 
     #
     #   ---------------  -  ------------------------------
-    #        Section 06  |  Spawn Egg Command Messages
+    # Раздел 06 |  Сообщения команд спауна яйца
     #   ---------------  -  ------------------------------
     #
     spawn_egg:
@@ -256,7 +256,7 @@ command:
 
     #
     #   ---------------  -  ------------------------------
-    #        Section 07  |  Rules Command Messages
+    # Раздел 07 |  Сообщения команд правил
     #   ---------------  -  ------------------------------
     #
     rules:
@@ -311,7 +311,7 @@ command:
 
     #
     #   ---------------  -  ------------------------------
-    #        Section 08  |  System Command Messages
+    # Раздел 08 |  Сообщения системных команд
     #   ---------------  -  ------------------------------
     #
     reload:
@@ -722,7 +722,7 @@ display:
 
 #
 #   ---------------  -  ------------------------------
-#        Section 09  |  Other Messages
+# Раздел 09 |  Другие сообщения
 #   ---------------  -  ------------------------------
 #
 other:
@@ -755,7 +755,7 @@ other:
   update-notice:
     messages:
       - '&b&nДоступно обновление LevelledMobs:'
-      - '&7Установленная версия &bLevelledMobs&7 устарела. Обновите плагин до &bv%latestVersion%&7. &8(&7Текущая версия: &bv%currentVersion%&8)'
+      - '&7Установленная версия &bLevelledMobs&7 &bустарела&7. Обновите плагин до &bv%latestVersion%&7. &8(&7Текущая версия: &bv%currentVersion%&8)'
     send-in-console: true
     send-on-join: true
 
@@ -961,7 +961,7 @@ console:
 
 #
 #   ---------------  -  ------------------------------
-#        Section 10  |  Developer Settings / Do Not Edit Beyond This Point
+# Раздел 10 |  Настройки разработчика / Не редактировать дальше этого момента
 #   ---------------  -  ------------------------------
 #
 file-version: 10
