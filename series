@@ -2,3 +2,6 @@ patchsets/0001-localized-message-catalog/0001-add-localized-message-catalog.patc
 patchsets/0002-russian-runtime-messages/0002-add-russian-runtime-messages.patch
 patchsets/0003-resources-and-metadata/0003-translate-resources-and-metadata.patch
 patchsets/0004-documentation-and-comments/0004-translate-documentation-and-source-comments.patch
+patchsets/0005-judgement-week-humor/0005-add-judgement-week-humor.patch
+patchsets/0006-judgement-week-rules/0006-add-judgement-week-rules.patch
+patchsets/0007-judgement-week-rewards/0007-add-judgement-week-rewards.patch

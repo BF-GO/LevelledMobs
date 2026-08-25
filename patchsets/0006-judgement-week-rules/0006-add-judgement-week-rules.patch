@@ -1,0 +1,863 @@
+From abaea902f6db0f43c73dc782aa3ca06355786c46 Mon Sep 17 00:00:00 2001
+From: BF_GO <26bfgo@gmail.com>
+Date: Wed, 26 Aug 2026 00:20:10 +0300
+Subject: [PATCH] Add Judgement Week rules
+
+---
+ .../listeners/EntitySpawnListener.kt          |   4 +-
+ .../levelledmobs/rules/RulesManager.kt        |   7 +-
+ .../src/main/resources/rules.yml              | 744 ++++++++----------
+ 3 files changed, 314 insertions(+), 441 deletions(-)
+
+diff --git a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/listeners/EntitySpawnListener.kt b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/listeners/EntitySpawnListener.kt
+index 8761e48f4e9f5cb2e57bfc09617d8051d877c201..910b45ec14977e676c0f6c3ffe686d4ffe871521 100644
+--- a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/listeners/EntitySpawnListener.kt
++++ b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/listeners/EntitySpawnListener.kt
+@@ -292,9 +292,7 @@ class EntitySpawnListener : Listener{
+                 lmEntity
+             ) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d037", colorize = false) }
+         } else if (event is CreatureSpawnEvent) {
+-            if (event.spawnReason == SpawnReason.SPAWNER ||
+-                event.spawnReason == SpawnReason.SLIME_SPLIT
+-            ) {
++            if (event.spawnReason == SpawnReason.SPAWNER) {
+                 return
+             }
+ 
+diff --git a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/rules/RulesManager.kt b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/rules/RulesManager.kt
+index a73fd711e4175e7c78d64fda6a67405211629bb5..74b9975266cf3caae72e0db5522b1884ba806abe 100644
+--- a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/rules/RulesManager.kt
++++ b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/rules/RulesManager.kt
+@@ -880,7 +880,12 @@ class RulesManager {
+             val mobCompats = lmEntity.mobExternalTypes
+             //if (!lmEntity.isMobOfExternalType) mobCompats.add("NOT-APPLICABLE")
+ 
+-            var madeIt = false
++            // У сущностей без внешнего источника список совместимостей пуст.
++            // Такое состояние должно удовлетворять чистому blacklist-условию,
++            // иначе невозможно исключить всех внешних мобов и оставить обычных.
++            var madeIt = mobCompats.isEmpty() &&
++                    (ri.conditionsExternalPlugins!!.isBlacklist ||
++                            ri.conditionsExternalPlugins!!.excludeAll)
+             for (compat in mobCompats) {
+                 if (ri.conditionsExternalPlugins!!.isIncludedInList(compat, lmEntity)) {
+                     madeIt = true
+diff --git a/levelledmobs-plugin/src/main/resources/rules.yml b/levelledmobs-plugin/src/main/resources/rules.yml
+index 22406749a08b65f442f049fa252c4f449c94c939..859e4113fb60f264996c43543ad18dc7b9309cec 100644
+--- a/levelledmobs-plugin/src/main/resources/rules.yml
++++ b/levelledmobs-plugin/src/main/resources/rules.yml
+@@ -1,494 +1,369 @@
+-#   -------------------------------------------------------------------------------------
+-#   ----------------------------------------  -  ----------------------------------------
+-#    _                   _ _          _       |
+-#   | |    _____   _____| | | ___  __| |      |   Разработчик: PenalBuffalo
+-#   | |   / _ \ \ / / _ \ | |/ _ \/ _` |      |   ko-fi.com/penalbuffalo
+-#   | |__|  __/\ V /  __/ | |  __/ (_| |      |
+-#   |_____\___| \_/ \___|_|_|\___|\__,_|_     |   Автор оригинала: Lokka30
+-#            |  \/  | ___ | |__  ___| || |    |   ko-fi.com/lokka30
+-#            | |\/| |/ _ \| '_ \/ __| || |_   |
+-#            | |  | | (_) | |_) \__ \__   _|  |   Поддержка и wiki: UltimaOath
+-#            |_|  |_|\___/|_.__/|___/  |_|    |   ko-fi.com/ultimaoath
+-#
+-#   -----------------------   Решение для уровневых мобов   ------------------------
+-#
+-#   Документация                             |   Поддержка
+-#   . Wiki: tinyurl.com/lm4-wiki              |   . Discord: discord.gg/RQ8M4A5
+-#   . FAQ: tinyurl.com/lm4-wiki-faq           |   Оцените наш плагин!
+-#   . Примеры правил: tinyurl.com/lm4-ex-rules |   . Hangar - tinyurl.com/lm-hangar
+-#   . Примеры дропа: tinyurl.com/lm4-ex-drops  |   . SpigotMC - tinyurl.com/lm-spigotmc
+-#                                             |
+-#   ----------------------------------------  -  ----------------------------------------
+-#   -------------------------------------------------------------------------------------
+-#
+-#   ---------------  -  ------------------------------
+-# Раздел 01 |  Пресеты
+-#   ---------------  -  ------------------------------
+-#
+-presets:
+-#
+-#   ---------------  -  ------------------------------
+-# Раздел 01 - А |  Пресеты/Стратегии выравнивания
+-#   ---------------  -  ------------------------------
+-#
+-  lvlstrategy-random:
+-    name: 'Стратегия уровня — случайная'
+-    strategies:
+-      random: true
++# LevelledMobs — событийный профиль «Судная неделя».
++# Схема конфигурации LevelledMobs 4.5.3.2. Технические ключи и плейсхолдеры не переводятся.
+ 
+-  lvlstrategy-weighted-random:
+-    name: 'Стратегия уровня — взвешенная случайная'
++presets:
++  judgement-week-levels:
++    name: 'Судная неделя — распределение уровней'
+     strategies:
+       weighted-random:
+-        11-50: 0
+-        5-10: 1
+-        4-8: 10
+-        3-6: 25
+-        2-4: 50
+-        1-2: 100
+-
+-  lvlstrategy-distance-from-origin:
+-    name: 'Стратегия уровня — расстояние от начала координат'
+-    strategies:
+-      distance-from-origin:
+-        origin-coordinates:
+-          x: spawn
+-          z: spawn
+-        buffer-distance: 250
+-        ringed-tiers: 750
+-      # Модификатор высоты Y
+-        enable-height-modifier: true
+-        transition-y-height: 62
+-        y-height-period: 15
+-        level-multiplier: 0.05
+-        scale-increase-downward: true
+-
+-  lvlstrategy-y-coordinate:
+-    name: 'Стратегия уровня — координата Y'
++        1-49: 1228
++        50-149: 501
++        150-299: 267
++        300-449: 160
++        450-599: 94
++        600-749: 47
++        750-899: 20
++        900-998: 15
++
++  judgement-week-boss-levels:
++    name: 'Судная неделя — распределение уровней боссов'
+     strategies:
+-      y-coordinate:
+-        start-height: 100
+-        period: 0
+-        end-height: 20
+-
+-
+-#
+-#   ---------------  -  ------------------------------
+-# Раздел 01 - Б |  Пресеты/модификаторы уровней
+-#   ---------------  -  ------------------------------
+-#
+-  lvlmodifier-player-variable:
+-    name: 'Модификатор уровня — переменная игрока'
+-    modifiers:
+-      player-variable-mod:
+-        player-variable: '%level%'
+-        player-variable-scale: 1.0
+-        player-variable-tiers:
+-          '31-45': 3-7
+-          '16-30': 2-5
+-          '0-15': 1-3
+-          default: 1
+-        match-variable: false
+-        use-variable-as-max: false
+-        recheck-players: true
+-        decrease-output: true
+-        output-cap: 25
+-        preserve-entity: 5s
+-
+-  lvlmodifier-custom-formula:
+-    name: 'Модификатор уровня — пользовательская формула'
+-    modifiers:
+-      custom:
+-        formula: '1 * %mob-lvl%'
+-      custom_special:
+-        formula: '%attack-damage% * 0.2'
+-      custom_nether:
+-        formula: '%rand_-3_3% + %player-variable-mod%'
+-      custom_end:
+-        formula: '%rand_-3_3% + %player-variable-mod%'
+-
++      weighted-random:
++        100-199: 50
++        200-299: 35
++        300-399: 14
++        400: 100
+ 
+-#
+-#   ---------------  -  ------------------------------
+-# Раздел 01 - В |  Пресеты сложности
+-#   ---------------  -  ------------------------------
+-#
+-  challenge-vanilla:
+-    name: 'Сложность с обычными характеристиками'
++  judgement-week-attributes:
++    name: 'Судная неделя — базовые характеристики'
+     settings:
+       attribute-modifier:
+         merge: false
+-        max-health: 0.0
+-        attack-damage: 0.0
+-        ranged-attack-damage: 0.0
++        max-health: '0.25 * %level%'
++        attack-damage: '0.10 * %level%'
++        ranged-attack-damage: '0.10 * %level%'
++        creeper-blast-damage: '0.003 * %level%'
++        movement-speed: '0.00010 * %level%'
++        follow-range: '0.02 * %level%'
+         item-drop: 0.0
+-        xp-drop: 0.0
+-
+-  challenge-bronze:
+-    name: 'Бронзовая сложность'
+-    settings:
+-      attribute-modifier:
+-        merge: false
+-        max-health: 2.5
+-        attack-damage: 1.0
+-        ranged-attack-damage: 0.7
+-        item-drop: 3.0
+-        xp-drop: 5.0
+-
+-  challenge-silver:
+-    name: 'Серебряная сложность'
+-    settings:
+-      attribute-modifier:
+-        merge: false
+-        max-health: 5.0
+-        movement-speed: 0.15
+-        attack-damage: 2.25
+-        ranged-attack-damage: 1.5
+-        creeper-blast-damage: 0.75
+-        item-drop: 3.0
+-        xp-drop: 5.0
+-      # Специальные множители (0,0 мин. – 1,0 макс.)
+-        armor-bonus: 0.2
+-        armor-toughness: 0.15
+-
+-  challenge-gold:
+-    name: 'Золотая сложность'
+-    settings:
+-      attribute-modifier:
+-        merge: false
+-        max-health: 8.0
+-        movement-speed: 0.35
+-        attack-damage: 3.5
+-        ranged-attack-damage: 2.0
+-        creeper-blast-damage: 1.75
+-        follow-range: 0.25
+-        item-drop: 3.0
+-        xp-drop: 5.0
+-      # Специальные множители (0,0 мин. – 1,0 макс.)
+-        armor-bonus: 0.3
+-        armor-toughness: 0.3
+-        attack-knockback: 0.5
+-        knockback-resistance: 0.5
+-
+-  challenge-platinum:
+-    name: 'Платиновая сложность'
+-    settings:
+-      attribute-modifier:
+-        merge: false
+-        max-health: 15.0
+-        movement-speed: 1.0
+-        attack-damage: 5.0
+-        ranged-attack-damage: 3.2
+-        creeper-blast-damage: 2.5
+-        follow-range: 0.5
+-        item-drop: 3.0
+-        xp-drop: 5.0
+-      # Специальные множители (0,0 мин. – 1,0 макс.)
+-        armor-bonus: 0.5
+-        armor-toughness: 0.5
+-        attack-knockback: 0.5
+-        knockback-resistance: 0.5
+-        zombie-spawn-reinforcements: 0.15
+-
+-  challenge-formula:
+-    name: 'Сложность по пользовательской формуле'
+-    settings:
+-      attribute-modifier:
+-        merge: false
+-        max-health: '(%level-ratio% * %max-health% * 5)'
+-        movement-speed: '(%level-ratio% * %movement-speed% * 0.25)'
+-        attack-damage: '(%level-ratio% * %attack-damage% * 2)'
+-        ranged-attack-damage: '(%level-ratio% * %ranged-attack-damage% * 1.50)'
+-        creeper-blast-damage: '(%level-ratio% * %creeper-blast-damage% * 2.5)'
+-        follow-range: '(%level-ratio% * %follow-range% * 0.5)'
+-        item-drop: '(%level-ratio% * %item-drop% * 2)'
+-        xp-drop: '(%level-ratio% * %xp-drop% * 5)'
+-        # Специальные множители (0,0 мин. – 1,0 макс.)
+-        armor-bonus: '(%level-ratio% * (7.5 - %armor-bonus%))'
+-        armor-toughness: '(%level-ratio% * (3.5 - %armor-toughness%))'
+-        attack-knockback: '(%level-ratio% * (2 - %attack-knockback%))'
+-        knockback-resistance: '(%level-ratio% * (0.25 - %knockback-resistance%))'
+-        zombie-spawn-reinforcements: '(%level-ratio% * (0.25 - %zombie-spawn-reinforcements%))'
+-
+-
+-#
+-#   ---------------  -  ------------------------------
+-# Раздел 01 - Г |  Пресеты дополнительных параметров
+-#   ---------------  -  ------------------------------
+-#
+-  nametag-using-numbers:
+-    name: 'Тег — здоровье числами'
+-    settings:
+-      nametag: ' &fꓡꓦꓡ%tiered%%mob-lvl% &8&l༺&r %displayname% &8&l༻ %health-indicator-color%%entity-health-rounded%&fꓧꓑ '
+-      creature-death-nametag: '%tiered%Ур. %mob-lvl%&8 | &f%displayname%'
++        xp-drop: '0.004 * %level%'
++        armor-bonus: '0.010 * %level%'
++        armor-toughness: '0.006 * %level%'
++        knockback-resistance: '0.0004 * %level%'
+ 
+-  nametag-using-indicator:
+-    name: 'Тег — здоровье индикаторами'
+-    settings:
+-      nametag: ' &fꓡꓦꓡ%tiered%%mob-lvl% &8&l༺ &r%displayname% &8&l༻ %health-indicator% '
+-      creature-death-nametag: '%tiered%Ур. %mob-lvl%&8 | &f%displayname%'
+-      health-indicator:
+-        indicator: '█'
+-        indicator-half: '▌'
+-        maintain-space: false
+-        merge: true
+-
+-  nametag-minimized:
+-    name: 'Тег — сокращённый'
+-    settings:
+-      nametag: ' &f%displayname%&8 &8&l༻ %health-indicator-color%%entity-health-rounded%&fꓧꓑ '
+-      creature-death-nametag: '&f%displayname% %tiered%%heart-symbol%'
+-
+-  nametag-disabled:
+-    name: 'Тег — отключён'
+-    settings:
+-      nametag: disabled
+-      nametag-visibility-method: [ 'DISABLED' ]
+-      creature-death-nametag: '&f%displayname% %tiered%%heart-symbol%'
+-
+-  custom-death-messages:
+-    name: 'Пользовательские сообщения о смерти'
++  judgement-week-presentation:
++    name: 'Судная неделя — имена и сообщения о смерти'
+     settings:
++      nametag: '&8[&fУр. %mob-lvl%&8] %tiered%%displayname% &8— &c%entity-health-rounded%❤'
++      creature-death-nametag: '%tiered%Ур. %mob-lvl% &f%displayname%'
++      nametag-placeholder-levelled: ''
++      nametag-placeholder-unlevelled: ''
++      nametag-visible-time: 5s
++      nametag-visibility-method: ['TARGETED', 'ATTACKED', 'TRACKING']
++      entity-name-override:
++        1-49:
++          all_entities:
++            - '&aДворовый Шорох &8(%entity-name%&8)'
++            - '&aСтажёр Катастроф &8(%entity-name%&8)'
++            - '&aКарманная Проблема &8(%entity-name%&8)'
++            - '&aПодозрительный Шорох &8(%entity-name%&8)'
++        50-149:
++          all_entities:
++            - '&bКусачий Стажёр &8(%entity-name%&8)'
++            - '&bУчастковый Кошмар &8(%entity-name%&8)'
++            - '&bСпециалист по Подзатыльникам &8(%entity-name%&8)'
++            - '&bОшибка Разминки &8(%entity-name%&8)'
++        150-299:
++          all_entities:
++            - '&eРайонный Кошмар &8(%entity-name%&8)'
++            - '&eМясной Специалист &8(%entity-name%&8)'
++            - '&eСтарший по Засадам &8(%entity-name%&8)'
++            - '&eВнеплановая Боль &8(%entity-name%&8)'
++        300-449:
++          all_entities:
++            - '&6Завхоз Преисподней &8(%entity-name%&8)'
++            - '&6Сертифицированная Проблема &8(%entity-name%&8)'
++            - '&6Налоговая из Ада &8(%entity-name%&8)'
++            - '&6Начальник Коридора &8(%entity-name%&8)'
++        450-599:
++          all_entities:
++            - '&cНачальник Разноса &8(%entity-name%&8)'
++            - '&cИнспектор Плохих Решений &8(%entity-name%&8)'
++            - '&cЗамдиректора Могилы &8(%entity-name%&8)'
++            - '&cНачальник Смены Апокалипсиса &8(%entity-name%&8)'
++        600-749:
++          all_entities:
++            - '&4Директор по Люлям &8(%entity-name%&8)'
++            - '&4Отдел Ликвидации &8(%entity-name%&8)'
++            - '&4Главный по Техработам &8(%entity-name%&8)'
++            - '&4Менеджер Последствий &8(%entity-name%&8)'
++        750-899:
++          all_entities:
++            - '&5Министр Катастроф &8(%entity-name%&8)'
++            - '&5Ошибка Баланса &8(%entity-name%&8)'
++            - '&5Начальник Конца Смены &8(%entity-name%&8)'
++            - '&5Замминистра Паники &8(%entity-name%&8)'
++        900-998:
++          all_entities:
++            - '&#FF3B00Причина Вайпа &8(%entity-name%&8)'
++            - '&#FF3B00Заместитель Судного Дня &8(%entity-name%&8)'
++            - '&#FF3B00Финальный Аргумент Сервера &8(%entity-name%&8)'
++            - '&#FF3B00Владелец Твоего Тикета &8(%entity-name%&8)'
++        999:
++          all_entities:
++            - '&#FF0000&lГендиректор Апокалипсиса &8(%entity-name%&8)'
++            - '&#FF0000&lГлавный по Твоей Могиле &8(%entity-name%&8)'
++            - '&#FF0000&lПоследняя Ошибка Баланса &8(%entity-name%&8)'
++            - '&#FF0000&lСудный День с Лапками &8(%entity-name%&8)'
++      tiered-coloring:
++        1-49: '&a'
++        50-149: '&b'
++        150-299: '&e'
++        300-449: '&6'
++        450-599: '&c'
++        600-749: '&4'
++        750-899: '&5'
++        900-998: '&#FF3B00'
++        999: '&#FF0000&l'
++        default: '&f'
+       death-messages:
+-        5: ['%player% погиб от %death_nametag%!']
+-        4: ['%death_nametag% сокрушил %player%!']
+-        3: ['%death_nametag% одолел %player%!']
+-        2: ['%player% не смог противостоять %death_nametag%']
+-        1: ['%player% погиб | Причина: %death_nametag%']
+-
+-
+-#
+-#   ---------------  -  ------------------------------
+-# Раздел 02 |  Создатель пользовательских групп мобов и биомов
+-#   ---------------  -  ------------------------------
+-#
+-mob-groups:
+-  undead_mobs:
+-    - ZOMBIE
+-    - HUSK
+-    - DROWNED
++        5:
++          - '%player% не прошёл испытательный срок у %death_nametag%.'
++          - '%death_nametag% оформил %player% внеплановый выход из онлайна.'
++          - '%player% нажал не ту кнопку рядом с %death_nametag%.'
++          - '%death_nametag% выписал %player% квитанцию за плохое решение.'
++          - '%player% познакомился с отделом последствий: %death_nametag%.'
++          - '%death_nametag% отправил %player% перечитать правила выживания.'
++          - '%player% проиграл собеседование на должность живого у %death_nametag%.'
++          - '%death_nametag% закрыл тикет %player% вместе с заявителем.'
++        3:
++          - '%player% пытался договориться с %death_nametag%, но печать уже поставили.'
++          - '%death_nametag% провёл для %player% ускоренный курс по гравитации.'
++          - '%player% обнаружил, что у %death_nametag% сегодня приём без записи.'
++          - '%death_nametag% внёс %player% в реестр внезапно закончившихся героев.'
++          - '%player% запросил лёгкий режим. %death_nametag% отклонил заявление.'
++          - '%death_nametag% объяснил %player%, где заканчивается уверенность.'
++          - '%player% принёс меч на совещание с %death_nametag%. Совещание окончено.'
++          - '%death_nametag% выдал %player% бессрочный отпуск от приключений.'
++        1:
++          - '%player% нашёл финального босса в лице %death_nametag%. Это был не финальный босс.'
++          - '%death_nametag% превратил стратегию %player% в исторический документ.'
++          - '%player% попросил минутку. %death_nametag% выдал полсекунды.'
++          - '%death_nametag% доказал %player%, что план «авось» не прошёл сертификацию.'
++          - '%player% был уверен в броне, пока %death_nametag% не прочитал её гарантию.'
++          - '%death_nametag% назначил %player% главным специалистом по лежанию.'
++          - '%player% увидел %death_nametag% и выбрал неверный пункт диалога.'
++          - '%death_nametag% завершил презентацию %player% одним убедительным слайдом.'
+ 
+-biome-groups:
+-  cave_biomes:
+-    - LUSH_CAVES
+-    - DRIPSTONE_CAVES
+-    - DEEP_DARK
+-
+-
+-#
+-#   ---------------  -  ------------------------------
+-# Раздел 03 |  Установите правило по умолчанию
+-#   ---------------  -  ------------------------------
+-#
+ default-rule:
+   use-preset:
+-    #===== Выберите сложность =====
+-    #- challenge-vanilla
+-    #- challenge-bronze
+-    - challenge-silver
+-    #- challenge-gold
+-    #- challenge-platinum
+-    #- challenge-formula
+-    
+-    #===== Выберите стратегии =====
+-    #- lvlstrategy-random
+-    - lvlstrategy-weighted-random
+-    - lvlstrategy-distance-from-origin
+-    #- lvlstrategy-y-coordinate
+-
+-    #===== Выберите модификаторы =====
+-    - lvlmodifier-player-variable
+-    - lvlmodifier-custom-formula
+-
+-    #===== Выберите дополнительные параметры =====
+-    - nametag-using-numbers
+-    #- nametag-using-indicator
+-    #- nametag-minimized
+-    #- nametag-disabled
+-    #- custom-death-messages
+-
+-
+-#
+-#   ---------------  -  ------------------------------
+-# Раздел 03 - А |  Правило/условия по умолчанию
+-#   ---------------  -  ------------------------------
+-#
++    - judgement-week-levels
++    - judgement-week-attributes
++    - judgement-week-presentation
+   conditions:
+     worlds: ['*']
+-    #biomes: ['*']
+-    entities: ['*']
+-
++    entities:
++      included-groups: ['all_hostile_mobs']
++      included-list: [BEE, DOLPHIN, GOAT, IRON_GOLEM, LLAMA, PANDA, PIGLIN, POLAR_BEAR, TRADER_LLAMA, WOLF, ZOMBIFIED_PIGLIN]
++      excluded-list: ['BABY_', ENDER_DRAGON, WITHER, WARDEN, ELDER_GUARDIAN]
++    external-plugins:
++      excluded-list: ['*']
+     mob-customname-status: EITHER
+-    mob-tamed-status: EITHER
+-#
+-#   ---------------  -  ------------------------------
+-# Раздел 03 - Б |  Правило/Настройки по умолчанию
+-#   ---------------  -  ------------------------------
+-#
++    mob-tamed-status: NOT_TAMED
+   settings:
+-  # Основные настройки LevelledMobs
+     minLevel: 1
+-    maxLevel: 50
+-
+-    construct-level: '%distance-from-origin% + %weighted-random% + %player-variable-mod% + %custom_special% + %rand_-5_5%'
+-
+-  # Настройки пользовательского дропа
++    maxLevel: 998
++    construct-level: '%weighted-random%'
+     use-custom-item-drops-for-mobs: true
+-
+-  # Дополнительные настройки бейджа
+-    nametag-placeholder-levelled: ''
+-    nametag-placeholder-unlevelled: ''
+-    nametag-visible-time: 5s
+-    nametag-visibility-method: [ 'TARGETED', 'ATTACKED', 'TRACKING' ]
+-
+-  # Настраивает заполнители `%tiered%` и `%health-indicator-color%`.
+-    tiered-coloring:
+-      1-09: '&#22E76B' # Зелёный
+-      10-19: '&#528CFF' # Синий
+-      20-29: '&#FFCD56' # Жёлтый
+-      30-39: '&#F2003D' # Красный
+-      40-49: '&#B447FF' # Фиолетовый
+-      50-50: '&#FFD700' # Золотой
+-      default: '&#FFFFFF' # Белый
+-      
+-    health-indicator:
+-      colored-tiers:
+-        tier-1: '&#22E76B' # Зелёный
+-        tier-2: '&#528CFF' # Синий
+-        tier-3: '&#FFCD56' # Жёлтый
+-        tier-4: '&#FE803C' # Оранжевый
+-        tier-5: '&#F2003D' # Красный
+-        tier-6: '&#B447FF' # Фиолетовый
+-        default: '&#B447FF' # Белый
+-      scale: 5
+-      max: 5
+-
+-  # Настройки спавнера LevelledMobs
+-  # Используйте команду: /lm spawner
+-    spawner-particles: 'SOUL'
+-    spawner-particles-count: 10
+-
+-    baby-mobs-inherit-adult-setting: true
+-
+-  # Разные настройки
++    baby-mobs-inherit-adult-setting: false
++    level-inheritance: false
++    passenger-match-level: false
+     multipliers:
+       vanilla-bonus:
+-        excluded-list: ['LEADER_ZOMBIE_BONUS', 'RANDOM_SPAWN_BONUS']
+-
+-    sunlight-intensity: 5
+-    creeper-max-damage-radius: 3
+-
++        excluded-list: [LEADER_ZOMBIE_BONUS, RANDOM_SPAWN_BONUS]
++    creeper-max-damage-radius: 6
++    maximum-death-in-chunk-threshold: 15
++    max-adjacent-chunks: 5
++    chunk-max-cooldown-seconds: 10m
++    disable-vanilla-drops-on-chunk-max: false
++    disable-item-boost-on-chunk-max: true
++    disable-xp-boost-on-chunk-max: true
+ 
+-#
+-#   ---------------  -  ------------------------------
+-# Раздел 04 |  Создать собственные правила
+-#   ---------------  -  ------------------------------
+-#
+ custom-rules:
+-  - custom-rule: 'Стратегия уровней в Нижнем мире'
++  # Это правило намеренно первое: выигравший шанс прекращает дальнейшее объединение правил.
++  - custom-rule: 'Судная неделя — естественный моб 999-го уровня'
+     is-enabled: true
++    use-preset: judgement-week-presentation
+     conditions:
+-      worlds: 'world_nether'
+-    strategies:
+-      y-coordinate:
+-        start-height: 100
+-        period: 0
+-        end-height: 60
++      worlds: ['*']
++      spawn-reasons: [NATURAL]
++      chance: 0.002499
++      stop-processing: true
++      entities:
++        included-groups: ['all_hostile_mobs']
++        included-list: [BEE, DOLPHIN, GOAT, IRON_GOLEM, LLAMA, PANDA, PIGLIN, POLAR_BEAR, TRADER_LLAMA, WOLF, ZOMBIFIED_PIGLIN]
++        excluded-list: ['BABY_', ENDER_DRAGON, WITHER, WARDEN, ELDER_GUARDIAN]
++      external-plugins:
++        excluded-list: ['*']
++      mob-tamed-status: NOT_TAMED
+     settings:
+-      construct-level: '%y-coordinate% + %custom_nether%'
++      minLevel: 999
++      maxLevel: 999
++      construct-level: '999'
++      level-inheritance: false
++      passenger-match-level: false
++      creeper-max-damage-radius: 6
++      attribute-modifier:
++        do-not-merge-any: true
++        max-health: '0.45 * %level%'
++        attack-damage: '0.16 * %level%'
++        ranged-attack-damage: '0.16 * %level%'
++        creeper-blast-damage: '0.004 * %level%'
++        movement-speed: '0.00015 * %level%'
++        follow-range: '0.03 * %level%'
++        item-drop: 0.0
++        xp-drop: '0.004 * %level%'
++        armor-bonus: '0.015 * %level%'
++        armor-toughness: '0.009 * %level%'
++        knockback-resistance: '0.0006 * %level%'
+ 
+-  - custom-rule: 'Стратегия уровней в Крае'
++  - custom-rule: 'Судная неделя — отдельная шкала боссов'
+     is-enabled: true
++    use-preset:
++      - judgement-week-boss-levels
++      - judgement-week-attributes
++      - judgement-week-presentation
+     conditions:
+-      worlds: 'world_the_end'
+-    strategies:
+-      distance-from-origin:
+-        ringed-tiers: 200
+-        buffer-distance: 1000
+-        origin-coordinates:
+-          x: 0
+-          z: 0
+-    settings:
+-      construct-level: '%distance-from-origin% + %custom_end%'
+-
+-  - custom-rule: 'Особые характеристики выбранных мобов'
+-    is-enabled: true
++      worlds: ['*']
++      entities: [ENDER_DRAGON, WITHER, WARDEN, ELDER_GUARDIAN]
++      external-plugins:
++        excluded-list: ['*']
+     settings:
+-      attribute-modifier:
+-        custom-attribute-modifier:
+-          ENDERMAN:
+-            max-health: 0.5
+-            movement-speed: 0.0
+-          ENDERMITE:
+-            max-health: 0.5
+-            movement-speed: 0.0
+-          SILVERFISH:
+-            max-health: 0.5
+-            movement-speed: 0.0
+-          CREEPER:
+-            movement-speed: 0.05
+-
+-  - custom-rule: 'Бронзовая сложность для выбранных мобов'
++      minLevel: 100
++      maxLevel: 400
++      construct-level: '%weighted-random%'
++      use-custom-item-drops-for-mobs: true
++      level-inheritance: false
++      passenger-match-level: false
++      creeper-max-damage-radius: 6
++
++  - custom-rule: 'Судная неделя — ограничение фермерских источников'
+     is-enabled: true
+-    use-preset: challenge-bronze
+     conditions:
++      worlds: ['*']
++      spawn-reasons: [SPAWNER, TRIAL_SPAWNER, SPAWNER_EGG, DISPENSE_EGG, BREEDING, REINFORCEMENTS, SLIME_SPLIT, BUILD_IRONGOLEM]
+       entities:
+-        included-groups: [ 'all_flying_mobs' ]
+-        included-list: [ 'ZOMBIFIED_PIGLIN', 'SHULKER', 'VEX', 'RAVAGER', 'HOGLIN', 'PILLAGER', 'WANDERING_TRADER', 'VILLAGER', 'ZOMBIE_VILLAGER', 'IRON_GOLEM', 'ENDER_DRAGON', 'ELDER_GUARDIAN', 'WITHER', 'WARDEN' ]
++        included-groups: ['all_hostile_mobs']
++        included-list: [BEE, DOLPHIN, GOAT, IRON_GOLEM, LLAMA, PANDA, PIGLIN, POLAR_BEAR, TRADER_LLAMA, WOLF, ZOMBIFIED_PIGLIN, ENDER_DRAGON, WITHER, WARDEN, ELDER_GUARDIAN]
++        excluded-list: ['BABY_']
++      mob-tamed-status: NOT_TAMED
++    strategies:
++      random: true
++    settings:
++      minLevel: 1
++      maxLevel: 50
++      construct-level: '%random%'
++      use-custom-item-drops-for-mobs: false
++      attribute-modifier:
++        item-drop: 0.0
++        xp-drop: 0.0
+ 
+-  - custom-rule: 'Обычная сложность для выбранных мобов'
++  - custom-rule: 'Судная неделя — ночное усиление'
+     is-enabled: true
+-    use-preset: challenge-vanilla
+     conditions:
++      worlds: ['*']
++      world-time-tick: 13000-23000
+       entities:
+-        included-groups: [ 'all_passive_mobs' ]
+-        included-list: [ 'BABY_' ]
+-        excluded-list: [ 'IRON_GOLEM' ]
++        included-groups: ['all_hostile_mobs']
++        included-list: [BEE, DOLPHIN, GOAT, IRON_GOLEM, LLAMA, PANDA, PIGLIN, POLAR_BEAR, TRADER_LLAMA, WOLF, ZOMBIFIED_PIGLIN, ENDER_DRAGON, WITHER, WARDEN, ELDER_GUARDIAN]
++        excluded-list: ['BABY_']
++      mob-tamed-status: NOT_TAMED
++    settings:
++      attribute-modifier:
++        max-health: '0.275 * %level%'
++        attack-damage: '0.11 * %level%'
++        ranged-attack-damage: '0.11 * %level%'
++        creeper-blast-damage: '0.0033 * %level%'
+ 
+-  - custom-rule: 'Сокращённый тег для выбранных мобов'
++  - custom-rule: 'Судная неделя — пещерное усиление'
+     is-enabled: true
+-    use-preset: nametag-minimized
+     conditions:
++      worlds: ['*']
++      skylight-level: 0-7
+       entities:
+-        included-groups: [ 'all_passive_mobs' ]
+-        included-list: [ 'BABY_', 'WANDERING_TRADER', 'VILLAGER', 'ZOMBIE_VILLAGER', 'BAT', 'ENDER_DRAGON', 'ELDER_GUARDIAN', 'WITHER', 'WARDEN', 'IRON_GOLEM' ]
++        included-groups: ['all_hostile_mobs']
++        included-list: [BEE, DOLPHIN, GOAT, IRON_GOLEM, LLAMA, PANDA, PIGLIN, POLAR_BEAR, TRADER_LLAMA, WOLF, ZOMBIFIED_PIGLIN, ENDER_DRAGON, WITHER, WARDEN, ELDER_GUARDIAN]
++        excluded-list: ['BABY_']
++      mob-tamed-status: NOT_TAMED
++    settings:
++      attribute-modifier:
++        max-health: '0.275 * %level%'
++        attack-damage: '0.11 * %level%'
++        ranged-attack-damage: '0.11 * %level%'
++        creeper-blast-damage: '0.0033 * %level%'
+ 
+-  - custom-rule: 'Уменьшенная видимость тега'
++  - custom-rule: 'Судная неделя — усиление Нижнего мира'
+     is-enabled: true
+     conditions:
++      worlds: [world_nether]
+       entities:
+-        included-groups: [ 'all_passive_mobs' ]
+-        included-list: [ 'BAT' ]
+-        excluded-list: [ 'IRON_GOLEM' ]
++        included-groups: ['all_hostile_mobs']
++        included-list: [BEE, DOLPHIN, GOAT, IRON_GOLEM, LLAMA, PANDA, PIGLIN, POLAR_BEAR, TRADER_LLAMA, WOLF, ZOMBIFIED_PIGLIN, ENDER_DRAGON, WITHER, WARDEN, ELDER_GUARDIAN]
++        excluded-list: ['BABY_']
++      mob-tamed-status: NOT_TAMED
+     settings:
+-      nametag-visibility-method: [ 'MELEE', 'ATTACKED' ]
++      attribute-modifier:
++        max-health: '0.2875 * %level%'
++        attack-damage: '0.115 * %level%'
++        ranged-attack-damage: '0.115 * %level%'
++        creeper-blast-damage: '0.00345 * %level%'
+ 
+-  - custom-rule: 'Сущности из спавнеров LevelledMobs'
++  - custom-rule: 'Судная неделя — усиление Края'
+     is-enabled: true
+-    use-preset: challenge-bronze
+     conditions:
+-      spawn-reasons: [ 'SPAWNER' ]
++      worlds: [world_the_end]
++      entities:
++        included-groups: ['all_hostile_mobs']
++        included-list: [BEE, DOLPHIN, GOAT, IRON_GOLEM, LLAMA, PANDA, PIGLIN, POLAR_BEAR, TRADER_LLAMA, WOLF, ZOMBIFIED_PIGLIN, ENDER_DRAGON, WITHER, WARDEN, ELDER_GUARDIAN]
++        excluded-list: ['BABY_']
++      mob-tamed-status: NOT_TAMED
+     settings:
+-      entity-name-override:
+-        all_entities: 'Спавнер %displayname%'
++      attribute-modifier:
++        max-health: '0.30 * %level%'
++        attack-damage: '0.12 * %level%'
++        ranged-attack-damage: '0.12 * %level%'
++        creeper-blast-damage: '0.0036 * %level%'
+ 
+-  - custom-rule: 'Таблица пользовательского дропа брони и оружия'
++  # Правило обнуляет профиль у мобов, которыми управляют внешние плагины.
++  - custom-rule: 'Внешние плагины — без событийного уровня'
+     is-enabled: true
+     conditions:
+-      entities: [ 'ZOMBIE', 'HUSK', 'PIGLIN', 'ZOMBIFIED_PIGLIN' ]
++      worlds: ['*']
++      external-plugins:
++        included-list: ['*']
++      stop-processing: true
++    strategies:
++      weighted-random: false
+     settings:
+-      use-droptable-id: armor_and_weapons
++      minLevel: 0
++      maxLevel: 0
++      construct-level: '0'
++      use-custom-item-drops-for-mobs: false
++      nametag: disabled
++      nametag-visibility-method: [DISABLED]
++      attribute-modifier:
++        do-not-merge-any: true
++        max-health: 0.0
++        attack-damage: 0.0
++        ranged-attack-damage: 0.0
++        creeper-blast-damage: 0.0
++        movement-speed: 0.0
++        follow-range: 0.0
++        item-drop: 0.0
++        xp-drop: 0.0
++        armor-bonus: 0.0
++        armor-toughness: 0.0
++        knockback-resistance: 0.0
+ 
+-  - custom-rule: 'Внешние плагины с обычными характеристиками и сокращёнными тегами'
++  - custom-rule: 'Судная неделя — защита от фарма в чанках'
+     is-enabled: true
+-    use-preset: challenge-vanilla, nametag-minimized
+     conditions:
+-      external-plugins:
+-        included-list: ['eco-bosses', 'mythic-mobs', 'elite-mobs', 'infernal-mobs', 'citizens', 'shop-keepers', 'simple-pets', 'elite-bosses', 'blood-night', 'combat-pets', 'deadly-disasters', 'gadgets-menu', 'my-pet']
+-        #excluded-list: ['*']
+-
+-  - custom-rule: 'Ограничитель предметов и опыта на фермах игроков'
+-    is-enabled: true
++      worlds: ['*']
++      entities:
++        included-groups: ['all_hostile_mobs']
++        included-list: [BEE, DOLPHIN, GOAT, IRON_GOLEM, LLAMA, PANDA, PIGLIN, POLAR_BEAR, TRADER_LLAMA, WOLF, ZOMBIFIED_PIGLIN, ENDER_DRAGON, WITHER, WARDEN, ELDER_GUARDIAN]
++        excluded-list: ['BABY_']
++      mob-tamed-status: NOT_TAMED
+     settings:
+       maximum-death-in-chunk-threshold: 15
+       max-adjacent-chunks: 5
+@@ -497,9 +372,4 @@ custom-rules:
+       disable-item-boost-on-chunk-max: true
+       disable-xp-boost-on-chunk-max: true
+ 
+-#
+-#   ---------------  -  ------------------------------
+-# Раздел 05 |  Настройки разработчика / Не редактировать дальше этого момента
+-#   ---------------  -  ------------------------------
+-#
+ file-version: 5
+-- 
+2.54.0.windows.1
+
