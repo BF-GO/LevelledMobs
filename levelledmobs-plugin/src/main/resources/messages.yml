@@ -28,19 +28,19 @@
 common:
   prefix: '&b&lLevelledMobs:&7'
   no-permission:
-    - '%prefix% Недостаточно прав для выполнения этой команды.'
+    - '%prefix% Канцелярия апокалипсиса не нашла у вас нужной печати.'
   players-only:
-    - '%prefix% Эта команда доступна только игрокам.'
+    - '%prefix% Консоль в этот аттракцион не пустили: требуется живой игрок.'
   player-offline:
-    - '%prefix% Игрок ''&r%player%&7'' не в сети.'
+    - '%prefix% Игрок ''&r%player%&7'' вышел из зоны покрытия Судного дня.'
   invalid-command:
-    - '%prefix% Неизвестная команда.'
+    - '%prefix% Такой команды нет даже в архиве плохих решений.'
   not-available-on-folia:
-    - '%prefix% Эта команда недоступна на Folia.'
+    - '%prefix% На Folia эта кнопка заклеена служебным скотчем.'
   invalid-time:
-    - '%prefix% Некорректный интервал времени: &b%input%&7.'
+    - '%prefix% Хронометр апокалипсиса отверг интервал: &b%input%&7.'
   invalid-time-unit:
-    - '%prefix% Некорректная единица времени: &b%input%&7 (&b%unit%&7).'
+    - '%prefix% Отдел времени не знает единицу: &b%input%&7 (&b%unit%&7).'
 
 
 #
@@ -50,28 +50,28 @@ common:
 #
 command:
   descriptions:
-    main: 'Управление плагином LevelledMobs'
+    main: 'Пульт управления канцелярией уровневых неприятностей'
     debug: 'Команды диагностики и отладки.'
-    info: 'Сведения об установленной версии плагина.'
-    reload: 'Перезагрузка файлов конфигурации LevelledMobs.'
-    kill: 'Команды массового удаления уровневых мобов.'
-    rules: 'Просмотр действующих правил.'
-    spawner-egg: 'Команды создания яиц призыва.'
-    spawner: 'Команды создания и изменения спавнеров.'
-    summon: 'Команды призыва мобов.'
+    info: 'Паспорт установленной машины Судного дня.'
+    reload: 'Перетряска служебных папок LevelledMobs.'
+    kill: 'Срочная утилизация уровневых неприятностей.'
+    rules: 'Просмотр устава мобской бюрократии.'
+    spawner-egg: 'Оформление яиц внепланового призыва.'
+    spawner: 'Настройка станков по производству проблем.'
+    summon: 'Доставка мобов без согласования.'
   levelledmobs:
     fallback-options:
       - '%prefix% Доступные варианты: reload / info / show-errors'
     main-usage:
-      - '%prefix% Доступные команды:'
+      - '%prefix% Панель кнопок отдела катастроф:'
       - '&8 &m->&b /%label% debug &8- &7команды диагностики'
-      - '&8 &m->&b /%label% egg &8- &7создание яиц призыва'
-      - '&8 &m->&b /%label% help &8- &7ссылка на wiki'
-      - '&8 &m->&b /%label% info &8- &7информация о плагине'
-      - '&8 &m->&b /%label% kill &8- &7массовое удаление уровневых мобов'
-      - '&8 &m->&b /%label% reload &8- &7перезагрузка конфигурации'
-      - '&8 &m->&b /%label% rules &8- &7просмотр системы правил'
-      - '&8 &m->&b /%label% summon &8- &7призыв уровневых мобов'
+      - '&8 &m->&b /%label% egg &8- &7упаковка неприятности в скорлупу'
+      - '&8 &m->&b /%label% help &8- &7служебная шпаргалка из wiki'
+      - '&8 &m->&b /%label% info &8- &7паспорт механизма катастроф'
+      - '&8 &m->&b /%label% kill &8- &7массовая отправка мобов в архив'
+      - '&8 &m->&b /%label% reload &8- &7перетряска папки с инструкциями'
+      - '&8 &m->&b /%label% rules &8- &7устав мобской бюрократии'
+      - '&8 &m->&b /%label% summon &8- &7вызов уровневых специалистов'
 
 
     #
@@ -81,59 +81,59 @@ command:
     #
     summon:
       invalid-amount:
-        - '%prefix% Некорректное количество: ''&b%amount%&7''.'
+        - '%prefix% Отдел поставок не умеет считать вот это: ''&b%amount%&7''.'
       invalid-entity-type:
-        - '%prefix% Некорректный тип сущности: ''&b%entityType%&7''.'
+        - '%prefix% Сущность ''&b%entityType%&7'' не числится в каталоге неприятностей.'
       invalid-level:
-        - '%prefix% Некорректный уровень: ''&b%level%&7''.'
+        - '%prefix% Уровень ''&b%level%&7'' отклонён комиссией по чрезмерному веселью.'
       invalid-summon-type:
-        - '%prefix% Некорректный способ призыва: ''&b%summonType%&7''.'
+        - '%prefix% Способ призыва ''&b%summonType%&7'' отсутствует в инструкции к катастрофе.'
       invalid-summon-type-console:
-        - '%prefix% Способ ''&bhere''&7 доступен только игрокам. Используйте ''&batPlayer&7'' или ''&batLocation&7''.'
+        - '%prefix% Способ ''&bhere''&7 требует игрока с ногами. Используйте ''&batPlayer&7'' или ''&batLocation&7''.'
       invalid-location:
-        - '%prefix% Некорректное местоположение.'
+        - '%prefix% Адрес не принят: курьер апокалипсиса там заблудится.'
       no-safe-location:
-        - '%prefix% Подходящее безопасное место для появления не найдено.'
+        - '%prefix% Безопасного места не найдено. Даже моб попросил перенести доставку.'
       nbt-error:
         - '%prefix% Не удалось применить NBT к %entity%: %error%'
       here:
         usage:
-          - '%prefix% Использование: &b/%label% summon <amount> <entity> <level> here'
+          - '%prefix% Бланк местного бедствия: &b/%label% summon <amount> <entity> <level> here'
         success:
-          - '%prefix% Призвано сущностей &b%entity%: &b%amount%&7, уровень &f%level%&7, в текущей позиции.'
+          - '%prefix% Доставка оформлена: &b%entity%: &b%amount%&7, уровень &f%level%&7, прямо под вашу ответственность.'
       atLocation:
         usage:
-          - '%prefix% Использование: &b/%label% summon <amount> <entity> <level> atLocation <x> <y> <z> [world]'
+          - '%prefix% Бланк адресного бедствия: &b/%label% summon <amount> <entity> <level> atLocation <x> <y> <z> [world]'
         success:
-          - '%prefix% Призвано сущностей &b%entity%: &b%amount%&7, уровень &f%level%&7, координаты &8(&b%x%&7, &b%y%&7, &b%z%&7, мир ''&b%world%&7''&8)&7.'
+          - '%prefix% Посылка с проблемами прибыла: &b%entity%: &b%amount%&7, уровень &f%level%&7, адрес &8(&b%x%&7, &b%y%&7, &b%z%&7, мир ''&b%world%&7''&8)&7.'
         usage-console:
-          - '%prefix% Использование из консоли: &b/%label% summon <amount> <entity> <level> atLocation <x> <y> <z> <world>'
+          - '%prefix% Консольный бланк доставки: &b/%label% summon <amount> <entity> <level> atLocation <x> <y> <z> <world>'
         invalid-world:
-          - '%prefix% Некорректный мир: ''&b%world%&7''.'
+          - '%prefix% Мир ''&b%world%&7'' не найден в реестре доступных катастроф.'
         invalid-location:
-          - '%prefix% Некорректное местоположение.'
+          - '%prefix% Координаты выглядят как записка крипера после совещания.'
       atPlayer:
         usage:
-          - '%prefix% Использование: &b/%label% summon <amount> <entityType> <level> atPlayer <player>'
+          - '%prefix% Бланк персональной проблемы: &b/%label% summon <amount> <entityType> <level> atPlayer <player>'
         success:
-          - '%prefix% Призвано сущностей &b%entity%: &b%amount%&7, уровень &f%level%&7, возле игрока &r%targetDisplayname%&7.'
+          - '%prefix% Игроку &r%targetDisplayname%&7 доставлены &b%entity%: &b%amount%&7, уровень &f%level%&7. Подпись не требовалась.'
       usage:
-        - '%prefix% Синтаксис команды призыва:'
+        - '%prefix% Формуляры отдела внезапного призыва:'
         - '&8 &m->&b /%label% summon <amount> <entity> <level> here'
         - '&8 &m->&b /%label% summon <amount> <entity> <level> atPlayer <player>'
         - '&8 &m->&b /%label% summon <amount> <entity> <level> atLocation <x> <y> <z> [world]'
       amount-limited:
         min:
-          - '%prefix% Минимальное количество для призыва: &b1&7.'
+          - '%prefix% Меньше одной неприятности склад не отпускает: &b1&7.'
         max:
-          - '%prefix% Максимальное количество для призыва: &b%maxAmount%&7.'
+          - '%prefix% Лимит выдачи проблем в одни руки: &b%maxAmount%&7.'
       level-limited:
         min:
-          - '%prefix% Минимальный уровень: &b%minLevel%&7.'
+          - '%prefix% Ниже этой полки уровни не хранятся: &b%minLevel%&7.'
         max:
-          - '%prefix% Максимальный уровень: &b%maxLevel%&7.'
+          - '%prefix% Выше этой отметки заканчивается гарантия сервера: &b%maxLevel%&7.'
       not-levellable:
-        - '%prefix% Для сущности &b%entity%&7 нельзя назначить уровень.'
+        - '%prefix% Сущность &b%entity%&7 отказалась повышать квалификацию.'
 
 
     #
@@ -143,33 +143,33 @@ command:
     #
     kill:
       levels-value-missing:
-        - '%prefix% Не указано значение параметра /levels.'
+        - '%prefix% В заявлении пустует графа /levels. Архивариус грустит.'
       levels-value-invalid:
-        - '%prefix% Для /levels указано некорректное число или диапазон.'
+        - '%prefix% В графе /levels указана математика из параллельного отдела.'
       usage:
-        - '%prefix% Использование: &b/%label% kill <all/near>'
+        - '%prefix% Бланк массовой утилизации: &b/%label% kill <all/near>'
       all:
         invalid-world:
-          - '%prefix% Некорректный мир: ''&b%world%&7''.'
+          - '%prefix% Мир ''&b%world%&7'' не найден, но заявление уже напугало архив.'
         success:
-          - '%prefix% Удалено уровневых мобов: &b%killed%&7; миров: &b%worlds%&7 &8(&b%skipped%&7 пропущено&8)&7.'
+          - '%prefix% В архив отправлено мобов: &b%killed%&7; миров проверено: &b%worlds%&7 &8(&b%skipped%&7 спрятались за регламентом&8)&7.'
         usage:
-          - '%prefix% Использование: &b/%label% kill all [world/*]'
+          - '%prefix% Генеральная уборка отдела: &b/%label% kill all [world/*]'
         usage-console:
-          - '%prefix% Использование из консоли: /%label% kill all <world/*>'
+          - '%prefix% Консольный приказ об уборке: /%label% kill all <world/*>'
       near:
         invalid-radius:
-          - '%prefix% Некорректный радиус: ''&b%radius%&7''.'
+          - '%prefix% Радиус ''&b%radius%&7'' не помещается в служебную линейку.'
         invalid-radius-min:
-          - '%prefix% Радиус увеличен до минимального значения &8(&b%minRadius%&8)&7.'
+          - '%prefix% Радиус раздут по минимальному нормативу &8(&b%minRadius%&8)&7.'
         invalid-radius-max:
-          - '%prefix% Радиус уменьшен до максимального значения &8(&b%maxRadius%&8)&7.'
+          - '%prefix% Радиус ужат до разрешённого потолка &8(&b%maxRadius%&8)&7.'
         success:
-          - '%prefix% В радиусе &b%radius%&7 блоков удалено уровневых мобов: &b%killed%&7 &8(&b%skipped%&7 пропущено&8)&7.'
+          - '%prefix% В круге &b%radius%&7 блоков архивировано мобов: &b%killed%&7 &8(&b%skipped%&7 предъявили справку&8)&7.'
         usage:
-          - '%prefix% Использование: &b/%label% kill near <radius>'
+          - '%prefix% Локальная зачистка по талону: &b/%label% kill near <radius>'
         usage-console:
-          - '%prefix% Команда kill near доступна только игроку.'
+          - '%prefix% Для kill near нужен игрок на месте происшествия.'
 
 
     #
@@ -179,15 +179,15 @@ command:
     #
     spawner:
       invalid-spawn-type:
-        - '%prefix% Некорректный тип сущности: &b%value%&7.'
+        - '%prefix% Тип &b%value%&7 не прошёл сертификацию фабрики неприятностей.'
       usage:
-        - '%prefix% Синтаксис команды спавнера:'
+        - '%prefix% Пульт управления заводом мобских кадров:'
         - '&8 &m->&b /%label% spawner create'
         - '&8 &m->&b /%label% spawner copy'
         - '&8 &m->&b /%label% spawner info'
         - ' '
-        - '&fПример:'
-        - '&8 &m->&b /%label% spawner create &3/minlevel&b 1 &3/maxlevel&b 10 &3/name&b "Настроенный спавнер LM" &3/customDropId&b Id1'
+        - '&fОбразец заявления на личный конвейер:'
+        - '&8 &m->&b /%label% spawner create &3/minlevel&b 1 &3/maxlevel&b 10 &3/name&b "Конвейер служебных неприятностей" &3/customDropId&b Id1'
       no-value:
         - '%prefix% Не указано значение параметра ''&b%keyname%&7''.'
       no-player:
@@ -199,24 +199,24 @@ command:
       no-level-specified:
         - '%prefix% Необходимо указать minLevel и/или maxLevel.'
       inventory-full:
-        - '%prefix% В инвентаре нет свободного места.'
+        - '%prefix% Инвентарь забит: коробка со спавнером не влезает даже боком.'
       spawner-give-message:
-        - '%prefix% Получен спавнер LM.'
+        - '%prefix% Получен карманный завод неприятностей LM. Техника безопасности утеряна.'
       spawner-give-message-console:
         - '%prefix% Игроку &r%playername%&7 выдан спавнер LM. &8|&7 минимальный уровень: &b%minlevel%&7, максимальный уровень: &b%maxlevel%&7'
       permission-denied:
-        - '%prefix% Недостаточно прав для обновления или преобразования спавнера LM.'
+        - '%prefix% Нет допуска к модернизации завода LM. Каска не считается.'
       spawner-converted:
-        - '%prefix% Обычный спавнер преобразован в спавнер LM с именем "%spawnername%".'
+        - '%prefix% Обычный спавнер прошёл бюрократическую мутацию в LM: "%spawnername%".'
       spawner-updated:
-        - '%prefix% Спавнер LM обновлён с помощью яйца призыва. Имя: "%spawnername%"'
+        - '%prefix% Завод LM перепрошит яйцом призыва. Новая вывеска: "%spawnername%"'
       info:
         status-enabled:
           - '%prefix% Просмотр информации о спавнере &aвключён&f.'
         status-not-enabled:
           - '%prefix% Просмотр информации о спавнере &cвыключен&f.'
         enabled:
-          - '%prefix% Просмотр информации &aвключён&f. Нажмите ПКМ по спавнеру.'
+          - '%prefix% Режим инспектора &aвключён&f. Нажмите ПКМ по подозрительному спавнеру.'
         disabled:
           - '%prefix% Просмотр информации о спавнере &cвыключен&f.'
       copy:
@@ -240,14 +240,14 @@ command:
     #
     spawn_egg:
       invalid-spawn-type:
-        - '%prefix% Некорректный тип сущности: &b%value%&7.'
+        - '%prefix% В скорлупе не предусмотрена сущность: &b%value%&7.'
       invalid-material:
-        - '%prefix% Некорректный материал: &b%material%&7.'
+        - '%prefix% Материал &b%material%&7 не одобрен яичным комитетом.'
       usage:
-        - '%prefix% Синтаксис команды egg:'
+        - '%prefix% Рецепт служебного яйца с сюрпризом:'
         - '&8 &m->&b /%label% egg /minlevel <level> /maxlevel <level> /entity <entity type>'
-        - '&7&oПример яйца призыва'
-        - '&7/%label% egg &b/minlevel&7 1 &b/maxlevel&7 10 &b/name&7 "Настроенное яйцо LM" &b/customDropId&7 Id1'
+        - '&7&oОбразец сертифицированной скорлупы'
+        - '&7/%label% egg &b/minlevel&7 1 &b/maxlevel&7 10 &b/name&7 "Яйцо внеплановой проблемы" &b/customDropId&7 Id1'
       no-paper:
         - '%prefix% Функция доступна только на Paper и его форках.'
       no-value:
@@ -880,8 +880,8 @@ display:
     auto-generate: 'Случайное назначение уровня (автоматическая генерация)'
     merge-suffix: ' (объединение)'
   spawner:
-    levelledmobs: 'Спавнер LevelledMobs'
-    spawn-egg: 'Яйцо призыва LevelledMobs'
+    levelledmobs: 'Конвейер неприятностей LevelledMobs'
+    spawn-egg: 'Яйцо внепланового призыва LevelledMobs'
     vanilla: 'Обычный спавнер'
     min-level: 'минимальный уровень'
     max-level: 'максимальный уровень'
@@ -939,8 +939,8 @@ other:
     send-in-console: true
     send-on-join: true
 
-  mob-head-drop-name: 'Голова: %mob_name%'
-  no-drop-in-chunk: '%prefix% &7В этой области достигнут лимит убийств уровневых мобов. Дополнительный дроп временно отключён.'
+  mob-head-drop-name: 'Служебная голова: %mob_name%'
+  no-drop-in-chunk: '%prefix% &7Этот чанк выполнил план по мобам. Премиальный склад временно закрыл окошко.'
   create-debug:
     - '&b&nСоздание диагностического ZIP-архива'
     - '&7Выполняйте эту команду только по просьбе разработчика LevelledMobs. Архив помогает диагностировать проблемы плагина.'
