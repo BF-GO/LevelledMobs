@@ -292,9 +292,7 @@ class EntitySpawnListener : Listener{
                 lmEntity
             ) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d037", colorize = false) }
         } else if (event is CreatureSpawnEvent) {
-            if (event.spawnReason == SpawnReason.SPAWNER ||
-                event.spawnReason == SpawnReason.SLIME_SPLIT
-            ) {
+            if (event.spawnReason == SpawnReason.SPAWNER) {
                 return
             }
 

@@ -880,7 +880,12 @@ class RulesManager {
             val mobCompats = lmEntity.mobExternalTypes
             //if (!lmEntity.isMobOfExternalType) mobCompats.add("NOT-APPLICABLE")
 
-            var madeIt = false
+            // У сущностей без внешнего источника список совместимостей пуст.
+            // Такое состояние должно удовлетворять чистому blacklist-условию,
+            // иначе невозможно исключить всех внешних мобов и оставить обычных.
+            var madeIt = mobCompats.isEmpty() &&
+                    (ri.conditionsExternalPlugins!!.isBlacklist ||
+                            ri.conditionsExternalPlugins!!.excludeAll)
             for (compat in mobCompats) {
                 if (ri.conditionsExternalPlugins!!.isIncludedInList(compat, lmEntity)) {
                     madeIt = true
