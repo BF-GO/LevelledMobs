@@ -14,16 +14,26 @@ class VersionInfo(
     versionInput: String
 ) {
     private var thisVerSplit = mutableListOf<Int>()
-    val version: String
+    val version: String = versionInput
 
     init {
-        val buildNum = versionInput.indexOf("build") // 26.1.1.сборка.15
-        version = if (buildNum > 0)
-            versionInput.substring(0, buildNum)
+        val buildNum = versionInput.indexOf("build") // 26.1.1.build.15
+        val versionWithoutBuild = if (buildNum > 0)
+            versionInput.substring(0, buildNum).trimEnd('.')
         else
             versionInput
 
-        val split = version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val numericVersion = NUMERIC_VERSION_PREFIX.find(versionWithoutBuild)?.value
+        val suffix = numericVersion?.let { versionWithoutBuild.substring(it.length) }
+        if (numericVersion == null ||
+            (!suffix.isNullOrEmpty() && suffix.first() !in charArrayOf('-', '+', ' '))
+        ) {
+            throw InvalidObjectException(
+                LocalizedMessages.text("console.internal.invalid-version-format", colorize = false)
+            )
+        }
+
+        val split = numericVersion.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         for (numTemp in split) {
             if (!Utils.isDouble(numTemp))
                 throw InvalidObjectException(
@@ -105,5 +115,9 @@ class VersionInfo(
 
     override fun toString(): String {
         return version
+    }
+
+    companion object {
+        private val NUMERIC_VERSION_PREFIX = Regex("""^\d+(?:\.\d+)*""")
     }
 }

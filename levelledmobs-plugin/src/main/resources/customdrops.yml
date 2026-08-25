@@ -64,7 +64,599 @@ all_mobs:
   -
 
 all_levellable_mobs:
-  -
+  # Уровни 300–449: не более одного ресурсного набора и отдельный трофей.
+  - IRON_INGOT:
+      chance: 0.25
+      amount: '16-32'
+      minLevel: 300
+      maxLevel: 449
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_300_449
+      group-limits:
+        cap-select: 1
+        cap-per-item: 32
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - GOLD_INGOT:
+      chance: 0.18
+      amount: '8-16'
+      minLevel: 300
+      maxLevel: 449
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_300_449
+      group-limits:
+        cap-select: 1
+        cap-per-item: 32
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - DIAMOND:
+      chance: 0.05
+      amount: '1-2'
+      minLevel: 300
+      maxLevel: 449
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_300_449
+      group-limits:
+        cap-select: 1
+        cap-per-item: 32
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - PAPER:
+      chance: 0.02
+      amount: 1
+      minLevel: 300
+      maxLevel: 449
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_trophy_300_449
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      custommodeldata: 990301
+      name: '&6&lКвитанция за Конец Света'
+      lore:
+        - '&7Оплачено нервами. Возврат не предусмотрен.'
+
+  # Уровни 450–599.
+  - GOLD_INGOT:
+      chance: 0.25
+      amount: '16-32'
+      minLevel: 450
+      maxLevel: 599
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_450_599
+      group-limits:
+        cap-select: 1
+        cap-per-item: 32
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - DIAMOND:
+      chance: 0.10
+      amount: '2-4'
+      minLevel: 450
+      maxLevel: 599
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_450_599
+      group-limits:
+        cap-select: 1
+        cap-per-item: 32
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - GOLDEN_APPLE:
+      chance: 0.06
+      amount: 1
+      minLevel: 450
+      maxLevel: 599
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_450_599
+      group-limits:
+        cap-select: 1
+        cap-per-item: 32
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - PAPER:
+      chance: 0.03
+      amount: 1
+      minLevel: 450
+      maxLevel: 599
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_trophy_450_599
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      custommodeldata: 990302
+      name: '&6&lСломанная Кнопка «Отмена»'
+      lore:
+        - '&7Нажимали всем сервером. Не помогло.'
+
+  # Уровни 600–749.
+  - DIAMOND:
+      chance: 0.18
+      amount: '3-6'
+      minLevel: 600
+      maxLevel: 749
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_600_749
+      group-limits:
+        cap-select: 1
+        cap-per-item: 16
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - NETHERITE_SCRAP:
+      chance: 0.07
+      amount: '1-2'
+      minLevel: 600
+      maxLevel: 749
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_600_749
+      group-limits:
+        cap-select: 1
+        cap-per-item: 16
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - GOLDEN_APPLE:
+      chance: 0.12
+      amount: '1-2'
+      minLevel: 600
+      maxLevel: 749
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_600_749
+      group-limits:
+        cap-select: 1
+        cap-per-item: 16
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - EXPERIENCE_BOTTLE:
+      chance: 0.20
+      amount: '8-16'
+      minLevel: 600
+      maxLevel: 749
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_600_749
+      group-limits:
+        cap-select: 1
+        cap-per-item: 16
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - PAPER:
+      chance: 0.05
+      amount: 1
+      minLevel: 600
+      maxLevel: 749
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_trophy_600_749
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      custommodeldata: 990303
+      name: '&6&lОсколок Серверного Баланса'
+      lore:
+        - '&7Баланс был здесь. Теперь здесь сувенир.'
+
+  # Уровни 750–899.
+  - DIAMOND:
+      chance: 0.22
+      amount: '5-10'
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_750_899
+      group-limits:
+        cap-select: 1
+        cap-per-item: 32
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - NETHERITE_SCRAP:
+      chance: 0.12
+      amount: '2-4'
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_750_899
+      group-limits:
+        cap-select: 1
+        cap-per-item: 32
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - ENCHANTED_GOLDEN_APPLE:
+      chance: 0.04
+      amount: 1
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_750_899
+      group-limits:
+        cap-select: 1
+        cap-per-item: 32
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - TOTEM_OF_UNDYING:
+      chance: 0.04
+      amount: 1
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_750_899
+      group-limits:
+        cap-select: 1
+        cap-per-item: 32
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - EXPERIENCE_BOTTLE:
+      chance: 0.20
+      amount: '16-32'
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_750_899
+      group-limits:
+        cap-select: 1
+        cap-per-item: 32
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - PAPER:
+      chance: 0.08
+      amount: 1
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_trophy_750_899
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      custommodeldata: 990304
+      name: '&6&lПоследний Нерв Админа'
+      lore:
+        - '&7Хрупкий. Просьба не писать «а когда вайп?».'
+
+  # Уровни 900–998.
+  - DIAMOND:
+      chance: 0.30
+      amount: '8-16'
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_900_998
+      group-limits:
+        cap-select: 1
+        cap-per-item: 16
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - NETHERITE_INGOT:
+      chance: 0.08
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_900_998
+      group-limits:
+        cap-select: 1
+        cap-per-item: 16
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - ENCHANTED_GOLDEN_APPLE:
+      chance: 0.12
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_900_998
+      group-limits:
+        cap-select: 1
+        cap-per-item: 16
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - TOTEM_OF_UNDYING:
+      chance: 0.10
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_900_998
+      group-limits:
+        cap-select: 1
+        cap-per-item: 16
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - ECHO_SHARD:
+      chance: 0.15
+      amount: '4-8'
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_resources_900_998
+      group-limits:
+        cap-select: 1
+        cap-per-item: 16
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - PAPER:
+      chance: 0.15
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_trophy_900_998
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      custommodeldata: 990305
+      name: '&6&lСправка «Выжил Случайно»'
+      lore:
+        - '&7Выдана отделом невероятных совпадений.'
+
+  # Уровень 999: гарантированный джекпот и отдельный шанс тотема.
+  - DIAMOND:
+      chance: 1.0
+      amount: '8-16'
+      minLevel: 999
+      maxLevel: 999
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_999_diamonds
+      group-limits:
+        cap-select: 1
+        cap-per-item: 16
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - NETHERITE_INGOT:
+      chance: 1.0
+      amount: 1
+      minLevel: 999
+      maxLevel: 999
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_999_netherite
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - ENCHANTED_GOLDEN_APPLE:
+      chance: 1.0
+      amount: 1
+      minLevel: 999
+      maxLevel: 999
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_999_apple
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - TOTEM_OF_UNDYING:
+      chance: 0.25
+      amount: 1
+      minLevel: 999
+      maxLevel: 999
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_999_totem
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+  - PAPER:
+      chance: 1.0
+      amount: 1
+      minLevel: 999
+      maxLevel: 999
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_trophy_999
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      custommodeldata: 990306
+      name: '&4&lПечать Отдела Катастроф'
+      lore:
+        - '&7Документально подтверждает: это было зря.'
+
+  # Глобальные объявления уровня 999. Мир, координаты и убийца намеренно не выводятся.
+  - customCommand:
+      name: jw_999_spawn_announcement
+      command:
+        - 'minecraft:tellraw @a {"text":"☠ СУДНАЯ НЕДЕЛЯ: в мир ввалился %displayname% [ур. %mob-lvl%]. Сервер сделал вид, что так и задумано.","color":"dark_red","bold":true}'
+        - 'minecraft:execute as @a at @s run playsound minecraft:entity.wither.spawn master @s ~ ~ ~ 1 1'
+      chance: 1.0
+      amount: 1
+      minLevel: 999
+      maxLevel: 999
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_999_spawn_announcement
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      run-on-spawn: true
+      run-on-death: false
+  - customCommand:
+      name: jw_999_death_announcement
+      command:
+        - 'minecraft:tellraw @a {"text":"✦ %displayname% [ур. %mob-lvl%] ликвидирован. Канцелярия апокалипсиса делает вид, что всё было по плану.","color":"gold","bold":true}'
+        - 'minecraft:execute as @a at @s run playsound minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 1 1'
+      chance: 1.0
+      amount: 1
+      minLevel: 999
+      maxLevel: 999
+      equipped: 0
+      player-caused: false
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_999_death_announcement
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      run-on-spawn: false
+      run-on-death: true
 
 all_hostile_mobs:
   -
@@ -130,7 +722,33 @@ COW:
   -
 
 CREEPER:
-  -
+  # Крипер 999 уровня становится заряженным через один тик после применения уровня.
+  # PDC-фильтр не позволяет команде затронуть обычного или не-999 крипера.
+  - customCommand:
+      name: jw_charge_level_999_creeper
+      command:
+        - 'minecraft:execute in minecraft:overworld positioned %x% %y% %z% as @e[type=minecraft:creeper,distance=..2,sort=nearest,limit=1,nbt={powered:0b,BukkitValues:{"levelledmobs:level":999}}] run data merge entity @s {powered:1b}'
+        - 'minecraft:execute in minecraft:the_nether positioned %x% %y% %z% as @e[type=minecraft:creeper,distance=..2,sort=nearest,limit=1,nbt={powered:0b,BukkitValues:{"levelledmobs:level":999}}] run data merge entity @s {powered:1b}'
+        - 'minecraft:execute in minecraft:the_end positioned %x% %y% %z% as @e[type=minecraft:creeper,distance=..2,sort=nearest,limit=1,nbt={powered:0b,BukkitValues:{"levelledmobs:level":999}}] run data merge entity @s {powered:1b}'
+      chance: 1.0
+      amount: 1
+      minLevel: 999
+      maxLevel: 999
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_charge_level_999_creeper
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      run-on-spawn: true
+      run-on-death: false
+      delay: 1
 
 DOLPHIN:
   -
