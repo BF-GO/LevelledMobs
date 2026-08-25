@@ -28,6 +28,7 @@ import io.github.arcaneplugins.levelledmobs.rules.RulesParser
 import io.github.arcaneplugins.levelledmobs.rules.strategies.RandomLevellingStrategy
 import io.github.arcaneplugins.levelledmobs.util.ConfigUtils
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils
 import io.github.arcaneplugins.levelledmobs.util.QuickTimer
 import io.github.arcaneplugins.levelledmobs.util.Utils
@@ -104,6 +105,7 @@ class LevelledMobs : JavaPlugin() {
 
     override fun onLoad() {
         instance = this
+        LocalizedMessages.initialize(this)
     }
 
     override fun onEnable() {

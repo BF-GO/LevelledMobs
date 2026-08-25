@@ -1,6 +1,5 @@
 package io.github.arcaneplugins.levelledmobs.util
 
-import java.util.function.Consumer
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.util.Utils.colorizeAllInList
 import io.github.arcaneplugins.levelledmobs.util.Utils.replaceAllInList
@@ -29,18 +28,9 @@ class ConfigUtils{
     }
 
     val prefix: String
-        get() {
-            return MessageUtils.colorizeAll(
-                LevelledMobs.instance.messagesCfg.getString("common.prefix")
-            )
-        }
+        get() = LocalizedMessages.prefix()
 
     fun sendNoPermissionMsg(sender: CommandSender) {
-        var noPermissionMsg = LevelledMobs.instance.messagesCfg.getStringList("common.no-permission")
-
-        noPermissionMsg = replaceAllInList(noPermissionMsg, "%prefix%", prefix)
-        noPermissionMsg = colorizeAllInList(noPermissionMsg)
-
-        noPermissionMsg.forEach(Consumer { s: String -> sender.sendMessage(s) })
+        LocalizedMessages.send(sender, "common.no-permission")
     }
 }

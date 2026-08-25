@@ -26,6 +26,10 @@ object Log {
             Bukkit.getServer().consoleSender.sendMessage(MessageUtils.colorizeAll(PREFIX + msg))
     }
 
+    fun infKey(path: String, replacements: Map<String, Any?> = emptyMap()) {
+        inf(LocalizedMessages.text(path, replacements, colorize = false))
+    }
+
     fun war(msg: String, recordError: Boolean = true) {
         if (LevelledMobs.instance.ver.isRunningPaper)
             sendMessagePaper("&e[WARN] $msg")
@@ -36,6 +40,14 @@ object Log {
             MainCompanion.instance.errorMessages += msg
     }
 
+    fun warKey(
+        path: String,
+        replacements: Map<String, Any?> = emptyMap(),
+        recordError: Boolean = true
+    ) {
+        war(LocalizedMessages.text(path, replacements, colorize = false), recordError)
+    }
+
     fun sev(msg: String) {
         if (LevelledMobs.instance.ver.isRunningPaper)
             sendMessagePaper("&e[SEVERE] $msg")
@@ -44,6 +56,10 @@ object Log {
 
         if (!MainCompanion.instance.errorMessages.contains(msg))
             MainCompanion.instance.errorMessages += msg
+    }
+
+    fun sevKey(path: String, replacements: Map<String, Any?> = emptyMap()) {
+        sev(LocalizedMessages.text(path, replacements, colorize = false))
     }
 
     private fun sendMessagePaper(msg: String?){

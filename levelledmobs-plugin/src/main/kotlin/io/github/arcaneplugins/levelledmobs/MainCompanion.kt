@@ -27,6 +27,7 @@ import io.github.arcaneplugins.levelledmobs.misc.VersionInfo
 import io.github.arcaneplugins.levelledmobs.result.ChunkKillInfo
 import io.github.arcaneplugins.levelledmobs.rules.MetricsInfo
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils
 import io.github.arcaneplugins.levelledmobs.util.UpdateChecker
 import io.github.arcaneplugins.levelledmobs.util.Utils.colorizeAllInList
@@ -112,6 +113,7 @@ class MainCompanion{
                 main, "messages",
                 FileLoader.MESSAGES_FILE_VERSION
             )!!
+            LocalizedMessages.activate(main.messagesCfg)
         } else {
             // had an issue reading the file.  Disable the plugin now
             return false

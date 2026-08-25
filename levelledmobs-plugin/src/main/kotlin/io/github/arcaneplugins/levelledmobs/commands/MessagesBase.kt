@@ -1,9 +1,6 @@
 package io.github.arcaneplugins.levelledmobs.commands
 
-import java.util.function.Consumer
-import io.github.arcaneplugins.levelledmobs.LevelledMobs
-import io.github.arcaneplugins.levelledmobs.util.Utils.colorizeAllInList
-import io.github.arcaneplugins.levelledmobs.util.Utils.replaceAllInList
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import org.bukkit.command.CommandSender
 
 /**
@@ -31,11 +28,7 @@ open class MessagesBase{
             sender: CommandSender,
             messageLabel: String
         ) {
-            var messages = LevelledMobs.instance.messagesCfg.getStringList(path)
-            messages = replaceAllInList(messages, "%prefix%", LevelledMobs.instance.configUtils.prefix)
-            messages = replaceAllInList(messages, "%label%", messageLabel)
-            messages = colorizeAllInList(messages)
-            messages.forEach(Consumer { s: String -> sender.sendMessage(s) })
+            LocalizedMessages.send(sender, path, mapOf("label" to messageLabel))
         }
 
         @JvmStatic
@@ -44,27 +37,13 @@ open class MessagesBase{
             replaceWhat: MutableList<String>,
             replaceWith: MutableList<String>
         ): MutableList<String> {
-            if (replaceWhat.size != replaceWith.size) {
-                throw ArrayIndexOutOfBoundsException(
-                    "replaceWhat must be the same size as replaceWith"
-                )
+            require(replaceWhat.size == replaceWith.size) {
+                "replaceWhat must be the same size as replaceWith"
             }
-
-            var messages = LevelledMobs.instance.messagesCfg.getStringList(path)
-            messages = replaceAllInList(messages, "%prefix%", LevelledMobs.instance.configUtils.prefix)
-            messages = replaceAllInList(
-                messages, "%label%", ""
-            )
-
-            for (i in replaceWhat.indices) {
-                messages = replaceAllInList(
-                    messages, replaceWhat[i],
-                    replaceWith[i]
-                )
-            }
-
-            messages = colorizeAllInList(messages)
-            return messages
+            val replacements = replaceWhat.indices.associate { replaceWhat[it] to replaceWith[it] }
+                .toMutableMap()
+            replacements["label"] = ""
+            return LocalizedMessages.lines(path, replacements)
         }
     }
 
@@ -89,7 +68,7 @@ open class MessagesBase{
             throw NullPointerException("CommandSender must be set before calling showMessage")
 
         val messages = getMessage(path, replaceWhat, replaceWith)
-        messages.forEach(Consumer { s: String -> commandSender!!.sendMessage(s) })
+        commandSender!!.sendMessage(messages.joinToString("\n"))
     }
 
     protected fun showMessage(
@@ -99,6 +78,6 @@ open class MessagesBase{
         sender: CommandSender
     ) {
         val messages = getMessage(path, replaceWhat, replaceWith)
-        messages.forEach(Consumer { s: String? -> sender.sendMessage(s!!) })
+        sender.sendMessage(messages.joinToString("\n"))
     }
 }
