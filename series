@@ -1,0 +1,4 @@
+patchsets/0001-localized-message-catalog/0001-add-localized-message-catalog.patch
+patchsets/0002-russian-runtime-messages/0002-add-russian-runtime-messages.patch
+patchsets/0003-resources-and-metadata/0003-translate-resources-and-metadata.patch
+patchsets/0004-documentation-and-comments/0004-translate-documentation-and-source-comments.patch

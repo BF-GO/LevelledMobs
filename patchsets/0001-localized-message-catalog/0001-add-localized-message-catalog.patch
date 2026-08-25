@@ -1,0 +1,440 @@
+From f888a417a8a5dc3517c786b22a5e9dab7eece076 Mon Sep 17 00:00:00 2001
+From: BF_GO <26bfgo@gmail.com>
+Date: Tue, 25 Aug 2026 21:17:43 +0300
+Subject: [PATCH] Add localized message catalog
+
+---
+ .../levelledmobs/LevelledMobs.kt              |  4 +-
+ .../levelledmobs/MainCompanion.kt             |  4 +-
+ .../levelledmobs/commands/MessagesBase.kt     | 43 +++------
+ .../levelledmobs/commands/MessagesHelper.kt   | 70 ++++----------
+ .../levelledmobs/util/ConfigUtils.kt          | 16 +---
+ .../levelledmobs/util/LocalizedMessages.kt    | 91 +++++++++++++++++++
+ .../arcaneplugins/levelledmobs/util/Log.kt    | 18 +++-
+ 7 files changed, 144 insertions(+), 102 deletions(-)
+ create mode 100644 levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/util/LocalizedMessages.kt
+
+diff --git a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/LevelledMobs.kt b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/LevelledMobs.kt
+index 4346218c643f1a7f45397056d5e77522b7cd552c..52f82d91e51869384eb8af0d60cfcf70eec16ac7 100644
+--- a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/LevelledMobs.kt
++++ b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/LevelledMobs.kt
+@@ -28,6 +28,7 @@ import io.github.arcaneplugins.levelledmobs.rules.RulesParser
+ import io.github.arcaneplugins.levelledmobs.rules.strategies.RandomLevellingStrategy
+ import io.github.arcaneplugins.levelledmobs.util.ConfigUtils
+ import io.github.arcaneplugins.levelledmobs.util.Log
++import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
+ import io.github.arcaneplugins.levelledmobs.util.MessageUtils
+ import io.github.arcaneplugins.levelledmobs.util.QuickTimer
+ import io.github.arcaneplugins.levelledmobs.util.Utils
+@@ -104,6 +105,7 @@ class LevelledMobs : JavaPlugin() {
+ 
+     override fun onLoad() {
+         instance = this
++        LocalizedMessages.initialize(this)
+     }
+ 
+     override fun onEnable() {
+@@ -249,4 +251,4 @@ class LevelledMobs : JavaPlugin() {
+             )
+         }
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/MainCompanion.kt b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/MainCompanion.kt
+index 2cbcd193074ed4b9ce2fd7d333127834be5bf2e6..55f84633751554fe52414c094a5680e48f013aa4 100644
+--- a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/MainCompanion.kt
++++ b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/MainCompanion.kt
+@@ -27,6 +27,7 @@ import io.github.arcaneplugins.levelledmobs.misc.VersionInfo
+ import io.github.arcaneplugins.levelledmobs.result.ChunkKillInfo
+ import io.github.arcaneplugins.levelledmobs.rules.MetricsInfo
+ import io.github.arcaneplugins.levelledmobs.util.Log
++import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
+ import io.github.arcaneplugins.levelledmobs.util.MessageUtils
+ import io.github.arcaneplugins.levelledmobs.util.UpdateChecker
+ import io.github.arcaneplugins.levelledmobs.util.Utils.colorizeAllInList
+@@ -112,6 +113,7 @@ class MainCompanion{
+                 main, "messages",
+                 FileLoader.MESSAGES_FILE_VERSION
+             )!!
++            LocalizedMessages.activate(main.messagesCfg)
+         } else {
+             // had an issue reading the file.  Disable the plugin now
+             return false
+@@ -641,4 +643,4 @@ class MainCompanion{
+             )
+         }
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/commands/MessagesBase.kt b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/commands/MessagesBase.kt
+index e9d0b7ffe02b5a8445ad3e063b052d6d5d2fcff3..1f4b9240a310dd0403a8db6fba7ff2334ba310c4 100644
+--- a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/commands/MessagesBase.kt
++++ b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/commands/MessagesBase.kt
+@@ -1,9 +1,6 @@
+ package io.github.arcaneplugins.levelledmobs.commands
+ 
+-import java.util.function.Consumer
+-import io.github.arcaneplugins.levelledmobs.LevelledMobs
+-import io.github.arcaneplugins.levelledmobs.util.Utils.colorizeAllInList
+-import io.github.arcaneplugins.levelledmobs.util.Utils.replaceAllInList
++import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
+ import org.bukkit.command.CommandSender
+ 
+ /**
+@@ -31,11 +28,7 @@ open class MessagesBase{
+             sender: CommandSender,
+             messageLabel: String
+         ) {
+-            var messages = LevelledMobs.instance.messagesCfg.getStringList(path)
+-            messages = replaceAllInList(messages, "%prefix%", LevelledMobs.instance.configUtils.prefix)
+-            messages = replaceAllInList(messages, "%label%", messageLabel)
+-            messages = colorizeAllInList(messages)
+-            messages.forEach(Consumer { s: String -> sender.sendMessage(s) })
++            LocalizedMessages.send(sender, path, mapOf("label" to messageLabel))
+         }
+ 
+         @JvmStatic
+@@ -44,27 +37,13 @@ open class MessagesBase{
+             replaceWhat: MutableList<String>,
+             replaceWith: MutableList<String>
+         ): MutableList<String> {
+-            if (replaceWhat.size != replaceWith.size) {
+-                throw ArrayIndexOutOfBoundsException(
+-                    "replaceWhat must be the same size as replaceWith"
+-                )
++            require(replaceWhat.size == replaceWith.size) {
++                "replaceWhat must be the same size as replaceWith"
+             }
+-
+-            var messages = LevelledMobs.instance.messagesCfg.getStringList(path)
+-            messages = replaceAllInList(messages, "%prefix%", LevelledMobs.instance.configUtils.prefix)
+-            messages = replaceAllInList(
+-                messages, "%label%", ""
+-            )
+-
+-            for (i in replaceWhat.indices) {
+-                messages = replaceAllInList(
+-                    messages, replaceWhat[i],
+-                    replaceWith[i]
+-                )
+-            }
+-
+-            messages = colorizeAllInList(messages)
+-            return messages
++            val replacements = replaceWhat.indices.associate { replaceWhat[it] to replaceWith[it] }
++                .toMutableMap()
++            replacements["label"] = ""
++            return LocalizedMessages.lines(path, replacements)
+         }
+     }
+ 
+@@ -89,7 +68,7 @@ open class MessagesBase{
+             throw NullPointerException("CommandSender must be set before calling showMessage")
+ 
+         val messages = getMessage(path, replaceWhat, replaceWith)
+-        messages.forEach(Consumer { s: String -> commandSender!!.sendMessage(s) })
++        commandSender!!.sendMessage(messages.joinToString("\n"))
+     }
+ 
+     protected fun showMessage(
+@@ -99,6 +78,6 @@ open class MessagesBase{
+         sender: CommandSender
+     ) {
+         val messages = getMessage(path, replaceWhat, replaceWith)
+-        messages.forEach(Consumer { s: String? -> sender.sendMessage(s!!) })
++        sender.sendMessage(messages.joinToString("\n"))
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/commands/MessagesHelper.kt b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/commands/MessagesHelper.kt
+index 358b35cf7192677b93f688a3671688d8f45a4db5..7a525acea82d02517440901d7630c0361599af39 100644
+--- a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/commands/MessagesHelper.kt
++++ b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/commands/MessagesHelper.kt
+@@ -1,23 +1,14 @@
+ package io.github.arcaneplugins.levelledmobs.commands
+ 
+-import io.github.arcaneplugins.levelledmobs.LevelledMobs
+-import io.github.arcaneplugins.levelledmobs.util.Utils
+-import java.util.function.Consumer
++import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
+ import org.bukkit.command.CommandSender
+-import org.bukkit.command.ConsoleCommandSender
+ 
+ object MessagesHelper {
+     fun showMessage(
+         sender: CommandSender,
+         path: String
+     ) {
+-        var messages = LevelledMobs.instance.messagesCfg.getStringList(path)
+-        messages = Utils.replaceAllInList(messages, "%prefix%", LevelledMobs.instance.configUtils.prefix)
+-        val label = if (sender is ConsoleCommandSender) "lm" else "/lm"
+-        messages = Utils.replaceAllInList(messages, "%label%", label)
+-        messages = Utils.colorizeAllInList(messages)
+-
+-        sendAllMessages(sender, messages)
++        LocalizedMessages.send(sender, path)
+     }
+ 
+     fun showMessage(
+@@ -40,34 +31,13 @@ object MessagesHelper {
+         replaceWhat: MutableList<String>,
+         replaceWith: MutableList<String>
+     ) {
+-        val messages = getMessage(path, replaceWhat, replaceWith)
+-        sendAllMessages(sender, messages)
+-    }
+-
+-    private fun sendAllMessages(sender: CommandSender, messages: MutableList<String>){
+-        if (messages.size == 1)
+-            sender.sendMessage(messages.first())
+-        else{
+-            val sb = StringBuilder()
+-            messages.forEach(Consumer { s: String -> sb.append(s).append('\n') })
+-            sender.sendMessage(sb.toString())
+-        }
++        LocalizedMessages.send(sender, path, replacements(replaceWhat, replaceWith))
+     }
+ 
+     fun getMessage(
+         path: String
+     ): String {
+-        var messages = LevelledMobs.instance.messagesCfg.getStringList(path)
+-        messages = Utils.replaceAllInList(messages, "%prefix%", LevelledMobs.instance.configUtils.prefix)
+-        messages = Utils.replaceAllInList(messages, "%label%", "")
+-        messages = Utils.colorizeAllInList(messages)
+-
+-        if (messages.isEmpty()) return ""
+-
+-        return if (messages.size == 1)
+-            messages.first()
+-        else
+-            messages.joinToString("\n")
++        return LocalizedMessages.text(path, mapOf("label" to ""))
+     }
+ 
+     fun getMessage(
+@@ -87,26 +57,18 @@ object MessagesHelper {
+         replaceWhat: MutableList<String>,
+         replaceWith: MutableList<String>
+     ): MutableList<String> {
+-        if (replaceWhat.size != replaceWith.size) {
+-            throw ArrayIndexOutOfBoundsException(
+-                "replaceWhat must be the same size as replaceWith"
+-            )
+-        }
+-
+-        var messages = LevelledMobs.instance.messagesCfg.getStringList(path)
+-        messages = Utils.replaceAllInList(messages, "%prefix%", LevelledMobs.instance.configUtils.prefix)
+-        messages = Utils.replaceAllInList(
+-            messages, "%label%", "/lm"
+-        )
++        val values = replacements(replaceWhat, replaceWith).toMutableMap()
++        values["label"] = "/lm"
++        return LocalizedMessages.lines(path, values)
++    }
+ 
+-        for (i in replaceWhat.indices) {
+-            messages = Utils.replaceAllInList(
+-                messages, replaceWhat[i],
+-                replaceWith[i]
+-            )
++    private fun replacements(
++        replaceWhat: List<String>,
++        replaceWith: List<String>
++    ): Map<String, String> {
++        require(replaceWhat.size == replaceWith.size) {
++            "replaceWhat must be the same size as replaceWith"
+         }
+-
+-        messages = Utils.colorizeAllInList(messages)
+-        return messages
++        return replaceWhat.indices.associate { replaceWhat[it] to replaceWith[it] }
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/util/ConfigUtils.kt b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/util/ConfigUtils.kt
+index a9acfdeb038d936125890d5b96742c3a2c085c99..dc4c74bc8d683b8fb814f29ead38e2fd144a445a 100644
+--- a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/util/ConfigUtils.kt
++++ b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/util/ConfigUtils.kt
+@@ -1,6 +1,5 @@
+ package io.github.arcaneplugins.levelledmobs.util
+ 
+-import java.util.function.Consumer
+ import io.github.arcaneplugins.levelledmobs.LevelledMobs
+ import io.github.arcaneplugins.levelledmobs.util.Utils.colorizeAllInList
+ import io.github.arcaneplugins.levelledmobs.util.Utils.replaceAllInList
+@@ -29,18 +28,9 @@ class ConfigUtils{
+     }
+ 
+     val prefix: String
+-        get() {
+-            return MessageUtils.colorizeAll(
+-                LevelledMobs.instance.messagesCfg.getString("common.prefix")
+-            )
+-        }
++        get() = LocalizedMessages.prefix()
+ 
+     fun sendNoPermissionMsg(sender: CommandSender) {
+-        var noPermissionMsg = LevelledMobs.instance.messagesCfg.getStringList("common.no-permission")
+-
+-        noPermissionMsg = replaceAllInList(noPermissionMsg, "%prefix%", prefix)
+-        noPermissionMsg = colorizeAllInList(noPermissionMsg)
+-
+-        noPermissionMsg.forEach(Consumer { s: String -> sender.sendMessage(s) })
++        LocalizedMessages.send(sender, "common.no-permission")
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/util/LocalizedMessages.kt b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/util/LocalizedMessages.kt
+new file mode 100644
+index 0000000000000000000000000000000000000000..ef2990fa5308e25329df2566b2ee1a92d026e55b
+--- /dev/null
++++ b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/util/LocalizedMessages.kt
+@@ -0,0 +1,91 @@
++package io.github.arcaneplugins.levelledmobs.util
++
++import java.io.InputStreamReader
++import java.nio.charset.StandardCharsets
++import org.bukkit.command.CommandSender
++import org.bukkit.command.ConsoleCommandSender
++import org.bukkit.configuration.file.YamlConfiguration
++import org.bukkit.plugin.java.JavaPlugin
++
++/**
++ * Resolves all configurable LevelledMobs text from messages.yml.
++ *
++ * The bundled file is loaded during onLoad so bootstrap diagnostics can be shown before the
++ * writable configuration is available. Once messages.yml has been loaded, it becomes the active
++ * source and the bundled catalog remains a fallback for missing keys.
++ */
++object LocalizedMessages {
++    private const val BUNDLED_RESOURCE = "messages.yml"
++    private const val EMERGENCY_PREFIX = "&b[LevelledMobs]&7 "
++
++    private var bundled = YamlConfiguration()
++    private var active: YamlConfiguration? = null
++
++    fun initialize(plugin: JavaPlugin) {
++        val resource = plugin.getResource(BUNDLED_RESOURCE) ?: return
++        resource.use { stream ->
++            InputStreamReader(stream, StandardCharsets.UTF_8).use { reader ->
++                bundled = YamlConfiguration.loadConfiguration(reader)
++            }
++        }
++    }
++
++    fun activate(configuration: YamlConfiguration) {
++        active = configuration
++    }
++
++    fun text(
++        path: String,
++        replacements: Map<String, Any?> = emptyMap(),
++        colorize: Boolean = true
++    ): String = lines(path, replacements, colorize).joinToString("\n")
++
++    fun lines(
++        path: String,
++        replacements: Map<String, Any?> = emptyMap(),
++        colorize: Boolean = true
++    ): MutableList<String> {
++        val resolved = readLines(active, path)
++            .ifEmpty { readLines(bundled, path) }
++            .ifEmpty { mutableListOf("&c[LevelledMobs] Отсутствует сообщение: &f$path") }
++
++        val allReplacements = LinkedHashMap<String, Any?>(replacements.size + 1)
++        allReplacements["prefix"] = prefix(colorize = false)
++        allReplacements.putAll(replacements)
++
++        return resolved.mapTo(mutableListOf()) { original ->
++            var result = original
++            for ((name, value) in allReplacements) {
++                val token = if (name.startsWith('%') && name.endsWith('%')) name else "%$name%"
++                result = result.replace(token, value?.toString().orEmpty())
++            }
++            if (colorize) MessageUtils.colorizeAll(result) else result
++        }
++    }
++
++    fun send(
++        sender: CommandSender,
++        path: String,
++        replacements: Map<String, Any?> = emptyMap()
++    ) {
++        val label = if (sender is ConsoleCommandSender) "lm" else "/lm"
++        val values = LinkedHashMap<String, Any?>(replacements.size + 1)
++        values["label"] = label
++        values.putAll(replacements)
++        sender.sendMessage(text(path, values))
++    }
++
++    fun prefix(colorize: Boolean = true): String {
++        val configured = readLines(active, "common.prefix")
++            .ifEmpty { readLines(bundled, "common.prefix") }
++            .firstOrNull()
++            ?: EMERGENCY_PREFIX
++        return if (colorize) MessageUtils.colorizeAll(configured) else configured
++    }
++
++    private fun readLines(configuration: YamlConfiguration?, path: String): MutableList<String> {
++        if (configuration == null || !configuration.contains(path)) return mutableListOf()
++        if (configuration.isList(path)) return configuration.getStringList(path)
++        return configuration.getString(path)?.let { mutableListOf(it) } ?: mutableListOf()
++    }
++}
+diff --git a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/util/Log.kt b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/util/Log.kt
+index 37ce4a770795c902496517c843526ac6b503e4dd..284905a6c7f03f4e4c7c38aa5f317676ba8767f8 100644
+--- a/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/util/Log.kt
++++ b/levelledmobs-plugin/src/main/kotlin/io/github/arcaneplugins/levelledmobs/util/Log.kt
+@@ -26,6 +26,10 @@ object Log {
+             Bukkit.getServer().consoleSender.sendMessage(MessageUtils.colorizeAll(PREFIX + msg))
+     }
+ 
++    fun infKey(path: String, replacements: Map<String, Any?> = emptyMap()) {
++        inf(LocalizedMessages.text(path, replacements, colorize = false))
++    }
++
+     fun war(msg: String, recordError: Boolean = true) {
+         if (LevelledMobs.instance.ver.isRunningPaper)
+             sendMessagePaper("&e[WARN] $msg")
+@@ -36,6 +40,14 @@ object Log {
+             MainCompanion.instance.errorMessages += msg
+     }
+ 
++    fun warKey(
++        path: String,
++        replacements: Map<String, Any?> = emptyMap(),
++        recordError: Boolean = true
++    ) {
++        war(LocalizedMessages.text(path, replacements, colorize = false), recordError)
++    }
++
+     fun sev(msg: String) {
+         if (LevelledMobs.instance.ver.isRunningPaper)
+             sendMessagePaper("&e[SEVERE] $msg")
+@@ -46,6 +58,10 @@ object Log {
+             MainCompanion.instance.errorMessages += msg
+     }
+ 
++    fun sevKey(path: String, replacements: Map<String, Any?> = emptyMap()) {
++        sev(LocalizedMessages.text(path, replacements, colorize = false))
++    }
++
+     private fun sendMessagePaper(msg: String?){
+         if (msg == null) return
+ 
+@@ -53,4 +69,4 @@ object Log {
+         val msgComp = serializer.deserialize("$PREFIX$msg")
+         Bukkit.getServer().consoleSender.sendMessage { msgComp }
+     }
+-}
+\ No newline at end of file
++}
+-- 
+2.54.0.windows.1
+
