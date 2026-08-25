@@ -7,6 +7,7 @@ import java.util.function.Supplier
 import io.github.arcaneplugins.levelledmobs.LivingEntityInterface
 import io.github.arcaneplugins.levelledmobs.rules.RuleInfo
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils.colorizeAll
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import io.github.arcaneplugins.levelledmobs.wrappers.SchedulerResult
@@ -289,40 +290,63 @@ class DebugManager {
             val useName = lmEntity?.nameIfBaby ?: lmInterface.typeName
             var lvl = lmEntity?.mobLevel
             if (lmInterface.summonedLevel != null) lvl = lmInterface.summonedLevel
-            val lvlInfo = if (lvl != null) " (&7lvl $lvl&r)" else " (&7no lvl&r)"
+            val lvlInfo = LocalizedMessages.text(
+                if (lvl != null) "command.levelledmobs.debug.entity-level"
+                else "command.levelledmobs.debug.entity-no-level",
+                mapOf("level" to (lvl?.toString() ?: "-")),
+                false
+            )
             val addedComma = if (useComma) ", " else ""
 
             msg = if (msg.isEmpty())
-                "mob: &b$useName&7$lvlInfo"
+                LocalizedMessages.text("command.levelledmobs.debug.entity-prefix", mapOf(
+                    "entity" to useName,
+                    "level" to lvlInfo
+                ), false)
             else
-                "mob: &b$useName&7$lvlInfo$addedComma$msg"
+                LocalizedMessages.text("command.levelledmobs.debug.entity-prefix", mapOf(
+                    "entity" to useName,
+                    "level" to lvlInfo
+                ), false) + addedComma + msg
         }
         else if (entity != null){
             val addedComma = if (useComma) ", " else ""
 
             msg = if (msg.isEmpty())
-                "mob: &b${entity.type}&7"
+                LocalizedMessages.text("command.levelledmobs.debug.entity-prefix", mapOf(
+                    "entity" to entity.type.toString(),
+                    "level" to ""
+                ), false)
             else
-                "mob: &b${entity.type}&7$addedComma$msg"
+                LocalizedMessages.text("command.levelledmobs.debug.entity-prefix", mapOf(
+                    "entity" to entity.type.toString(),
+                    "level" to ""
+                ), false) + addedComma + msg
         }
 
         if (ruleResult != null) {
             if (msg.isEmpty())
-                msg = "result: $ruleResult"
+                msg = LocalizedMessages.text("command.levelledmobs.debug.result", mapOf(
+                    "result" to ruleResult.toString()
+                ), false)
             else
-                msg += ", result: $ruleResult"
+                msg += LocalizedMessages.text("command.levelledmobs.debug.result-inline", mapOf(
+                    "result" to ruleResult.toString()
+                ), false)
         }
 
+        val outputMessage = LocalizedMessages.text("command.levelledmobs.debug.output-line", mapOf(
+            "type" to debugType.toString(),
+            "message" to msg
+        ))
         if (outputType == OutputTypes.TO_BOTH || outputType == OutputTypes.TO_CONSOLE)
-            Log.inf("&8[&bDebug: $debugType&8]&7 $msg")
+            Log.inf(outputMessage)
 
         if (outputType == OutputTypes.TO_BOTH || outputType == OutputTypes.TO_CHAT) {
             if (playerThatEnabledDebug == null)
-                Log.inf("No player to send chat messages to")
+                Log.infKey("console.debug.no-chat-recipient")
             else {
-                playerThatEnabledDebug!!.sendMessage(
-                    colorizeAll("&8[&bDebug: $debugType&8]&7 $msg")
-                )
+                playerThatEnabledDebug!!.sendMessage(outputMessage)
             }
         }
     }
@@ -341,68 +365,98 @@ class DebugManager {
     }
 
     fun getDebugStatus(): String {
-        val sb = StringBuilder("\nDebug Status: ")
+        val status = LocalizedMessages.text(
+            if (isEnabled) "display.enabled" else "display.disabled", colorize = false
+        )
+        val sb = StringBuilder(
+            LocalizedMessages.text(
+                "command.levelledmobs.debug.status-heading",
+                mapOf("status" to status), colorize = false
+            )
+        )
         if (isEnabled) {
-            sb.append("ENABLED")
             if (isTimerEnabled) {
-                sb.append("-(Time Left: ")
-                sb.append(getTimeRemaining()).append(")")
+                sb.append(LocalizedMessages.text(
+                    "command.levelledmobs.debug.status-time-left",
+                    mapOf("time" to getTimeRemaining()), colorize = false
+                ))
             }
-        } else sb.append("DISABLED")
+        }
 
         if (!bypassAllFilters && !hasFiltering()) return sb.toString()
-        sb.append("\n--------------------------\n")
-            .append("Current Filter Options:")
+        sb.append(LocalizedMessages.text(
+            "command.levelledmobs.debug.status-filters-heading", colorize = false
+        ))
 
         if (bypassAllFilters) {
-            sb.append("\n- All filters bypassed")
+            sb.append(LocalizedMessages.text(
+                "command.levelledmobs.debug.status-filters-bypassed", colorize = false
+            ))
             return sb.toString()
         }
 
         if (filterDebugTypes.isNotEmpty()) {
-            sb.append("\n- Debug types: ")
-            sb.append(filterDebugTypes)
+            sb.append(LocalizedMessages.text(
+                "command.levelledmobs.debug.status-debug-types",
+                mapOf("value" to filterDebugTypes), colorize = false
+            ))
         }
 
         if (filterEntityTypes.isNotEmpty()) {
-            sb.append("\n- Entity types: ")
-            sb.append(filterEntityTypes)
+            sb.append(LocalizedMessages.text(
+                "command.levelledmobs.debug.status-entity-types",
+                mapOf("value" to filterEntityTypes), colorize = false
+            ))
         }
 
         if (filterRuleNames.isNotEmpty()) {
-            sb.append("\n- Rule names: ")
-            sb.append(filterRuleNames)
+            sb.append(LocalizedMessages.text(
+                "command.levelledmobs.debug.status-rule-names",
+                mapOf("value" to filterRuleNames), colorize = false
+            ))
         }
 
         if (filterPlayerNames.isNotEmpty()) {
-            sb.append("\n- Player names: ")
-            sb.append(filterPlayerNames)
+            sb.append(LocalizedMessages.text(
+                "command.levelledmobs.debug.status-player-names",
+                mapOf("value" to filterPlayerNames), colorize = false
+            ))
         }
 
         if (listenFor != ListenFor.BOTH) {
-            sb.append("\n- Listen for: ")
-            sb.append(listenFor.name.lowercase())
+            sb.append(LocalizedMessages.text(
+                "command.levelledmobs.debug.status-listen-for",
+                mapOf("value" to listenFor.name.lowercase()), colorize = false
+            ))
         }
 
         if (maxPlayerDistance != null) {
-            sb.append("\n- Max player distance: ")
-            sb.append(maxPlayerDistance)
+            sb.append(LocalizedMessages.text(
+                "command.levelledmobs.debug.status-max-distance",
+                mapOf("value" to maxPlayerDistance), colorize = false
+            ))
         }
 
         if (minYLevel != null) {
-            sb.append("\n- Min y level: ")
-            sb.append(minYLevel)
+            sb.append(LocalizedMessages.text(
+                "command.levelledmobs.debug.status-min-y",
+                mapOf("value" to minYLevel), colorize = false
+            ))
         }
 
         if (maxYLevel != null) {
-            if (minYLevel != null) sb.append(", Max y level: ")
-            else sb.append("\n- Max y level: ")
-            sb.append(maxYLevel)
+            sb.append(LocalizedMessages.text(
+                if (minYLevel != null) "command.levelledmobs.debug.status-max-y-inline"
+                else "command.levelledmobs.debug.status-max-y",
+                mapOf("value" to maxYLevel), colorize = false
+            ))
         }
 
         if (outputType != OutputTypes.TO_CONSOLE) {
-            sb.append("\n- Output to: ")
-            sb.append(outputType.name.lowercase())
+            sb.append(LocalizedMessages.text(
+                "command.levelledmobs.debug.status-output",
+                mapOf("value" to outputType.name.lowercase()), colorize = false
+            ))
         }
 
         return sb.toString()
@@ -449,7 +503,7 @@ class DebugManager {
         if (Instant.now().isAfter(this.timerEndTime)) {
             disableDebug()
 
-            val msg = "Debug timer has elapsed, debugging is now disabled"
+            val msg = LocalizedMessages.text("command.levelledmobs.debug.timer-elapsed")
             if (outputType == OutputTypes.TO_CONSOLE || outputType == OutputTypes.TO_BOTH)
                 Log.inf(msg)
 
@@ -473,16 +527,16 @@ class DebugManager {
         val duration = Duration.between(Instant.now(), timerEndTime)
         val secondsLeft = duration.seconds.toInt()
         if (secondsLeft < 60)
-            return if (secondsLeft == 1) "1 second" else "$secondsLeft seconds"
+            return LocalizedMessages.text("display.duration.seconds", mapOf(
+                "count" to secondsLeft.toString()
+            ), false)
         else if (secondsLeft < 3600) {
             val minutes = floor(secondsLeft.toDouble() / 60.0).toInt()
             val newSeconds = secondsLeft % 60
-            val sb = StringBuilder()
-            sb.append(minutes)
-                .append(if (minutes == 1) " minute, " else " minutes, ")
-                .append(newSeconds)
-                .append(if (newSeconds == 1) " second" else " seconds")
-            return sb.toString()
+            return LocalizedMessages.text("display.duration.minutes-seconds", mapOf(
+                "minutes" to minutes.toString(),
+                "seconds" to newSeconds.toString()
+            ), false)
         }
 
         return secondsLeft.toString()

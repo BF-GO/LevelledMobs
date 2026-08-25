@@ -1,5 +1,6 @@
 package io.github.arcaneplugins.levelledmobs.listeners
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.MainCompanion
 import io.github.arcaneplugins.levelledmobs.debug.DebugManager
@@ -66,7 +67,7 @@ class EntitySpawnListener : Listener{
             if (priority == lastPriority) return
 
             HandlerList.unregisterAll(this)
-            Log.inf("Changing event priority for $settingName from $lastPriority to $priority")
+            Log.infKey("console.events.priority-changed", mapOf("event" to settingName, "old" to lastPriority.toString(), "new" to priority.toString()))
         }
 
         Bukkit.getPluginManager().registerEvent(
@@ -230,8 +231,8 @@ class EntitySpawnListener : Listener{
 
         val customDropIdFinal = customDropId
         DebugManager.log(DebugType.LM_MOB_SPAWNER, lmEntity) {
-            val msg = (if (customDropIdFinal == null) "" else ", dropid: $customDropIdFinal")
-            "Spawned mob from LM spawner: minLevel:&b $useMinLevel&7, maxLevel: &b$useMaxLevel&7, generatedLevel: &b$generatedLevel&b$msg"
+            val msg = (if (customDropIdFinal == null) "" else LocalizedMessages.text("command.levelledmobs.debug.runtime.d035", mapOf("value-1" to (customDropIdFinal)), false))
+            LocalizedMessages.text("command.levelledmobs.debug.runtime.d036", mapOf("value-1" to (useMinLevel), "value-2" to (useMaxLevel), "value-3" to (generatedLevel), "value-4" to (msg)), false)
         }
 
         main.levelInterface.applyLevelToMob(
@@ -289,7 +290,7 @@ class EntitySpawnListener : Listener{
             DebugManager.log(
                 DebugType.LM_MOB_SPAWNER,
                 lmEntity
-            ) { "Spawned mob from vanilla spawner" }
+            ) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d037", colorize = false) }
         } else if (event is CreatureSpawnEvent) {
             if (event.spawnReason == SpawnReason.SPAWNER ||
                 event.spawnReason == SpawnReason.SLIME_SPLIT
@@ -334,7 +335,7 @@ class EntitySpawnListener : Listener{
             val levelAssignment = main.levelInterface.generateLevel(lmEntity)
             if (shouldDenyLevel(lmEntity, levelAssignment)) {
                 DebugManager.log(DebugType.PLAYER_LEVELLING, lmEntity) {
-                    "denied relevelling to &b$levelAssignment&r due to decrease-level disabled"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d038", mapOf("value-1" to (levelAssignment)), false)
                 }
             } else {
                 if (lmEntity.reEvaluateLevel && main.rulesManager.isPlayerLevellingEnabled()) {
@@ -354,7 +355,7 @@ class EntitySpawnListener : Listener{
             }
         } else {
             DebugManager.log(DebugType.APPLY_LEVEL_RESULT, lmEntity, false) {
-                ("world: &b${lmEntity.worldName}&7 was not levelled -> levellable state: &b${levellableState}")
+                (LocalizedMessages.text("command.levelledmobs.debug.runtime.d039", mapOf("value-1" to (lmEntity.worldName), "value-2" to (levellableState)), false))
             }
 
             // Check if the mob is already levelled - if so, remove their level
@@ -422,12 +423,12 @@ class EntitySpawnListener : Listener{
                 return LevellableState.DENIED_OTHER
 
             DebugManager.log(DebugType.ENTITY_SPAWN, lmEntity) {
-                "instanceof CreatureSpawnListener: &b${event.entityType}" +
-                        "&7, with spawnReason &b${event.spawnReason}&7."
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d040", mapOf("value-1" to (event.entityType)), false) +
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d041", mapOf("value-1" to (event.spawnReason)), false)
             }
         } else if (event is EntitySpawnEvent) {
             DebugManager.log(DebugType.ENTITY_SPAWN, lmEntity) {
-                "not instanceof CreatureSpawnListener: &b${event.entityType}"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d042", mapOf("value-1" to (event.entityType)), false)
             }
         }
 

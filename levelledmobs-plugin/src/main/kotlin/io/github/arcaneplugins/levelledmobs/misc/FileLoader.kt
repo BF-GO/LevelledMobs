@@ -2,9 +2,11 @@ package io.github.arcaneplugins.levelledmobs.misc
 
 import io.github.arcaneplugins.levelledmobs.commands.subcommands.RulesSubcommand
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import java.io.File
 import java.io.FileInputStream
-import io.github.arcaneplugins.levelledmobs.util.MessageUtils.colorizeStandardCodes
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.Plugin
 import org.bukkit.util.FileUtil
@@ -18,7 +20,7 @@ import org.yaml.snakeyaml.Yaml
  */
 object FileLoader {
     const val SETTINGS_FILE_VERSION = 40 // Last changed: v4.5.3 b151
-    const val MESSAGES_FILE_VERSION = 9 // Last changed: v4.0.0 b1
+    const val MESSAGES_FILE_VERSION = 10 // Russian catalog and configurable runtime messages
     const val CUSTOMDROPS_FILE_VERSION = 12 // Last changed: v4.1.0 b44
     const val RULES_FILE_VERSION = 5 // Last changed: v4.0.0 b1
     const val EXTERNALPLUGINS_FILE_VERSION = 1 // Last changed: v4.0.0
@@ -31,9 +33,10 @@ object FileLoader {
         var useCfgName = cfgName
         useCfgName += ".yml"
 
-        Log.inf("&fFile Loader: &7Loading file '&b$useCfgName&7'...")
+        Log.infKey("console.file-loader.loading-file", mapOf("file" to useCfgName))
 
         val file = File(plugin.dataFolder, useCfgName)
+        val isMessages = useCfgName == "messages.yml"
 
         saveResourceIfNotExists(plugin, file)
         try {
@@ -41,20 +44,24 @@ object FileLoader {
                 Yaml().load<Any>(fs)
             }
         } catch (e: Exception) {
-            val parseErrorMessage =
-                """
-                            LevelledMobs was unable to read file &b%s&r due to a user-caused YAML syntax error.
-                            Copy the contents of your file into a YAML Parser website, such as < https://tinyurl.com/yamlp >  to help locate the line of the mistake.
-                            Failure to resolve this issue will cause LevelledMobs to function improperly, or likely not at all.
-                            Below represents where LevelledMobs became confused while attempting to read your file:
-                            &b---- START ERROR ----&r
-                            &4%s&r
-                            &b---- END ERROR ----&r
-                            If an attempt to solve this error has come to no avail, you are welcome to ask for assistance in the ArcanePlugins Discord Guild.
-                            &bhttps://discord.io/arcaneplugins
-                            """.trimIndent()
-
-            Log.sev(String.format(parseErrorMessage, useCfgName, e))
+            if (isMessages) {
+                val invalidBackup = File(plugin.dataFolder, "messages.yml.invalid.old")
+                Files.copy(
+                    file.toPath(), invalidBackup.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING
+                )
+                plugin.saveResource(file.name, true)
+                val restored = YamlConfiguration.loadConfiguration(file)
+                Log.sevKey(
+                    "console.file-loader.invalid-messages-reset",
+                    mapOf("backup" to invalidBackup.name, "error" to e.toString())
+                )
+                return restored
+            }
+            Log.sevKey(
+                "console.file-loader.yaml-error",
+                mapOf("file" to useCfgName, "error" to e.toString())
+            )
             return null
         }
 
@@ -73,9 +80,28 @@ object FileLoader {
 
             // copy to old file
             FileUtil.copy(file, backedupFile)
-            Log.inf(
-                "&fFile Loader: &8(Migration) &b$useCfgName backed up to ${backedupFile.name}"
+            Log.infKey(
+                "console.file-loader.backup-created",
+                mapOf("file" to useCfgName, "backup" to backedupFile.name)
             )
+
+            if (isMessages) {
+                val preservedFlags = listOf(
+                    "other.compatibility-notice.enabled",
+                    "other.update-notice.send-in-console",
+                    "other.update-notice.send-on-join"
+                ).associateWith { path -> cfg.getBoolean(path) }
+                plugin.saveResource(file.name, true)
+                cfg = YamlConfiguration.loadConfiguration(file)
+                for ((path, value) in preservedFlags) cfg.set(path, value)
+                cfg.save(file)
+                Log.infKey(
+                    "console.file-loader.messages-replaced",
+                    mapOf("old-version" to fileVersion, "new-version" to compatibleVersion)
+                )
+                return cfg
+            }
+
             // overwrite the file from new version
             if (!isRules) {
                 plugin.saveResource(file.name, true)
@@ -83,9 +109,9 @@ object FileLoader {
 
             // copy supported values from old file to new
             if (!isRules){
-                Log.inf(
-                    "&fFile Loader: &8(Migration) &7Migrating &b$useCfgName" +
-                            "&7 from old version to new version."
+                Log.infKey(
+                    "console.file-loader.migrating-file",
+                    mapOf("file" to useCfgName)
                 )
             }
 
@@ -94,7 +120,7 @@ object FileLoader {
             else if (!isRules)
                 FileMigrator.copyYmlValues(backedupFile, file, fileVersion)
              else {
-                Log.war("Your rules file is pre-4.0. A backup has been made and it will be reset to default.")
+                Log.warKey("console.file-loader.rules-reset")
                 RulesSubcommand.resetRules(null, RulesSubcommand.ResetDifficulty.SILVER)
             }
 
@@ -108,10 +134,7 @@ object FileLoader {
     }
 
     fun getFileLoadErrorMessage(): String {
-        return colorizeStandardCodes(
-            "&4An error occured&r whilst attempting to parse the file &brules.yml&r due " +
-                    "to a user-caused YAML syntax error. Please see the console logs for more details."
-        )
+        return LocalizedMessages.text("other.rules-file-load-error")
     }
 
     private fun saveResourceIfNotExists(
@@ -119,9 +142,9 @@ object FileLoader {
         file: File
     ) {
         if (!file.exists()) {
-            Log.inf(
-                "&fFile Loader: &7File '&b${file.name}" +
-                        "&7' doesn't exist, creating it now..."
+            Log.infKey(
+                "console.file-loader.creating-file",
+                mapOf("file" to file.name)
             )
             instance.saveResource(file.name, false)
         }
@@ -134,16 +157,15 @@ object FileLoader {
     ) {
         if (compatibleVersion == installedVersion) return
 
-        val what = if (installedVersion < compatibleVersion) "outdated"
-        else "ahead of the compatible version of this file for this version of the plugin"
-
-        Log.sev(
-            "&fFile Loader: &7The version of &b${file.name}&7 you have installed is $what"
-                    + "! Fix this as soon as possible, else the plugin will most likely malfunction."
+        val statePath = if (installedVersion < compatibleVersion)
+            "console.file-loader.version-outdated" else "console.file-loader.version-ahead"
+        Log.sevKey(
+            statePath,
+            mapOf("file" to file.name)
         )
-        Log.war(
-            ("&fFile Loader: &8(&7You have &bv$installedVersion"
-                    + "&7 installed but you are meant to be running &bv$compatibleVersion&8)")
+        Log.warKey(
+            "console.file-loader.version-details",
+            mapOf("installed" to installedVersion, "compatible" to compatibleVersion)
         )
     }
 }

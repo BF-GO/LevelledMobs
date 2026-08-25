@@ -108,7 +108,7 @@ class RandomLevellingStrategy : LevellingStrategy, Cloneable {
 
             val numRange = MinAndMax.setAmountRangeFromString(range)
             if (numRange == null) {
-                Log.war("Invalid number range for weighted random: $range")
+                Log.warKey("console.validation.invalid-weighted-random-range", mapOf("range" to range))
                 continue
             }
 

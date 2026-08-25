@@ -1,5 +1,6 @@
 package io.github.arcaneplugins.levelledmobs.customdrops
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.debug.DebugManager
 import io.github.arcaneplugins.levelledmobs.managers.ExternalCompatibilityManager
@@ -92,25 +93,30 @@ class CustomDropsHandler {
             val formula = LevelledMobs.instance.levelManager.replaceStringPlaceholdersForFormulas(numberFormula, lmEntity)
             val evalResult = MobDataManager.evaluateExpression(formula)
             if (evalResult.hadError){
-                NotifyManager.notifyOfError("Error evaluating formula for $friendlyName on mob: ${lmEntity.nameIfBaby}, lvl: ${lmEntity.getMobLevel}, ${evalResult.error}")
+                NotifyManager.notifyOfErrorKey("console.formula.customdrop-error", mapOf(
+                    "name" to friendlyName,
+                    "entity" to lmEntity.nameIfBaby,
+                    "level" to lmEntity.getMobLevel,
+                    "error" to (evalResult.error ?: "-")
+                ))
                 DebugManager.log(DebugType.CUSTOM_DROPS_FORMULA, lmEntity){
                     val msg = if (formula == numberFormula)
-                        "   formula: '$formula'"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d002", mapOf("value-1" to (formula)), false)
                     else
-                        "   formulaPre: '$numberFormula'\n" +
-                        "   formula: '$formula'"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d003", mapOf("value-1" to (numberFormula)), false) +
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d004", mapOf("value-1" to (formula)), false)
 
-                    "result (error, ${evalResult.error})\n$msg"}
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d005", mapOf("value-1" to (evalResult.error), "value-2" to (msg)), false)}
             }
 
             DebugManager.log(DebugType.CUSTOM_DROPS_FORMULA, lmEntity){
                 val msg = if (formula == numberFormula)
-                    "   formula: '$formula'"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d006", mapOf("value-1" to (formula)), false)
                 else
-                    "   formulaPre: '$numberFormula'\n" +
-                            "   formula: '$formula'"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d007", mapOf("value-1" to (numberFormula)), false) +
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d008", mapOf("value-1" to (formula)), false)
 
-                "$friendlyName, result: ${evalResult.result}\n$msg"}
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d009", mapOf("value-1" to (friendlyName), "value-2" to (evalResult.result), "value-3" to (msg)), false)}
 
             return evalResult
         }
@@ -239,14 +245,14 @@ class CustomDropsHandler {
             if (buildResult == DropInstanceBuildResult.DID_NOT_MAKE_CHANCE) {
                 processingInfo.addDebugMessage(
                     DebugType.CUSTOM_DROPS,
-                    "didn't make overall chance${processingInfo.overallChanceDebugMessage}"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d155", mapOf("value-1" to (processingInfo.overallChanceDebugMessage)), false)
                 )
             }
             else {
                 val mobKiller = if (processingInfo.mobKiller == null) "(null)" else processingInfo.mobKiller!!.name
                 processingInfo.addDebugMessage(
                     DebugType.CUSTOM_DROPS,
-                    "didn't make overall chance permission for player: &b$mobKiller&r"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d156", mapOf("value-1" to (mobKiller)), false)
                 )
             }
             processingInfo.writeAnyDebugMessages()
@@ -257,11 +263,11 @@ class CustomDropsHandler {
         if (!equippedOnly) {
             processingInfo.addDebugMessage(
                 DebugType.CUSTOM_DROPS,
-                "&7Custom drops${processingInfo.overallChanceDebugMessage}:"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d157", mapOf("value-1" to (processingInfo.overallChanceDebugMessage)), false)
             )
 
             DebugManager.log(DebugType.MOB_GROUPS, lmEntity){
-                "&8- &7Groups: &b" + lmEntity.getApplicableGroups().joinToString("&7, &b") + "&7."
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d010", colorize = false) + lmEntity.getApplicableGroups().joinToString(LocalizedMessages.text("command.levelledmobs.debug.runtime.d011", colorize = false)) + "&7."
             }
         }
 
@@ -275,11 +281,11 @@ class CustomDropsHandler {
             if (equippedOnly && drops.isNotEmpty() && showCustomEquips) {
                 if (lmEntity.getMobLevel > -1) {
                     processingInfo.addDebugMessage(
-                        "&7Custom equipment for &b${lmEntity.typeName} &r(${lmEntity.getMobLevel})"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d158", mapOf("value-1" to (lmEntity.typeName), "value-2" to (lmEntity.getMobLevel)), false)
                     )
                 }
                 else
-                    processingInfo.addDebugMessage("&7Custom equipment for &b${lmEntity.typeName}&r")
+                    processingInfo.addDebugMessage(LocalizedMessages.text("command.levelledmobs.debug.runtime.d159", mapOf("value-1" to (lmEntity.typeName)), false))
 
                 val sb = StringBuilder()
                 for (drop in drops) {
@@ -287,11 +293,11 @@ class CustomDropsHandler {
 
                     sb.append(drop.type.name)
                 }
-                processingInfo.addDebugMessage("   $sb")
+                processingInfo.addDebugMessage(LocalizedMessages.text("command.levelledmobs.debug.runtime.d160", mapOf("value-1" to (sb)), false))
             }
             else if (!equippedOnly && showCustomDrops) {
                 processingInfo.addDebugMessage(
-                    "&8 --- &7Custom items added: &b$postCount&7."
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d161", mapOf("value-1" to (postCount)), false)
                 )
             }
 
@@ -315,7 +321,7 @@ class CustomDropsHandler {
 
         for (id in getDropIds(info)) {
             if (!customItemGroups.containsKey(id.trim())) {
-                Log.war("rule specified an invalid value for use-droptable-id: $id")
+                Log.warKey("console.customdrops.invalid-droptable-id", mapOf("id" to id))
                 continue
             }
 
@@ -477,7 +483,7 @@ class CustomDropsHandler {
                                 val itemDescription =
                                     if ((drop is CustomDropItem)) drop.material.name else "CustomCommand"
                                 DebugManager.log(DebugType.GROUP_LIMITS, info.lmEntity) {
-                                    "Reached cap-per-item limit of ${groupLimits.capPerItem} for $itemDescription"
+                                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d012", mapOf("value-1" to (groupLimits.capPerItem), "value-2" to (itemDescription)), false)
                                 }
                             }
                             continue
@@ -486,7 +492,7 @@ class CustomDropsHandler {
                         val groupDroppedCount = info.getDropItemsCountForGroup(drop)
                         if (groupLimits.hasReachedCapTotal(groupDroppedCount)) {
                             DebugManager.log(DebugType.GROUP_LIMITS, info.lmEntity) {
-                                "Reached cap-total of ${groupLimits.capTotal} for group: ${drop.groupId}"
+                                LocalizedMessages.text("command.levelledmobs.debug.runtime.d013", mapOf("value-1" to (groupLimits.capTotal), "value-2" to (drop.groupId)), false)
                             }
                             return
                         }
@@ -520,8 +526,8 @@ class CustomDropsHandler {
             if (!info.equippedOnly && LevelledMobs.instance.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
                 val itemName = if (dropBase is CustomDropItem) dropBase.material.name else "(command)"
                 info.addDebugMessage(
-                    "&8 - &7item: &b$itemName&7, death-cause: &b${info.deathCause}&7, was not player caused" +
-                            ", dropped: &bfalse&7."
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d162", mapOf("value-1" to (itemName), "value-2" to (info.deathCause)), false) +
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d163", colorize = false)
                 )
             }
             return
@@ -533,7 +539,7 @@ class CustomDropsHandler {
 
         if (dropBase.excludedMobs.contains(info.lmEntity!!.typeName)) {
             if (dropBase is CustomDropItem && !info.equippedOnly)
-                info.addDebugMessage("item: ${dropBase.material.name}, mob was excluded")
+                info.addDebugMessage(LocalizedMessages.text("command.levelledmobs.debug.runtime.d164", mapOf("value-1" to (dropBase.material.name)), false))
             return
         }
 
@@ -550,14 +556,14 @@ class CustomDropsHandler {
                         else dropBase.itemStack!!
 
                     info.addDebugMessage(
-                        "fromSpawner: &b${info.isSpawner}&7, item: &b${itemStack.type.name}&7, " +
-                                "minL: &b${dropBase.minLevel}&7, maxL: &b${dropBase.maxLevel}&7, nospawner: &b${dropBase.noSpawner}&7, dropped: &bfalse"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d165", mapOf("value-1" to (info.isSpawner), "value-2" to (itemStack.type.name)), false) +
+                                LocalizedMessages.text("command.levelledmobs.debug.runtime.d166", mapOf("value-1" to (dropBase.minLevel), "value-2" to (dropBase.maxLevel), "value-3" to (dropBase.noSpawner)), false)
                     )
                 }
             } else if (dropBase is CustomCommand) {
                 info.addDebugMessage(
-                    "&8- custom-cmd, fromSpawner: &b${info.isSpawner}&7, minL: &b${dropBase.minLevel}&7, " +
-                            "maxL: &b${dropBase.maxLevel}&7, nospawner: &b${dropBase.noSpawner}&7, executed: &bfalse"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d167", mapOf("value-1" to (info.isSpawner), "value-2" to (dropBase.minLevel)), false) +
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d168", mapOf("value-1" to (dropBase.maxLevel), "value-2" to (dropBase.noSpawner)), false)
                 )
             }
             return
@@ -571,7 +577,7 @@ class CustomDropsHandler {
             if (!checkIfMadeEquippedDropChance(info, dropBase)) {
                 if (main.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
                     info.addDebugMessage(
-                        "&8 - &7item: &b${dropBase.itemStack?.type?.name}&7, was not equipped on mob, dropped: &bfalse&7.",
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d169", mapOf("value-1" to (dropBase.itemStack?.type?.name)), false),
                     )
                 }
                 return
@@ -591,12 +597,12 @@ class CustomDropsHandler {
             if (dropBase is CustomDropItem) {
                 info.addDebugMessage(
                     DebugType.CUSTOM_DROPS,
-                        "item: &b${dropBase.material.name}&7, gId: &b${dropBase.groupId}&7, chunk kill count reached"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d170", mapOf("value-1" to (dropBase.material.name), "value-2" to (dropBase.groupId)), false)
                 )
             } else {
                 info.addDebugMessage(
                     DebugType.CUSTOM_DROPS,
-                        "item: custom command, gId: &b${dropBase.groupId}&7, chunk kill count reached"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d171", mapOf("value-1" to (dropBase.groupId)), false)
                 )
             }
 
@@ -620,14 +626,14 @@ class CustomDropsHandler {
 
                 info.addDebugMessage(
                     DebugType.CUSTOM_DROPS,
-                        "&8 - &7item: &b${itemStack.type.name}&7, amount: &b${dropBase.amountAsString}&7, chance: &b${dropBase.chance?.showMatchedChance()}&7, " +
-                                "chanceRole: &b${Utils.round(chanceRole.toDouble(), 4)}&7, dropped: &bfalse&7."
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d172", mapOf("value-1" to (itemStack.type.name), "value-2" to (dropBase.amountAsString), "value-3" to (dropBase.chance?.showMatchedChance())), false) +
+                                LocalizedMessages.text("command.levelledmobs.debug.runtime.d173", mapOf("value-1" to (Utils.round(chanceRole.toDouble(), 4))), false)
                 )
             } else {
                 info.addDebugMessage(
                     DebugType.CUSTOM_DROPS,
-                        "&8 - &7Custom command&7, chance: &b${dropBase.chance?.showMatchedChance()}&7, chanceRole:" +
-                                " &b${Utils.round(chanceRole.toDouble(), 4)}&7, executed: &bfalse&7."
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d174", mapOf("value-1" to (dropBase.chance?.showMatchedChance())), false) +
+                                LocalizedMessages.text("command.levelledmobs.debug.runtime.d175", mapOf("value-1" to (Utils.round(chanceRole.toDouble(), 4))), false)
                 )
             }
         }
@@ -651,13 +657,13 @@ class CustomDropsHandler {
                 if (main.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
                     if (dropBase is CustomDropItem) {
                         info.addDebugMessage(
-                            "item: &b${dropBase.material.name}&7, gId: &b${dropBase.groupId}&7, " +
-                                    "maxDropGroup: &b${info.getItemsDropsByGroup(dropBase)}&7, groupDropCount: &b$groupDroppedCount&7, dropped: &bfalse"
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d176", mapOf("value-1" to (dropBase.material.name), "value-2" to (dropBase.groupId)), false) +
+                                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d177", mapOf("value-1" to (info.getItemsDropsByGroup(dropBase)), "value-2" to (groupDroppedCount)), false)
                         )
                     } else {
                         info.addDebugMessage(
-                            "item: custom command, gId: &b${info.getItemsDropsByGroup(dropBase)}&7, " +
-                                    "maxDropGroup: &b${dropBase.maxDropGroup}&7, groupDropCount: &b$groupDroppedCount&7, executed: &bfalse"
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d178", mapOf("value-1" to (info.getItemsDropsByGroup(dropBase))), false) +
+                                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d179", mapOf("value-1" to (dropBase.maxDropGroup), "value-2" to (groupDroppedCount)), false)
                         )
                     }
                 }
@@ -673,7 +679,7 @@ class CustomDropsHandler {
                 val groupLimits = info.groupLimits!!
                 if (groupLimits.hasReachedCapTotal(count)) {
                     DebugManager.log(DebugType.GROUP_LIMITS, info.lmEntity) {
-                        "Reached cap-total of ${groupLimits.capTotal} for group: ${dropBase.groupId}"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d014", mapOf("value-1" to (groupLimits.capTotal), "value-2" to (dropBase.groupId)), false)
                     }
                     return
                 }
@@ -705,7 +711,7 @@ class CustomDropsHandler {
             // -----------------------------------------------------------------------------------------------------------------------------------------------
         }
         if (dropBase !is CustomDropItem) {
-            Log.war("Unsupported drop type: " + dropBase.javaClass.name)
+            Log.warKey("console.customdrops.unsupported-drop-type", mapOf("type" to dropBase.javaClass.name))
             return
         }
 
@@ -749,7 +755,7 @@ class CustomDropsHandler {
         if (dropBase.isExternalItem &&
             !main.mainCompanion.externalCompatibilityManager.doesLMIMeetVersionRequirement()
         )
-            Log.war("Could not get external custom item - LM_Items is not installed")
+            Log.warKey("console.customdrops.lm-items-missing")
 
         if (dropBase.isExternalItem && main.mainCompanion.externalCompatibilityManager.doesLMIMeetVersionRequirement())
             lmItemsParser!!.getExternalItem(dropBase, info)
@@ -782,8 +788,8 @@ class CustomDropsHandler {
                 val equippedChance =
                     if (dropBase.equippedChance != null) dropBase.equippedChance!!.showMatchedChance() else "0.0"
                 info.addDebugMessage(DebugType.CUSTOM_EQUIPS,
-                    "&8 - &7item: &b${newItem.type.name}&7, equipChance: &b$equippedChance&7, chanceRole: " +
-                            "&b${Utils.round(info.equippedChanceRole.toDouble(), 4)}&7, equipped: &btrue&7."
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d180", mapOf("value-1" to (newItem.type.name), "value-2" to (equippedChance)), false) +
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d181", mapOf("value-1" to (Utils.round(info.equippedChanceRole.toDouble(), 4))), false)
                 )
             } else if (!info.equippedOnly && main.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
                 val retryMsg = if (info.retryNumber > 0) ", retry: " + info.retryNumber else ""
@@ -793,9 +799,9 @@ class CustomDropsHandler {
                 else dropBase.amount.toString()
 
                 info.addDebugMessage(
-                    "&8 - &7item: &b${newItem.type.name}&7, amount: &b${dropBase.amountAsString}&7, newAmount: &b$amountMsg&7, " +
-                            "chance: &b${dropBase.chance?.showMatchedChance()}&7, chanceRole: " +
-                            "&b${Utils.round(chanceRole.toDouble(), 4)}&7, dropped: &btrue&7$retryMsg."
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d182", mapOf("value-1" to (newItem.type.name), "value-2" to (dropBase.amountAsString), "value-3" to (amountMsg)), false) +
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d183", mapOf("value-1" to (dropBase.chance?.showMatchedChance())), false) +
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d184", mapOf("value-1" to (Utils.round(chanceRole.toDouble(), 4)), "value-2" to (retryMsg)), false)
                 )
             }
 
@@ -881,9 +887,9 @@ class CustomDropsHandler {
         if (equippedChance <= 0.0f || 1.0f - info.equippedChanceRole >= equippedChance) {
             if (LevelledMobs.instance.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_EQUIPS)) {
                 info.addDebugMessage(DebugType.CUSTOM_EQUIPS,
-                    "item: &b${dropItem.material.name}&7, equipchance: " +
-                            "&b${dropItem.equippedChance?.showMatchedChance()}&7, chancerole: " +
-                            "&b${Utils.round(info.equippedChanceRole.toDouble(), 4)}&7, did not make equipped chance"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d185", mapOf("value-1" to (dropItem.material.name)), false) +
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d186", mapOf("value-1" to (dropItem.equippedChance?.showMatchedChance())), false) +
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d187", mapOf("value-1" to (Utils.round(info.equippedChanceRole.toDouble(), 4))), false)
                 )
             }
             return false
@@ -947,14 +953,14 @@ class CustomDropsHandler {
 
         val chances = dropItem.enchantmentChances!!
         val debugId = DebugManager.startLongDebugMessage()
-        DebugManager.logLongMessage(debugId){ "&7item: &b${itemStack.type.name}&r, enchts" }
+        DebugManager.logLongMessage(debugId){ LocalizedMessages.text("command.levelledmobs.debug.runtime.d015", mapOf("value-1" to (itemStack.type.name)), false) }
         var isFirstEnchantment = true
 
         for (enchantment in chances.items.keys) {
             val opts = chances.options[enchantment]
             var madeAnyChance = false
             if (!isFirstEnchantment) DebugManager.logLongMessage(debugId){ "; " }
-            DebugManager.logLongMessage(debugId){ "\n  ${enchantment.key.value()} " }
+            DebugManager.logLongMessage(debugId){ LocalizedMessages.text("command.levelledmobs.debug.runtime.d016", mapOf("value-1" to (enchantment.key.value())), false) }
 
             if (isFirstEnchantment) isFirstEnchantment = false
             var enchantmentNumber = 0
@@ -973,15 +979,15 @@ class CustomDropsHandler {
                 if (!madeChance) {
                     if (enchantmentNumber > 1) DebugManager.logLongMessage(debugId){ ", " }
                     DebugManager.logLongMessage(debugId){
-                        "(l-$enchantLevel): &4$chanceRole&r &b($chanceValue)&r"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d017", mapOf("value-1" to (enchantLevel), "value-2" to (chanceRole), "value-3" to (chanceValue)), false)
                     }
                     continue
                 }
 
                 if (enchantmentNumber > 1) DebugManager.logLongMessage(debugId){ ", " }
                 DebugManager.logLongMessage(debugId){
-                    val msg = if (chanceValue >= 1f) "&b($chanceValue chance)" else "&2$chanceRole&r &b($chanceValue)"
-                    "(l-$enchantLevel): $msg&r"
+                    val msg = if (chanceValue >= 1f) LocalizedMessages.text("command.levelledmobs.debug.runtime.d018", mapOf("value-1" to (chanceValue)), false) else LocalizedMessages.text("command.levelledmobs.debug.runtime.d019", mapOf("value-1" to (chanceRole), "value-2" to (chanceValue)), false)
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d020", mapOf("value-1" to (enchantLevel), "value-2" to (msg)), false)
                 }
 
                 if (itemStack.type == Material.ENCHANTED_BOOK) {
@@ -1005,7 +1011,7 @@ class CustomDropsHandler {
                 else
                     itemStack.addUnsafeEnchantment(enchantment, opts.defaultLevel!!)
 
-                DebugManager.logLongMessage(debugId){ ", used dflt: &2${opts.defaultLevel}&r" }
+                DebugManager.logLongMessage(debugId){ LocalizedMessages.text("command.levelledmobs.debug.runtime.d021", mapOf("value-1" to (opts.defaultLevel)), false) }
             }
         }
 
@@ -1040,8 +1046,8 @@ class CustomDropsHandler {
             if (!info.equippedOnly && LevelledMobs.instance.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
                 val itemName = if (dropBase is CustomDropItem) dropBase.material.name else "(command)"
                 info.addDebugMessage(
-                    "&8 - &7item: &b$itemName&7, death-cause: &b${info.deathCause}&7, death-cause-req: " +
-                            "&b${dropBase.causeOfDeathReqs}&7, dropped: &bfalse&7."
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d188", mapOf("value-1" to (itemName), "value-2" to (info.deathCause)), false) +
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d189", mapOf("value-1" to (dropBase.causeOfDeathReqs)), false)
                 )
             }
 
@@ -1064,7 +1070,7 @@ class CustomDropsHandler {
                 val itemDescription = if ((dropBase is CustomDropItem)) dropBase.itemStack?.type?.name
                     else "custom command"
                 info.addDebugMessage(
-                    "&8 - &7item: &b$itemDescription&7, no player was provided for item permissions"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d190", mapOf("value-1" to (itemDescription)), false)
                 )
             }
             return false
@@ -1084,7 +1090,7 @@ class CustomDropsHandler {
                 val msg = if ((dropBase is CustomDropItem)) dropBase.itemStack?.type?.name
                 else "custom command"
                 info.addDebugMessage(
-                    "&8 - &7item: &b$msg&7, player: &b${info.mobKiller?.name}&7 didn't have permission: &b${dropBase.permissions}&7"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d191", mapOf("value-1" to (msg), "value-2" to (info.mobKiller?.name), "value-3" to (dropBase.permissions)), false)
                 )
             }
             return false
@@ -1221,11 +1227,11 @@ class CustomDropsHandler {
                     if (main.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
                         if (dropBase is CustomDropItem) {
                             info.addDebugMessage(
-                                "item: ${dropBase.material}, PAPI val: $papiResult, matched: $resultStr"
+                                LocalizedMessages.text("command.levelledmobs.debug.runtime.d192", mapOf("value-1" to (dropBase.material), "value-2" to (papiResult), "value-3" to (resultStr)), false)
                             )
                         } else {
                             info.addDebugMessage(
-                                "(customCommand), PAPI val: $, matched: $resultStr"
+                                LocalizedMessages.text("command.levelledmobs.debug.runtime.d193", mapOf("value-1" to (resultStr)), false)
                             )
                         }
                     }
@@ -1237,11 +1243,11 @@ class CustomDropsHandler {
                 if (main.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
                     if (dropBase is CustomDropItem) {
                         info.addDebugMessage(
-                            "item: ${dropBase.material}, PAPI val: $papiResult, no matches found"
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d194", mapOf("value-1" to (dropBase.material), "value-2" to (papiResult)), false)
                         )
                     } else {
                         info.addDebugMessage(
-                            "(customCommand), PAPI val: $papiResult, no matches found",
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d195", mapOf("value-1" to (papiResult)), false),
                         )
                     }
                 }
@@ -1271,13 +1277,13 @@ class CustomDropsHandler {
                 if (main.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)) {
                     if (dropBase is CustomDropItem) {
                         info.addDebugMessage(
-                            "&8 - &7Mob: &b${info.lmEntity?.typeName}&7, item: ${dropBase.material}, lvl-src: $levelToUse, " +
-                                    "minlvl: ${dropBase.minPlayerLevel}, maxlvl: ${dropBase.maxPlayerLevel} player level criteria not met",
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d196", mapOf("value-1" to (info.lmEntity?.typeName), "value-2" to (dropBase.material), "value-3" to (levelToUse)), false) +
+                                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d197", mapOf("value-1" to (dropBase.minPlayerLevel), "value-2" to (dropBase.maxPlayerLevel)), false),
                         )
                     } else {
                         info.addDebugMessage(
-                            "&8 - &7Mob: &b${info.lmEntity?.typeName}&7, (customCommand), lvl-src: $levelToUse, minlvl: ${dropBase.minPlayerLevel}, " +
-                                    "maxlvl: ${dropBase.maxPlayerLevel} player level criteria not met"
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d198", mapOf("value-1" to (info.lmEntity?.typeName), "value-2" to (levelToUse), "value-3" to (dropBase.minPlayerLevel)), false) +
+                                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d199", mapOf("value-1" to (dropBase.maxPlayerLevel)), false)
                         )
                     }
                 }

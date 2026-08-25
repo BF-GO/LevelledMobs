@@ -10,6 +10,7 @@ import java.security.MessageDigest
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 
@@ -80,7 +81,10 @@ object DebugCreator {
         val serverInfo = File(pluginDir, "serverinfo.txt")
         if (serverInfo.exists()) serverInfo.delete()
 
-        if (result) sender.sendMessage("Created file: " + zipFile.absolutePath)
+        if (result) LocalizedMessages.send(
+            sender, "command.levelledmobs.debug.created-file",
+            mapOf("file" to zipFile.absolutePath)
+        )
     }
 
     private fun generateSystemInfo(): String {

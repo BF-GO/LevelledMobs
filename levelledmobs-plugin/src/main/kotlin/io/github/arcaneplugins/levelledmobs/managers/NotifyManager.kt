@@ -1,7 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.managers
 
 import io.github.arcaneplugins.levelledmobs.util.Log
-import io.github.arcaneplugins.levelledmobs.util.MessageUtils
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import java.time.Duration
 import java.time.Instant
 import org.bukkit.Bukkit
@@ -28,10 +28,16 @@ object NotifyManager {
             if (!player.isOp) continue
 
             this.opGotNotified = true
-            player.sendMessage(MessageUtils.colorizeStandardCodes("Severe: &c$message&r"))
+            LocalizedMessages.send(
+                player, "other.severe-notification", mapOf("message" to message)
+            )
         }
 
         if (!opGotNotified) pendingMessage = message
+    }
+
+    fun notifyOfErrorKey(path: String, replacements: Map<String, Any?> = emptyMap()) {
+        notifyOfError(LocalizedMessages.text(path, replacements, colorize = false))
     }
 
     private fun canNotify(): Boolean{

@@ -22,6 +22,7 @@ import io.github.arcaneplugins.levelledmobs.misc.EffectiveInfo
 import io.github.arcaneplugins.levelledmobs.rules.strategies.PlayerLevellingStrategy
 import io.github.arcaneplugins.levelledmobs.rules.RuleInfo
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils.colorizeAll
 import io.github.arcaneplugins.levelledmobs.util.PaperUtils
 import io.github.arcaneplugins.levelledmobs.util.SpigotUtils
@@ -131,21 +132,21 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
 
         for (rpi in main.rulesParsingManager.rulePresets.values) {
             sb.append(
-                "\n&r--------------------------------- Preset rule ----------------------------------"
+                LocalizedMessages.text("command.levelledmobs.rules.preset-rule-heading", colorize = false)
             ).append(rpi.formatRulesVisually(false, mutableListOf("ruleIsEnabled")))
         }
 
         sb.append(
-            "\n&r--------------------------------- Default values -------------------------------"
+            LocalizedMessages.text("command.levelledmobs.rules.default-values-heading", colorize = false)
         ).append(main.rulesParsingManager.defaultRule!!.formatRulesVisually())
 
         for (rpi in main.rulesParsingManager.customRules) {
             sb.append(
-                "\n&r--------------------------------- Custom rule ----------------------------------"
+                LocalizedMessages.text("command.levelledmobs.rules.custom-rule-heading", colorize = false)
             ).append(rpi.formatRulesVisually())
         }
         sb.append(
-            "\n&r--------------------------------------------------------------------------------------"
+            LocalizedMessages.text("command.levelledmobs.rules.rules-footer", colorize = false)
         )
 
         if (showOnConsole)
@@ -171,7 +172,7 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
     private fun forceRelevel() {
         //TODO: make this work in Folia
         if (LevelledMobs.instance.ver.isRunningFolia) {
-            commandSender!!.sendMessage("Sorry this command doesn't work in Folia")
+            LocalizedMessages.send(commandSender!!, "common.not-available-on-folia")
             return
         }
 
@@ -300,7 +301,7 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
         try {
             main.getResource(filename).use { stream ->
                 if (stream == null) {
-                    Log.sev("$prefix Input stream was null")
+                    Log.sevKey("console.rules.resource-stream-null", mapOf("operation" to prefix))
                     return
                 }
                 var rulesText =
@@ -437,7 +438,8 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
         val scheduler = SchedulerWrapper(lmEntity.livingEntity) {
             showEffectiveValues(lmEntity, sb.toString(), lmMobResult.showOnConsole, mobHash)
             lmEntity.free()
-            if (lmMobResult.showOnConsole) sender.sendMessage("Effective rules have been printed in the console")
+            if (lmMobResult.showOnConsole)
+                LocalizedMessages.send(sender, "command.levelledmobs.rules.effective-rules-console")
         }
 
         lmEntity.inUseCount.getAndIncrement()
@@ -450,7 +452,7 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
         val sender = ctx.source.sender
         val player = sender as? Player
         if (player == null) {
-            sender.sendMessage("Must be run by a player")
+            LocalizedMessages.send(sender, "common.players-only")
             return null
         }
 
@@ -543,7 +545,7 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
         }
         catch (_: InterruptedException) {}
         catch (e: IllegalArgumentException){
-            Log.war("Unable to create particle effect, " + e.message)
+            Log.warKey("console.rules.particle-error", mapOf("error" to (e.message ?: "-")))
         }
     }
 
@@ -628,7 +630,9 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
 
                     if (showValue == null) showValue = "&b$value&r"
 
-                    showValue += ", &1source: " + (if (pi.ruleSourceNames.containsKey(f.name)) pi.ruleSourceNames[f.name] else pi.ruleName)
+                    showValue += LocalizedMessages.text("command.levelledmobs.rules.source", mapOf(
+                        "source" to (if (pi.ruleSourceNames.containsKey(f.name)) pi.ruleSourceNames[f.name] else pi.ruleName)
+                    ), false)
                     showValue += "&r"
 
                     values[ruleInfo] = showValue
@@ -641,14 +645,14 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
         if (mobHash != null) {
             val mobHashInfo = RuleInfo.RuleSortingInfo(
                 RuleType.MISC,
-                "mob hash"
+                LocalizedMessages.text("display.rules.mob-hash", colorize = false)
             )
             values[mobHashInfo] = mobHash
         }
         if (lmEntity.mobExternalTypes.isNotEmpty()) {
             val externalMobTypeMisc = RuleInfo.RuleSortingInfo(
                 RuleType.MISC,
-                "external plugin type"
+                LocalizedMessages.text("display.rules.external-plugin-type", colorize = false)
             )
             values[externalMobTypeMisc] = lmEntity.mobExternalTypes.toString()
         }
@@ -665,7 +669,7 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
         opts: PlayerLevellingStrategy,
         lmEntity: LivingEntityWrapper
     ): String {
-        val sb = StringBuilder("value: ")
+        val sb = StringBuilder(LocalizedMessages.text("display.rules.value-prefix", colorize = false))
         var userId: String? = null
         var plValue: String? = null
 

@@ -1,5 +1,6 @@
 package io.github.arcaneplugins.levelledmobs.listeners
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import java.time.Instant
 import java.util.UUID
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
@@ -48,7 +49,7 @@ class EntityDeathListener : Listener {
             if (priority == lastPriority) return
 
             HandlerList.unregisterAll(this)
-            Log.inf("Changing event priority for $settingName from $lastPriority to $priority")
+            Log.infKey("console.events.priority-changed", mapOf("event" to settingName, "old" to lastPriority.toString(), "new" to priority.toString()))
         }
 
         Bukkit.getPluginManager().registerEvent(
@@ -195,7 +196,7 @@ class EntityDeathListener : Listener {
                 return true
 
             DebugManager.log(DebugType.CHUNK_KILL_COUNT, lmEntity) {
-                "${Utils.displayChunkLocation(lmEntity.location)}: player: ${player.name}, reached chunk kill limit, max: $maximumDeathInChunkThreshold"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d034", mapOf("value-1" to (Utils.displayChunkLocation(lmEntity.location)), "value-2" to (player.name), "value-3" to (maximumDeathInChunkThreshold)), false)
             }
 
             val prefix = main.configUtils.prefix

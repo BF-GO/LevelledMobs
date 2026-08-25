@@ -99,9 +99,9 @@ class RulesParser {
                 for (key in cs2.getKeys(false)) {
                     if (!validModalListOptions.contains(key)){
                         if (ruleName == null)
-                            Log.war("Invalid modal list option: '$key'")
+                            Log.warKey("console.rules-parser.invalid-modal-option", mapOf("option" to key))
                         else
-                            Log.war("Invalid modal list option: '$key' in rule: $ruleName")
+                            Log.warKey("console.rules-parser.invalid-modal-option-rule", mapOf("option" to key, "rule" to ruleName))
                     }
                 }
             }
@@ -190,7 +190,7 @@ class RulesParser {
                     invalidGroup = true
 
                 if (invalidGroup)
-                    Log.war("Invalid group: $group")
+                    Log.warKey("console.rules-parser.invalid-group", mapOf("group" to group))
             }
 
             return results
@@ -265,7 +265,7 @@ class RulesParser {
             if (cs2 != null) {
                 for (key in cs2.getKeys(false)) {
                     if (!validModalListOptions.contains(key))
-                        Log.war("Invalid modal list option: '$key' in rule: ${ruleInfo.ruleName}")
+                        Log.warKey("console.rules-parser.invalid-modal-option-rule", mapOf("option" to key, "rule" to ruleInfo.ruleName))
                 }
             }
 
@@ -281,7 +281,7 @@ class RulesParser {
                     if (group.trim().isEmpty()) continue
 
                     if (mlpi.groupMapping == null || !mlpi.groupMapping!!.containsKey(group))
-                        Log.war("invalid ${mlpi.itemName} group: $group")
+                        Log.warKey("console.rules-parser.invalid-item-group", mapOf("item" to mlpi.itemName, "group" to group))
                     else
                         cachedModalList.includedGroups.add(group)
                 }
@@ -292,7 +292,7 @@ class RulesParser {
                     if (group.trim().isEmpty()) continue
 
                     if (!LevelledMobs.instance.rulesManager.biomeGroupMappings.containsKey(group))
-                        Log.war("invalid ${mlpi.itemName} group: $group")
+                        Log.warKey("console.rules-parser.invalid-item-group", mapOf("item" to mlpi.itemName, "group" to group))
                     else
                         cachedModalList.excludedGroups.add(group)
                 }
@@ -329,7 +329,7 @@ class RulesParser {
                                 if (biome != null)
                                     modalList.add(biome)
                                 else
-                                    Log.war("Invalid biome name: $item")
+                                    Log.warKey("console.rules-parser.invalid-biome", mapOf("biome" to item))
                             }
                             ModalListParsingTypes.SPAWN_REASON -> {
                                 val spawnReasonModalList = cachedModalList as CachedModalList<String>
@@ -339,7 +339,7 @@ class RulesParser {
                                 if (LMSpawnReason.validateSpawnReason(item.trim().uppercase()))
                                     modalList.add(item.trim().uppercase())
                                 else
-                                    Log.war("rule: ${ruleInfo.ruleName}, invalid spawn reason: $item")
+                                    Log.warKey("console.rules-parser.invalid-spawn-reason", mapOf("rule" to ruleInfo.ruleName, "reason" to item))
                             }
                             ModalListParsingTypes.VANILLA_BONUSES -> {
                                 val vanillaBonusModalList = cachedModalList as CachedModalList<VanillaBonusEnum>
@@ -352,7 +352,7 @@ class RulesParser {
                             }
                             ModalListParsingTypes.STRUCTURE -> {
                                 if (!LevelledMobs.instance.ver.allowStructureConditions){
-                                    Log.war("Structure conditions are not available on this server version")
+                                    Log.warKey("console.rules-parser.structure-unavailable")
                                     continue
                                 }
 
@@ -381,13 +381,13 @@ class RulesParser {
                                 }
 
                                 if (structure == null)
-                                    Log.war("Invalid $invalidWord ${mlpi.itemName}: $item")
+                                    Log.warKey("console.rules-parser.invalid-list-item", mapOf("mode" to invalidWord, "type" to mlpi.itemName, "item" to item))
                                 else
                                     modalList.add(structure)
                             }
                         }
                     } catch (_: IllegalArgumentException) {
-                        Log.war("Invalid $invalidWord ${mlpi.itemName}: $item")
+                        Log.warKey("console.rules-parser.invalid-list-item", mapOf("mode" to invalidWord, "type" to mlpi.itemName, "item" to item))
                     }
                 }
             }
@@ -401,7 +401,7 @@ class RulesParser {
 
     fun parseRulesMain(config: YamlConfiguration?) {
         if (config == null) {
-            Log.war("rules config was null")
+            Log.warKey("console.rules-parser.config-null")
             return
         }
 
@@ -456,7 +456,7 @@ class RulesParser {
         }
 
         main.rulesManager.updateRulesHash()
-        Log.inf("Current rules hash: " + main.rulesManager.currentRulesHash)
+        Log.infKey("console.rules-parser.current-hash", mapOf("hash" to main.rulesManager.currentRulesHash))
     }
 
     fun getAllRules(): MutableList<RuleInfo> {
@@ -510,7 +510,7 @@ class RulesParser {
         parsingInfo.nametagVisibleTime = 1000L
 
         if (cs == null) {
-            Log.war("default-rule section was null")
+            Log.warKey("console.rules-parser.default-rule-null")
             return this.parsingInfo
         }
 
@@ -529,7 +529,7 @@ class RulesParser {
             count++
             val csKey = YmlParsingHelper.objToCS(cs, key)
             if (csKey == null) {
-                Log.war("nothing was specified for preset: $key")
+                Log.warKey("console.rules-parser.empty-preset", mapOf("preset" to key))
                 continue
             }
 
@@ -549,7 +549,7 @@ class RulesParser {
         for (hashMap in rulesSection as MutableList<MutableMap<String, Any>>) {
             val cs = YmlParsingHelper.objToCS2(hashMap)
             if (cs == null) {
-                Log.war("cs was null (parsing custom-rules)")
+                Log.warKey("console.rules-parser.custom-rule-null")
                 continue
             }
 
@@ -577,7 +577,7 @@ class RulesParser {
 
         for (key in ymlHelper.cs.getKeys(false)){
             if (!KeyValidation.mainRuleSection.contains(key))
-                Log.war("Invalid option '$key', in rule: $ruleName")
+                Log.warKey("console.rules-parser.invalid-option", mapOf("option" to key, "rule" to ruleName))
         }
     }
 
@@ -590,9 +590,7 @@ class RulesParser {
 
             if (!rulePresets.containsKey(checkNameTrimmed)) {
                 val ruleName = parsingInfo.presetName?: parsingInfo.ruleName
-                Log.war(
-                    "Rule: '$ruleName' specified preset name '$checkNameTrimmed' but none was found"
-                )
+                Log.warKey("console.rules-parser.preset-not-found", mapOf("rule" to ruleName, "preset" to checkNameTrimmed))
                 continue
             }
 
@@ -705,7 +703,7 @@ class RulesParser {
                 tier.names = mutableListOf(cs.getString(name)!!)
 
             if (!tier.setRangeFromString(keyName))
-                Log.war("Invalid number range: $keyName")
+                Log.warKey("console.rules-parser.invalid-number-range", mapOf("value" to keyName))
             else if (tier.names!!.isNotEmpty())
                 levelTiers.add(tier)
         }
@@ -805,10 +803,10 @@ class RulesParser {
                 )
                 nametagVisibilityEnums.add(nametagVisibilityEnum)
             } catch (_: Exception) {
-                Log.war(
-                    "Invalid value in nametag-visibility-method: $nametagVisibility" +
-                            ", in rule: ${parsingInfo.ruleName}"
-                )
+                Log.warKey("console.rules-parser.invalid-nametag-visibility", mapOf(
+                    "value" to nametagVisibility,
+                    "rule" to parsingInfo.ruleName
+                ))
             }
         }
 
@@ -817,7 +815,7 @@ class RulesParser {
 
         for (key in ymlHelper.cs.getKeys(false)){
             if (!KeyValidation.settings.contains(key))
-                Log.war("Invalid setting '$key', in rule: ${parsingInfo.ruleName}")
+                Log.warKey("console.rules-parser.invalid-setting", mapOf("setting" to key, "rule" to parsingInfo.ruleName))
         }
     }
 
@@ -847,13 +845,13 @@ class RulesParser {
 
             for (message in messages) {
                 if (!isInteger(weightStr)) {
-                    Log.war("Invalid number in DeathMessages section: $weightStr")
+                    Log.warKey("console.rules-parser.invalid-death-message-weight", mapOf("value" to weightStr))
                     continue
                 }
 
                 var weight = weightStr.toInt()
                 if (weight > 100) {
-                    Log.war("value of $weight is over the limit of 100 for death message weight")
+                    Log.warKey("console.rules-parser.death-message-weight-limit", mapOf("value" to weight.toString()))
                     weight = 100
                 }
 
@@ -877,10 +875,10 @@ class RulesParser {
         try {
             parsingInfo.spawnerParticle = Particle.valueOf(particle.uppercase())
         } catch (_: Exception) {
-            Log.war(
-                "Invalid value in spawner-particles: $particle, in rule: "
-                        + parsingInfo.ruleName
-            )
+            Log.warKey("console.rules-parser.invalid-spawner-particle", mapOf(
+                "value" to particle,
+                "rule" to parsingInfo.ruleName
+            ))
         }
     }
 
@@ -947,7 +945,7 @@ class RulesParser {
                     mobCustomNameStatus.uppercase()
                 )
             } catch (_: Exception) {
-                Log.war("Invalid value for $mobCustomNameStatus")
+                Log.warKey("console.rules-parser.invalid-value", mapOf("value" to mobCustomNameStatus))
             }
         }
 
@@ -958,7 +956,7 @@ class RulesParser {
                     mobTamedStatus.uppercase()
                 )
             } catch (_: Exception) {
-                Log.war("Invalid value for $mobTamedStatus")
+                Log.warKey("console.rules-parser.invalid-value", mapOf("value" to mobTamedStatus))
             }
         }
 
@@ -1052,7 +1050,7 @@ class RulesParser {
 
         for (key in ymlHelper.cs.getKeys(false)){
             if (!KeyValidation.conditions.contains(key))
-                Log.war("Invalid condition '$key', in rule: ${parsingInfo.ruleName}")
+                Log.warKey("console.rules-parser.invalid-condition", mapOf("condition" to key, "rule" to parsingInfo.ruleName))
         }
     }
 
@@ -1065,12 +1063,12 @@ class RulesParser {
         for (pluginName in compats.includedList){
             val checkName = pluginName.replace("_", "-")
             if (!ExternalCompatibilityManager.instance.externalPluginDefinitions.containsKey(checkName))
-                Log.war("no external plugin definition found for: '$checkName'")
+                Log.warKey("console.rules-parser.external-plugin-not-found", mapOf("plugin" to checkName))
         }
         for (pluginName in compats.excludedList){
             val checkName = pluginName.replace("_", "-")
             if (!ExternalCompatibilityManager.instance.externalPluginDefinitions.containsKey(checkName))
-                Log.war("no external plugin definition found for: '$checkName'")
+                Log.warKey("console.rules-parser.external-plugin-not-found", mapOf("plugin" to checkName))
         }
     }
 
@@ -1090,7 +1088,7 @@ class RulesParser {
                 val value = YmlParsingHelper.getString(cs, key)
 
                 if (!mdr.parseAxis(value, axis, isStart))
-                    Log.war("rule: ${parsingInfo.ruleName}, invalid value for $key: $value")
+                    Log.warKey("console.rules-parser.invalid-axis-value", mapOf("rule" to parsingInfo.ruleName, "option" to key, "value" to value))
             }
         }
 
@@ -1114,7 +1112,7 @@ class RulesParser {
 
             for (key in csYDistance.getKeys(false)){
                 if (!KeyValidation.strategyYCoordinate.contains(key))
-                    Log.war("Invalid y-coordinate option '$key', in rule: ${parsingInfo.ruleName}")
+                    Log.warKey("console.rules-parser.invalid-y-option", mapOf("option" to key, "rule" to parsingInfo.ruleName))
             }
 
             yDistanceStrategy.shouldMerge = ymlHelper2.getBoolean("merge")
@@ -1144,7 +1142,7 @@ class RulesParser {
 
             for (key in csSpawnDistance.getKeys(false)){
                 if (!KeyValidation.strategySpawnDistance.contains(key))
-                    Log.war("Invalid distance-from-origin option '$key', in rule: ${parsingInfo.ruleName}")
+                    Log.warKey("console.rules-parser.invalid-distance-option", mapOf("option" to key, "rule" to parsingInfo.ruleName))
             }
 
             spawnDistanceStrategy.shouldMerge = ymlHelper2.getBoolean("merge")
@@ -1182,7 +1180,7 @@ class RulesParser {
 
         for (key in ymlHelper.cs.getKeys(false)){
             if (!KeyValidation.strategies.contains(key))
-                Log.war("Invalid strategy '$key', in rule: ${parsingInfo.ruleName}")
+                Log.warKey("console.rules-parser.invalid-strategy", mapOf("strategy" to key, "rule" to parsingInfo.ruleName))
         }
     }
 
@@ -1203,7 +1201,7 @@ class RulesParser {
         for (key in ymlHelper.cs.getKeys(false)){
             if (!KeyValidation.modifiers.contains(key) &&
                 !key.startsWith("custom", ignoreCase = true))
-                Log.war("Invalid modifier '$key', in rule: ${parsingInfo.ruleName}")
+                Log.warKey("console.rules-parser.invalid-modifier", mapOf("modifier" to key, "rule" to parsingInfo.ruleName))
         }
     }
 
@@ -1213,7 +1211,7 @@ class RulesParser {
                 null
             else if (underScore <= 0 || underScore == keyName.length - 1 ||
                 "custom".equals(keyName, ignoreCase = true)){
-                Log.war("Modifier '$keyName' must have a unique name specified")
+                Log.warKey("console.rules-parser.modifier-name-required", mapOf("modifier" to keyName))
                 return
             }
         else
@@ -1313,9 +1311,11 @@ class RulesParser {
             var hadInvalidValue = false
             for (i in 0..1) {
                 if (!isInteger(split[i])) {
-                    Log.war(
-                        "Invalid value for $configName: '${split[i]}' in rule ${parsingInfo.ruleName}"
-                    )
+                    Log.warKey("console.rules-parser.invalid-config-value", mapOf(
+                        "option" to configName,
+                        "value" to split[i],
+                        "rule" to parsingInfo.ruleName
+                    ))
                     hadInvalidValue = true
                     break
                 }
@@ -1361,7 +1361,7 @@ class RulesParser {
 
                 if ("default".equals(name, ignoreCase = true)) {
                     if (csTiers.getString(name).isNullOrEmpty())
-                        Log.war("No value entered for colored tier: $name")
+                        Log.warKey("console.rules-parser.colored-tier-empty", mapOf("tier" to name))
                     else
                         tiers[0] = csTiers.getString(name)!!
 
@@ -1369,19 +1369,19 @@ class RulesParser {
                 }
 
                 if (!isInteger(name2)) {
-                    Log.war("Not a valid colored tier, missing number: $name")
+                    Log.warKey("console.rules-parser.colored-tier-number-missing", mapOf("tier" to name))
                     continue
                 }
 
                 val tierValue = csTiers.getString(name)
                 if (tierValue.isNullOrEmpty()) {
-                    Log.war("No value entered for colored tier: $name")
+                    Log.warKey("console.rules-parser.colored-tier-empty", mapOf("tier" to name))
                     continue
                 }
 
                 val tierNumber = name2.toInt()
                 if (tiers.containsKey(tierNumber))
-                    Log.war("Duplicate tier: $name")
+                    Log.warKey("console.rules-parser.colored-tier-duplicate", mapOf("tier" to name))
                 else
                     tiers[tierNumber] = tierValue
             }
@@ -1432,7 +1432,7 @@ class RulesParser {
             val info = LevelTierMatching()
 
             if (value == null) {
-                Log.war("No value was specified for: $key")
+                Log.warKey("console.rules-parser.value-missing", mapOf("option" to key))
                 continue
             }
 
@@ -1440,14 +1440,14 @@ class RulesParser {
                 // found a source tier name rather than number
                 info.sourceTierName = key
             } else if (!info.setRangeFromString(key)) {
-                Log.war("Invalid number range: $key")
+                Log.warKey("console.rules-parser.invalid-number-range", mapOf("value" to key))
                 continue
             }
 
             val levelRange = MinAndMax.setAmountRangeFromString(value)
 
             if (levelRange == null) {
-                Log.war("Invalid number range: $value")
+                Log.warKey("console.rules-parser.invalid-number-range", mapOf("value" to value))
                 continue
             }
 
@@ -1472,7 +1472,7 @@ class RulesParser {
 
         for (key in spawnLocation.getKeys(false)){
             if (!KeyValidation.strategySpawnDistanceCoords.contains(key))
-                Log.war("Invalid origin-coordinates option '$key', in rule: ${parsingInfo.ruleName}")
+                Log.warKey("console.rules-parser.invalid-origin-option", mapOf("option" to key, "rule" to parsingInfo.ruleName))
         }
 
         if (!"spawn".equals(spawnLocation.getString("x"), ignoreCase = true))
@@ -1546,9 +1546,7 @@ class RulesParser {
                 try {
                     EntityType.valueOf(checkName.uppercase())
                 } catch (_: IllegalArgumentException) {
-                    Log.war(
-                        "Invalid entity type: $mobName for fine-tuning in rule: ${parsingInfo.ruleName}"
-                    )
+                    Log.warKey("console.rules-parser.invalid-fine-tuning-entity", mapOf("entity" to mobName, "rule" to parsingInfo.ruleName))
                     continue
                 }
 
@@ -1614,7 +1612,7 @@ class RulesParser {
                                     .uppercase()
                             )
                     } catch (_: Exception) {
-                        Log.war("Invalid multiplier: $item")
+                        Log.warKey("console.rules-parser.invalid-multiplier", mapOf("value" to item.toString()))
                         continue
                     }
 

@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.tree.LiteralCommandNode
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils.colorizeAll
 import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.Bukkit
@@ -94,7 +95,10 @@ object SpawnerEggCommand : SpawnerBaseClass("levelledmobs.command.spawner-egg") 
                     try {
                         info.spawnType = EntityType.valueOf(foundValue.uppercase())
                     } catch (_: Exception) {
-                        commandSender!!.sendMessage("Invalid spawn type: $foundValue")
+                        LocalizedMessages.send(
+                            commandSender!!, "command.levelledmobs.spawn_egg.invalid-spawn-type",
+                            mapOf("value" to foundValue)
+                        )
                         return
                     }
                 }
@@ -148,7 +152,10 @@ object SpawnerEggCommand : SpawnerBaseClass("levelledmobs.command.spawner-egg") 
         val material = Material.getMaterial(materialName)
         if (material == null) {
             // should never see this message:
-            commandSender!!.sendMessage("Invalid material: $materialName")
+            LocalizedMessages.send(
+                commandSender!!, "command.levelledmobs.spawn_egg.invalid-material",
+                mapOf("material" to materialName)
+            )
             return
         }
         val item = ItemStack(material)

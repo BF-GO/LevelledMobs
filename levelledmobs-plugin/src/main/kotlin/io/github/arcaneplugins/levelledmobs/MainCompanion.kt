@@ -102,7 +102,7 @@ class MainCompanion{
 
     // Note: also called by the reload subcommand.
     fun loadFiles(): Boolean {
-        Log.inf("&fFile Loader: &7Loading files...")
+        Log.infKey("console.lifecycle.loading-files")
         val main = LevelledMobs.instance
         val configLoad = loadFile(main, "settings", FileLoader.SETTINGS_FILE_VERSION)
 
@@ -167,7 +167,7 @@ class MainCompanion{
                 main.debugManager.filterDebugTypes.add(debugType)
                 addedDebugs = true
             } catch (_: Exception) {
-                Log.war("Invalid value for debug-misc: $debug")
+                Log.warKey("console.validation.invalid-debug-value", mapOf("value" to debug))
             }
         }
 
@@ -197,7 +197,7 @@ class MainCompanion{
     }
 
     fun registerListeners() {
-        Log.inf("&fListeners: &7Registering event listeners...")
+        Log.infKey("console.lifecycle.registering-listeners")
 
         val main = LevelledMobs.instance
         main.levelManager.load()
@@ -255,7 +255,10 @@ class MainCompanion{
             "lowest" -> EventPriority.LOWEST
             "monitor" -> EventPriority.MONITOR
             else -> {
-                Log.war("Invalid event priority for $name: $priorityName")
+                Log.warKey("console.validation.invalid-event-priority", mapOf(
+                    "event" to name,
+                    "priority" to priorityName
+                ))
                 defaultPriority
             }
         }
@@ -448,7 +451,7 @@ class MainCompanion{
                     var isNewerVersion: Boolean
 
                     if (latestVersionFull == null){
-                        Log.war("Unable to retreive latest version, string was null")
+                        Log.warKey("console.update.empty-version")
                         return@getLatestVersion
                     }
 
@@ -461,7 +464,7 @@ class MainCompanion{
                         isOutOfDate = thisVersion.isLessThan(hangarVersion)
                         isNewerVersion = thisVersion.isGreaterThan(hangarVersion)
                     } catch (e: InvalidObjectException) {
-                        Log.war("Got exception creating version objects: ${e.message}")
+                        Log.warKey("console.update.invalid-version", mapOf("error" to (e.message ?: "-")))
 
                         isOutOfDate = currentVersion != latestVersion
                         isNewerVersion = currentVersion.contains("indev")
@@ -535,7 +538,7 @@ class MainCompanion{
     }
 
     fun shutDownAsyncTasks() {
-        Log.inf("&fTasks: &7Shutting down other async tasks...")
+        Log.infKey("console.lifecycle.stopping-async-tasks")
         val main = LevelledMobs.instance
         main.mobsQueueManager.stop()
         main.nametagQueueManager.stop()

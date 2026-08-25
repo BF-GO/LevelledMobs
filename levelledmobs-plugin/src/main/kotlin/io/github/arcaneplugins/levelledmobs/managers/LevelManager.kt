@@ -35,6 +35,7 @@ import io.github.arcaneplugins.levelledmobs.rules.RulesManager
 import io.github.arcaneplugins.levelledmobs.rules.strategies.RandomVarianceGenerator
 import io.github.arcaneplugins.levelledmobs.rules.strategies.StrategyType
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MiscUtils
 import io.github.arcaneplugins.levelledmobs.util.MythicMobUtils
 import io.github.arcaneplugins.levelledmobs.util.Utils
@@ -262,8 +263,8 @@ class LevelManager : LevelInterface2 {
                 lmEntity.strategyResults[strategy.strategyType] = result
 
                 DebugManager.logLongMessage(debugId){
-                    if (count > 0) ", ${strategy.strategyType}: $result"
-                    else "${strategy.strategyType}: $result"
+                    if (count > 0) LocalizedMessages.text("command.levelledmobs.debug.runtime.d052", mapOf("value-1" to (strategy.strategyType), "value-2" to (result)), false)
+                    else LocalizedMessages.text("command.levelledmobs.debug.runtime.d053", mapOf("value-1" to (strategy.strategyType), "value-2" to (result)), false)
                 }
 
                 numberResult += result
@@ -274,8 +275,8 @@ class LevelManager : LevelInterface2 {
                 lmEntity.customStrategyResults[strategy.placeholderName] = result
 
                 DebugManager.logLongMessage(debugId){
-                    if (count > 0) ", ${strategy.placeholderName}: $result"
-                    else "${strategy.placeholderName}: $result"
+                    if (count > 0) LocalizedMessages.text("command.levelledmobs.debug.runtime.d054", mapOf("value-1" to (strategy.placeholderName), "value-2" to (result)), false)
+                    else LocalizedMessages.text("command.levelledmobs.debug.runtime.d055", mapOf("value-1" to (strategy.placeholderName), "value-2" to (result)), false)
                 }
 
                 numberResult += result
@@ -303,14 +304,17 @@ class LevelManager : LevelInterface2 {
         val formula = replaceStringPlaceholdersForFormulas(formulaPre, lmEntity)
         val evalResult = MobDataManager.evaluateExpression(formula)
         if (evalResult.hadError){
-            NotifyManager.notifyOfError("Error evaluating formula for construct-level on mob: ${lmEntity.nameIfBaby}, ${evalResult.error}")
+            NotifyManager.notifyOfErrorKey("console.formula.construct-level-error", mapOf(
+                "entity" to lmEntity.nameIfBaby,
+                "error" to (evalResult.error ?: "-")
+            ))
             DebugManager.log(DebugType.CONSTRUCT_LEVEL, lmEntity){
                 val msg = if (formula == formulaPre)
-                    "   formula: '$formula'"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d056", mapOf("value-1" to (formula)), false)
                 else
-                    "   formulaPre: '$formulaPre'\n   formula: '$formula'"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d057", mapOf("value-1" to (formulaPre), "value-2" to (formula)), false)
 
-                "result (error, ${evalResult.error})\n$msg" }
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d058", mapOf("value-1" to (evalResult.error), "value-2" to (msg)), false) }
             throw EvaluationException()
         }
 
@@ -318,11 +322,11 @@ class LevelManager : LevelInterface2 {
 
         DebugManager.log(DebugType.CONSTRUCT_LEVEL, lmEntity){
             val msg = if (formula == formulaPre)
-                "   formula: '$formula'"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d059", mapOf("value-1" to (formula)), false)
             else
-                "   formulaPre: '$formulaPre'\n   formula: '$formula'"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d060", mapOf("value-1" to (formulaPre), "value-2" to (formula)), false)
 
-            "result $result\n$msg"}
+            LocalizedMessages.text("command.levelledmobs.debug.runtime.d061", mapOf("value-1" to (result), "value-2" to (msg)), false)}
         return result
     }
 
@@ -398,12 +402,12 @@ class LevelManager : LevelInterface2 {
                 if (papiResult.isEmpty()) {
                     val l = player.location
                     DebugManager.log(DebugType.PLAYER_LEVELLING, lmEntity) {
-                        "Got blank result for '$variableToUse' from PAPI. Player ${player.name} at ${l.blockX},${l.blockY},${l.blockZ} in ${player.world.name}"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d062", mapOf("value-1" to (variableToUse), "value-2" to (player.name), "value-3" to (l.blockX), "value-4" to (l.blockY), "value-5" to (l.blockZ), "value-6" to (player.world.name)), false)
                     }
                     usePlayerLevel = true
                 }
             } else {
-                Log.war("PlaceHolderAPI is not installed, unable to get variable $variableToUse" )
+                Log.warKey("console.integration.placeholderapi-missing", mapOf("variable" to variableToUse))
                 usePlayerLevel = true
             }
 
@@ -414,7 +418,7 @@ class LevelManager : LevelInterface2 {
                 if (papiResult.isNullOrEmpty()) {
                     origLevelSource = player.level.toFloat()
                     DebugManager.log(DebugType.PLAYER_LEVELLING, lmEntity) {
-                        "Got blank result for '$variableToUse' from PAPI. Player ${player.name} at ${l.blockX},${l.blockY},${l.blockZ} in ${player.world.name}"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d063", mapOf("value-1" to (variableToUse), "value-2" to (player.name), "value-3" to (l.blockX), "value-4" to (l.blockY), "value-5" to (l.blockZ), "value-6" to (player.world.name)), false)
                     }
                 } else {
                     if (Utils.isDouble(papiResult)) {
@@ -502,7 +506,7 @@ class LevelManager : LevelInterface2 {
             ).multiplierAmount
             if (additionValue == Float.MIN_VALUE) {
                 DebugManager.log(DebugType.SET_LEVELLED_ITEM_DROPS, lmEntity) {
-                    "removing any drops present"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d064", colorize = false)
                 }
                 removeVanillaDrops(lmEntity, currentDrops)
                 return
@@ -537,7 +541,7 @@ class LevelManager : LevelInterface2 {
         val nameWithOverride = if (hasOverride) " (override), " else ""
         val additionUsedFinal = additionUsed
         DebugManager.log(DebugType.SET_LEVELLED_ITEM_DROPS, lmEntity) {
-            "${nameWithOverride}, vanilla drops: &b$vanillaDrops&7, all drops: &b${currentDrops.size}&7, addition: &b$additionUsedFinal&7."
+            LocalizedMessages.text("command.levelledmobs.debug.runtime.d065", mapOf("value-1" to (nameWithOverride), "value-2" to (vanillaDrops), "value-3" to (currentDrops.size), "value-4" to (additionUsedFinal)), false)
         }
     }
 
@@ -547,7 +551,7 @@ class LevelManager : LevelInterface2 {
         addition: Float,
     ) {
         if (LevelledMobs.instance.mobDataManager.isLevelledDropManaged(currentDrop.type)) {
-            DebugManager.log(DebugType.SET_LEVELLED_ITEM_DROPS, lmEntity) { "&7Item was unmanaged." }
+            DebugManager.log(DebugType.SET_LEVELLED_ITEM_DROPS, lmEntity) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d066", colorize = false) }
             return
         }
 
@@ -557,8 +561,8 @@ class LevelManager : LevelInterface2 {
 
         currentDrop.amount = useAmount
         DebugManager.log(DebugType.SET_LEVELLED_ITEM_DROPS, lmEntity) {
-            "&7Drop: &b${currentDrop.type}&7, old amount: &b$oldAmount&7, addition value: &b$addition&7, " +
-                    "new amount: &b${currentDrop.amount}&7."
+            LocalizedMessages.text("command.levelledmobs.debug.runtime.d067", mapOf("value-1" to (currentDrop.type), "value-2" to (oldAmount), "value-3" to (addition)), false) +
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d068", mapOf("value-1" to (currentDrop.amount)), false)
         }
     }
 
@@ -634,7 +638,7 @@ class LevelManager : LevelInterface2 {
 
             if (dropAddition == Float.MIN_VALUE) {
                 DebugManager.log(DebugType.SET_LEVELLED_XP_DROPS, lmEntity) {
-                    "xp-vanilla: &b$xp&7, new-xp: &b0&7"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d069", mapOf("value-1" to (xp)), false)
                 }
                 return 0
             }
@@ -643,7 +647,7 @@ class LevelManager : LevelInterface2 {
 
             val newXpFinal = newXp.toInt()
             DebugManager.log(DebugType.SET_LEVELLED_XP_DROPS, lmEntity) {
-                "xp-vanilla: &b$xp&7, new-xp: &b$newXpFinal&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d070", mapOf("value-1" to (xp), "value-2" to (newXpFinal)), false)
             }
             return newXp.toInt()
         }
@@ -820,7 +824,7 @@ class LevelManager : LevelInterface2 {
             val minLevel = RulesManager.instance.getRuleMobMinLevel(lmEntity).toFloat()
             if (mobLevel == 0 || maxLevel == 0f){
                 str.replace("%level-ratio%", "0")
-                DebugManager.log(DebugType.LEVEL_RATIO, lmEntity){ "mob-lvl was 0 or maxlevel was 0" }
+                DebugManager.log(DebugType.LEVEL_RATIO, lmEntity){ LocalizedMessages.text("command.levelledmobs.debug.runtime.d071", colorize = false) }
             }
             else{
                 val newValue: Float
@@ -835,7 +839,7 @@ class LevelManager : LevelInterface2 {
 
                 str.replace("%level-ratio%", newValue.toString())
                 DebugManager.log(DebugType.LEVEL_RATIO, lmEntity){
-                    "'(${mobLevel.toFloat()} - $minLevel) / ($maxLevel - $minLevel)', result: $newValue"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d072", mapOf("value-1" to (mobLevel.toFloat()), "value-2" to (minLevel), "value-3" to (maxLevel), "value-4" to (minLevel), "value-5" to (newValue)), false)
                 }
             }
         }
@@ -1002,8 +1006,14 @@ class LevelManager : LevelInterface2 {
                         " (${lmEntity.nameIfBaby})"
             }
 
-            Log.sev("Error getting health remaining ${e.message} for mob: $entityName, location: ${lmEntity.locationStr} in " +
-                    "${lmEntity.worldName}, health: $entityHealth, maxHealth: $maxHealth")
+            Log.sevKey("console.entity.health-error", mapOf(
+                "error" to (e.message ?: "-"),
+                "entity" to entityName,
+                "location" to lmEntity.locationStr,
+                "world" to lmEntity.worldName,
+                "health" to entityHealth.toString(),
+                "max-health" to maxHealth.toString()
+            ))
             return 0.0
         }
     }
@@ -1063,7 +1073,7 @@ class LevelManager : LevelInterface2 {
     }
 
     fun startNametagAutoUpdateTask() {
-        Log.inf("&fTasks: &7Starting async nametag auto update task...")
+        Log.infKey("console.lifecycle.starting-nametag-task")
 
         val main = LevelledMobs.instance
         val period = main.helperSettings.getInt(
@@ -1098,7 +1108,7 @@ class LevelManager : LevelInterface2 {
 
         if (duration >= configDuration) {
             DebugManager.log(DebugType.DEVELOPER_LEW_CACHE) {
-                "Reached $configDuration ms, clearing LEW cache, " + LivingEntityWrapper.getLEWDebug()
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d073", mapOf("value-1" to (configDuration)), false) + LivingEntityWrapper.getLEWDebug()
             }
 
             lastLEWCacheClearing = Instant.now()
@@ -1252,7 +1262,7 @@ class LevelManager : LevelInterface2 {
                     // if the mob was a baby at some point, aged and now is eligable for levelling, we'll apply a level to it now
                     DebugManager.log(DebugType.ENTITY_MISC, lmEntity) {
                         ("&b" + lmEntity.typeName
-                                + " &7was a baby and is now an adult, applying levelling rules")
+                                + LocalizedMessages.text("command.levelledmobs.debug.runtime.d074", colorize = false))
                     }
 
                     main.mobsQueueManager.addToQueue(QueueItem(lmEntity, null))
@@ -1432,7 +1442,7 @@ class LevelManager : LevelInterface2 {
             return
 
         if (nametagAutoUpdateTask != null && !nametagAutoUpdateTask!!.isCancelled()) {
-            Log.inf("&fTasks: &7Stopping async nametag auto update task...")
+            Log.infKey("console.lifecycle.stopping-nametag-task")
             nametagAutoUpdateTask!!.cancelTask()
         }
 
@@ -1526,7 +1536,7 @@ class LevelManager : LevelInterface2 {
             if (creeper.explosionRadius != 3)
                 creeper.explosionRadius = 3
 
-            DebugManager.log(DebugType.CREEPER_BLAST_RADIUS, lmEntity) { "mulp: null, result: 3" }
+            DebugManager.log(DebugType.CREEPER_BLAST_RADIUS, lmEntity) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d075", colorize = false) }
             return
         }
 
@@ -1546,7 +1556,7 @@ class LevelManager : LevelInterface2 {
 
         val blastRadiusFinal = blastRadius
         DebugManager.log(DebugType.CREEPER_BLAST_RADIUS, lmEntity) {
-            "mulp: ${Utils.round(damage.toDouble(), 3)}, max: $maxRadius, result: $blastRadiusFinal"
+            LocalizedMessages.text("command.levelledmobs.debug.runtime.d076", mapOf("value-1" to (Utils.round(damage.toDouble(), 3)), "value-2" to (maxRadius), "value-3" to (blastRadiusFinal)), false)
         }
 
         creeper.explosionRadius = blastRadius
@@ -1635,7 +1645,7 @@ class LevelManager : LevelInterface2 {
 
                 if (groupLimits.hasReachedCapEquipped(equippedSoFar)) {
                     DebugManager.log(DebugType.GROUP_LIMITS, lmEntity) {
-                        "Reached equip limit of ${groupLimits.capEquipped}, item: $material, group: ${item.groupId}"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d077", mapOf("value-1" to (groupLimits.capEquipped), "value-2" to (material), "value-3" to (item.groupId)), false)
                     }
                     continue
                 }
@@ -1867,7 +1877,7 @@ class LevelManager : LevelInterface2 {
                 DebugType.APPLY_LEVEL_RESULT,
                 lmEntity,
                 false
-            ) { "&7 had &bnoLevelKey&7 attached" }
+            ) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d078", colorize = false) }
             return
         }
 
@@ -1888,12 +1898,11 @@ class LevelManager : LevelInterface2 {
                 main.rulesManager.getRuleNbtData(lmEntity)
 
         if (nbtDatas!!.isNotEmpty() && !ExternalCompatibilityManager.hasNbtApiInstalled) {
-            val msg = if (isSummoned)
-                "NBT Data was supplied but the required plugin NBTAPI is not installed!"
-            else
-                "NBT Data has been specified in customdrops.yml but the required plugin NBTAPI is not installed!"
             if (!hasMentionedNBTAPIMissing) {
-                Log.war(msg)
+                Log.warKey(if (isSummoned)
+                    "console.nbt.api-required-summon"
+                else
+                    "console.nbt.api-required-customdrops")
                 hasMentionedNBTAPIMissing = true
             }
             nbtDatas.clear()
@@ -1929,7 +1938,7 @@ class LevelManager : LevelInterface2 {
         }
         catch (_: TimeoutException){
             DebugManager.log(DebugType.APPLY_LEVEL_RESULT, lmEntity, false){
-                "Timed out applying level to mob"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d079", colorize = false)
             }
         }
     }
@@ -1988,14 +1997,16 @@ class LevelManager : LevelInterface2 {
             )
             if (result.hadException) {
                 if (lmEntity.summonedSender == null) {
-                    Log.war(
-                        "Error applying NBT data '$nbtData' to ${lmEntity.nameIfBaby}. Exception message: ${result.exceptionMessage}"
-                    )
+                    Log.warKey("console.nbt.apply-error", mapOf(
+                        "nbt" to nbtData,
+                        "entity" to lmEntity.nameIfBaby,
+                        "error" to (result.exceptionMessage ?: "-")
+                    ))
                 } else {
-                    lmEntity.summonedSender!!.sendMessage(
-                        "Error applying NBT data to " + lmEntity.nameIfBaby
-                                + ". Exception message: " + result.exceptionMessage
-                    )
+                    LocalizedMessages.send(lmEntity.summonedSender!!, "command.levelledmobs.summon.nbt-error", mapOf(
+                        "entity" to lmEntity.nameIfBaby,
+                        "error" to (result.exceptionMessage ?: "-")
+                    ))
                 }
             } else {
                 hadSuccess = true
@@ -2005,7 +2016,7 @@ class LevelManager : LevelInterface2 {
 
         if (hadSuccess) {
             DebugManager.log(DebugType.NBT_APPLICATION, lmEntity, true) {
-                "Applied NBT data, ${MiscUtils.getNBTDebugMessage(allResults)}"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d080", mapOf("value-1" to (MiscUtils.getNBTDebugMessage(allResults))), false)
             }
         }
     }
@@ -2046,13 +2057,9 @@ class LevelManager : LevelInterface2 {
 
         if (hadError) {
             if (succeeded) {
-                Log.war(
-                    "Got ConcurrentModificationException in LevelManager checking entity isLevelled, succeeded on retry"
-                )
+                Log.warKey("console.concurrency.level-check-retry-succeeded")
             } else {
-                Log.war(
-                    "Got ConcurrentModificationException (2x) in LevelManager checking entity isLevelled"
-                )
+                Log.warKey("console.concurrency.level-check-failed")
             }
         }
 

@@ -31,7 +31,7 @@ class TieredColoringInfo : Cloneable {
             val numbers = key.split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
             if (numbers.size != 2 && numbers.size != 1) {
-                Log.war("Invalid tiered coloring key: $key")
+                Log.warKey("console.validation.invalid-tiered-color-key", mapOf("key" to key))
                 return null
             }
 
@@ -47,7 +47,7 @@ class TieredColoringInfo : Cloneable {
             for (i in 0..1) {
                 val num = numbers[i].trim()
                 if (!isInteger(num)) {
-                    Log.war("Invalid number in tiered coloring key: $key")
+                    Log.warKey("console.validation.invalid-tiered-color-number", mapOf("key" to key))
                     return null
                 }
 

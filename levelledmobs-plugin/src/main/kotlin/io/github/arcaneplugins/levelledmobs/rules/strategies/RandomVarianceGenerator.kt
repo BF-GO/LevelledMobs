@@ -1,5 +1,6 @@
 package io.github.arcaneplugins.levelledmobs.rules.strategies
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.debug.DebugManager
 import io.github.arcaneplugins.levelledmobs.debug.DebugType
 import io.github.arcaneplugins.levelledmobs.misc.StringReplacer
@@ -26,7 +27,7 @@ object RandomVarianceGenerator {
             val end = text.indexOf("%", start + 1, true)
             if (end <= 0) {
                 DebugManager.log(DebugType.RANDOM_NUMBER, lmEntity){
-                    "Invalid input: $text"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d145", mapOf("value-1" to (text)), false)
                 }
                 return
             }
@@ -67,7 +68,7 @@ object RandomVarianceGenerator {
 
         val result = ThreadLocalRandom.current().nextInt(useMin, useMax)
         DebugManager.log(DebugType.RANDOM_NUMBER, lmEntity){
-            "min $useMin, max: ${useMax - 1}, result: $result"
+            LocalizedMessages.text("command.levelledmobs.debug.runtime.d146", mapOf("value-1" to (useMin), "value-2" to (useMax - 1), "value-3" to (result)), false)
         }
 
         return result.toString()

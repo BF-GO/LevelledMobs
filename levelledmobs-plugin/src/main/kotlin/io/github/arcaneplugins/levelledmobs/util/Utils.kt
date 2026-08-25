@@ -1,5 +1,6 @@
 package io.github.arcaneplugins.levelledmobs.util
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.MainCompanion
@@ -427,7 +428,7 @@ object Utils {
         val chopped = match.split("\\*".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         // 0 = *, 1 = text, 2 = *
         if (chopped.size > 3) {
-            Log.war("Invalid wildcard pattern: $match")
+            Log.warKey("console.validation.invalid-wildcard", mapOf("pattern" to match))
             return input.equals(match, ignoreCase = true)
         }
 
@@ -480,11 +481,11 @@ object Utils {
         if (hashChanged) {
             if (hadHash) {
                 DebugManager.log(DebugType.MOB_HASH, lmEntity, false) {
-                    "Invalid hash, location: ${showLocation(lmEntity.location)}"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d150", mapOf("value-1" to (showLocation(lmEntity.location))), false)
                 }
             } else {
                 DebugManager.log(DebugType.MOB_HASH, lmEntity, false) {
-                    "Hash missing, location: ${showLocation(lmEntity.location)}"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d151", mapOf("value-1" to (showLocation(lmEntity.location))), false)
                 }
             }
 
@@ -494,7 +495,7 @@ object Utils {
                 .set(NamespacedKeys.mobHash, PersistentDataType.STRING, main.rulesManager.currentRulesHash)
         } else {
             DebugManager.log(DebugType.MOB_HASH, lmEntity, true) {
-                "Hash missing, location: ${showLocation(lmEntity.location)}"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d152", mapOf("value-1" to (showLocation(lmEntity.location))), false)
             }
         }
 
@@ -513,8 +514,9 @@ object Utils {
         val match = timeUnitPattern.matcher(input)
 
         if (!match.matches() || match.groupCount() != 2) {
-            if (sender != null) sender.sendMessage("Invalid time: $input")
-            else Log.war("Invalid time: $input")
+            if (sender != null) LocalizedMessages.send(
+                sender, "common.invalid-time", mapOf("input" to input)
+            ) else Log.warKey("console.validation.invalid-time", mapOf("input" to input))
 
             return defaultTime
         }
@@ -536,8 +538,9 @@ object Utils {
                 remainder = 1.0 - ("0." + split[1]).toDouble()
                 numberPart = split[0]
             } catch (_: Exception) {
-                if (sender != null) sender.sendMessage("Invalid time: $input")
-                else Log.war("Invalid time: $input")
+                if (sender != null) LocalizedMessages.send(
+                    sender, "common.invalid-time", mapOf("input" to input)
+                ) else Log.warKey("console.validation.invalid-time", mapOf("input" to input))
 
                 return defaultTime
             }
@@ -546,8 +549,9 @@ object Utils {
         try {
             time = numberPart.toLong()
         } catch (_: Exception) {
-            if (sender != null) sender.sendMessage("Invalid time: $input")
-            else Log.war("Invalid time: $input")
+            if (sender != null) LocalizedMessages.send(
+                sender, "common.invalid-time", mapOf("input" to input)
+            ) else Log.warKey("console.validation.invalid-time", mapOf("input" to input))
 
             return defaultTime
         }
@@ -581,8 +585,13 @@ object Utils {
 
             "" -> duration = if (useMS) Duration.ofMillis(time) else Duration.ofSeconds(time)
             else -> {
-                if (sender != null) sender.sendMessage("Invalid time unit specified: $input ($unit)")
-                else Log.war("Invalid time unit specified: $input ($unit)")
+                if (sender != null) LocalizedMessages.send(
+                    sender, "common.invalid-time-unit",
+                    mapOf("input" to input, "unit" to unit)
+                ) else Log.warKey(
+                    "console.validation.invalid-time-unit",
+                    mapOf("input" to input, "unit" to unit)
+                )
             }
         }
         if (duration != null)

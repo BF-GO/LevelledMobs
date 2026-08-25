@@ -2,6 +2,7 @@ package io.github.arcaneplugins.levelledmobs.managers
 
 import io.github.arcaneplugins.levelledmobs.result.PlayerHomeCheckResult
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import java.lang.reflect.Method
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -30,7 +31,7 @@ object EssentialsIntegration {
 
         if (!isPresent) return
 
-        Log.inf("Found Essentials, loading integration")
+        Log.infKey("console.integration.essentials-found")
         // public class Essentials extends JavaPlugin implements IEssentials
         clazzEssentials = Class.forName(
             "com.earth2me.essentials.Essentials"
@@ -55,12 +56,14 @@ object EssentialsIntegration {
     fun getHomeLocation(player: Player): PlayerHomeCheckResult {
         if (!isPresent) {
             return PlayerHomeCheckResult(
-                "Unable to get player home, Essentials is not installed", null
+                LocalizedMessages.text("console.integration.essentials-missing-home", colorize = false), null
             )
         }
 
         val objUserData = methodGetUser!!.invoke(plugin, player) ?:
-            return PlayerHomeCheckResult("Unable to locate player information in essentials")
+            return PlayerHomeCheckResult(LocalizedMessages.text(
+                "console.integration.essentials-player-missing", colorize = false
+            ))
 
         val objList = methodGetHomes!!.invoke(objUserData) ?:
             return PlayerHomeCheckResult(null, null)

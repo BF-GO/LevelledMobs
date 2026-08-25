@@ -1,6 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.nametag
 
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 
 /**
  * Holds mappings for spigot and mojang to be used with
@@ -112,7 +113,9 @@ object NmsMappings {
     }
 
     fun getMapping(name: String): String {
-        val mapping = mappings[name] ?: throw IllegalArgumentException("Invalid NmsMapping: $name")
+        val mapping = mappings[name] ?: throw IllegalArgumentException(
+            LocalizedMessages.text("console.nametag.invalid-nms-mapping", mapOf("name" to name), false)
+        )
 
         return if (LevelledMobs.instance.ver.useMojangMappings)
             mapping.mojangName

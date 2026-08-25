@@ -30,7 +30,7 @@ class PlayerDeathListener : Listener {
             if (priority == lastPriority) return
 
             HandlerList.unregisterAll(this)
-            Log.inf("Changing event priority for $settingName from $lastPriority to $priority")
+            Log.infKey("console.events.priority-changed", mapOf("event" to settingName, "old" to lastPriority.toString(), "new" to priority.toString()))
         }
 
         Bukkit.getPluginManager().registerEvent(

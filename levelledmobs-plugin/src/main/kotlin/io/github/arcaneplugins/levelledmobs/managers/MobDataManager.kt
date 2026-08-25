@@ -1,5 +1,6 @@
 package io.github.arcaneplugins.levelledmobs.managers
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.debug.DebugManager
 import io.github.arcaneplugins.levelledmobs.debug.DebugType
@@ -61,11 +62,11 @@ class MobDataManager {
             }
 
             if (numberResult.isInfinite()){
-                error = "Result was infinite"
+                error = LocalizedMessages.text("console.formula.infinite-result", colorize = false)
                 numberResult = 0.0
             }
             else if (numberResult.isNaN()){
-                error = "Result was NaN (not a number)"
+                error = LocalizedMessages.text("console.formula.nan-result", colorize = false)
                 numberResult = 0.0
             }
 
@@ -229,8 +230,8 @@ class MobDataManager {
                     checkHealth(lmEntity, attrib, existingDamagePercent)
 
                 DebugManager.log(DebugType.APPLY_BASE_MODIFIERS, lmEntity) {
-                    "attrib: ${info.attribute}, old base: ${Utils.round(oldValue, 3)}, " +
-                            "new base: ${Utils.round(info.multiplierResult.baseModAmount.toDouble(), 3)}"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d081", mapOf("value-1" to (info.attribute), "value-2" to (Utils.round(oldValue, 3))), false) +
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d082", mapOf("value-1" to (Utils.round(info.multiplierResult.baseModAmount.toDouble(), 3))), false)
                 }
             }
 
@@ -240,8 +241,8 @@ class MobDataManager {
             attrib.addModifier(info.attributeModifier)
 
             DebugManager.log(DebugType.APPLY_MULTIPLIERS, lmEntity) {
-                "attrib: ${info.attribute}, base: ${Utils.round(attrib.baseValue, 3)}, " +
-                        "addtion: ${Utils.round(additionValue.toDouble(), 3)}"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d083", mapOf("value-1" to (info.attribute), "value-2" to (Utils.round(attrib.baseValue, 3))), false) +
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d084", mapOf("value-1" to (Utils.round(additionValue.toDouble(), 3))), false)
             }
 
             if (info.attribute == genericMaxHealth)
@@ -276,7 +277,7 @@ class MobDataManager {
             lmEntity.livingEntity.health = newHealth.toDouble().coerceAtLeast(1.0)
         } catch (e: IllegalArgumentException) {
             DebugManager.log(DebugType.APPLY_MULTIPLIERS, lmEntity){
-                "Error setting maxhealth = $newHealth, ${e.message}"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d085", mapOf("value-1" to (newHealth), "value-2" to (e.message)), false)
             }
         }
     }
@@ -303,8 +304,8 @@ class MobDataManager {
 
             if (!existingMod.name.startsWith("GENERIC_")) {
                 DebugManager.log(DebugType.REMOVED_MULTIPLIERS, lmEntity) {
-                    val locationStr = "${lmEntity.location.blockX},${lmEntity.location.blockY},${lmEntity.location.blockZ}"
-                    "Removing ${existingMod.name} at $locationStr"
+                    val locationStr = LocalizedMessages.text("command.levelledmobs.debug.runtime.d086", mapOf("value-1" to (lmEntity.location.blockX), "value-2" to (lmEntity.location.blockY), "value-3" to (lmEntity.location.blockZ)), false)
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d087", mapOf("value-1" to (existingMod.name), "value-2" to (locationStr)), false)
                 }
             }
 
@@ -369,11 +370,15 @@ class MobDataManager {
                     val evalResult = evaluateExpression(formulaStr.text)
                     multiplierValue = evalResult.result.toFloat()
                     if (evalResult.hadError)
-                        Log.war("Error evaluating formula for ${lmEntity.nameIfBaby}: '$formulaStr', ${evalResult.error}")
+                        Log.warKey("console.formula.evaluation-error", mapOf(
+                            "entity" to lmEntity.nameIfBaby,
+                            "formula" to formulaStr.toString(),
+                            "error" to (evalResult.error ?: "-")
+                        ))
 
                     DebugManager.log(DebugType.APPLY_MULTIPLIERS, lmEntity, !evalResult.hadError) {
-                        "${multiplierOrMod.addition.name}, formulaPre: '${multiplierOrMod.formula}'\nformula: " +
-                                "'$formulaStr', result: '$multiplierValue'" }
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d088", mapOf("value-1" to (multiplierOrMod.addition.name), "value-2" to (multiplierOrMod.formula)), false) +
+                                LocalizedMessages.text("command.levelledmobs.debug.runtime.d089", mapOf("value-1" to (formulaStr), "value-2" to (multiplierValue)), false) }
                 }
                 else {
                     if (loop == 0)
@@ -394,8 +399,8 @@ class MobDataManager {
 
         if (maxLevel == 0f || multiplierValue == 0.0f) {
             DebugManager.log(DebugType.APPLY_MULTIPLIERS, lmEntity) {
-                val msg = if (maxLevel == 0f) "maxLevel was 0" else "multiplier was 0"
-                "$msg; returning 0 for $addition"
+                val msg = if (maxLevel == 0f) LocalizedMessages.text("command.levelledmobs.debug.runtime.d090", colorize = false) else LocalizedMessages.text("command.levelledmobs.debug.runtime.d091", colorize = false)
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d092", mapOf("value-1" to (msg), "value-2" to (addition)), false)
             }
             return MultiplierResult(0.0f, baseModifierAmount, isAddition)
         }
@@ -409,12 +414,12 @@ class MobDataManager {
 
         if (fineTuning!!.getUseStacked() || attributeMultiplier!!.useStacked) {
             DebugManager.log(DebugType.APPLY_MULTIPLIERS, lmEntity) {
-                "attrib: ${addition.name}, stkd formula, ${attributeMultiplier!!.value}"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d093", mapOf("value-1" to (addition.name), "value-2" to (attributeMultiplier!!.value)), false)
             }
             return MultiplierResult(lmEntity.getMobLevel.toFloat() * multiplierValue, baseModifierAmount, isAddition)
         } else {
             DebugManager.log(DebugType.APPLY_MULTIPLIERS, lmEntity) {
-                "attrib: ${addition.name}, std formula, ${attributeMultiplier.value}"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d094", mapOf("value-1" to (addition.name), "value-2" to (attributeMultiplier.value)), false)
             }
 
             multiplierValue = if (attributeMax > 0.0) {

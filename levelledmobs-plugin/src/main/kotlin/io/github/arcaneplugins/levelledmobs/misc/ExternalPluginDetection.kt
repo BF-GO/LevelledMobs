@@ -90,7 +90,7 @@ class ExternalPluginDetection(
             "short" -> { keyExists = lmEntity.pdc.has(namespaceKey, PersistentDataType.SHORT) }
             "tag_container" -> { keyExists = lmEntity.pdc.has(namespaceKey, PersistentDataType.TAG_CONTAINER) }
             else -> {
-                Log.sev("Invalid key-valuetype: $keyValueType")
+                Log.sevKey("console.validation.invalid-key-value-type", mapOf("value" to keyValueType))
                 keyExists = lmEntity.pdc.has(namespaceKey, PersistentDataType.STRING)
             }
         }

@@ -36,7 +36,7 @@ object CommandHandler {
         }
         catch (_: NoSuchMethodError) {
             hadErrorLoading = true
-            Log.war("The plugin may continue to work with limited commands. Note that this is expected on Spigot servers.")
+            Log.warKey("console.command-framework.limited-commands")
             loadFallbackCommands()
         }
     }

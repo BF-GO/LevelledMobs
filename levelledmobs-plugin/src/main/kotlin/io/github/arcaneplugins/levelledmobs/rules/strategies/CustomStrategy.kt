@@ -1,5 +1,6 @@
 package io.github.arcaneplugins.levelledmobs.rules.strategies
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.debug.DebugManager
 import io.github.arcaneplugins.levelledmobs.debug.DebugType
@@ -26,7 +27,7 @@ class CustomStrategy(
         maxLevel: Int
     ): Float {
         if (formula.isNullOrEmpty()){
-            DebugManager.log(DebugType.CUSTOM_STRATEGY, lmEntity) { "no formula supplied, using 1" }
+            DebugManager.log(DebugType.CUSTOM_STRATEGY, lmEntity) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d138", colorize = false) }
             return 1f
         }
 
@@ -38,7 +39,7 @@ class CustomStrategy(
         val result = evalResult.result
 
         DebugManager.log(DebugType.CUSTOM_STRATEGY, lmEntity) {
-            "formulaPre: '$formula', formulaPost: '$useFormula', result: $result" }
+            LocalizedMessages.text("command.levelledmobs.debug.runtime.d139", mapOf("value-1" to (formula), "value-2" to (useFormula), "value-3" to (result)), false) }
 
         return result.toFloat()
     }

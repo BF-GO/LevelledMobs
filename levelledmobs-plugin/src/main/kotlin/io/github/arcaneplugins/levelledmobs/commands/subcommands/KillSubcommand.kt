@@ -9,6 +9,7 @@ import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.MainCompanion
 import io.github.arcaneplugins.levelledmobs.misc.RequestedLevel
 import io.github.arcaneplugins.levelledmobs.util.MiscUtils
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.Utils
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import io.papermc.paper.command.brigadier.CommandSourceStack
@@ -74,7 +75,7 @@ object KillSubcommand : CommandBase("levelledmobs.command.kill") {
         commandSender = sender
         //TODO: make this work in Folia
         if (LevelledMobs.instance.ver.isRunningFolia) {
-            sender.sendMessage("Sorry this command doesn't work in Folia")
+            LocalizedMessages.send(sender, "common.not-available-on-folia")
             return
         }
 
@@ -330,14 +331,14 @@ object KillSubcommand : CommandBase("levelledmobs.command.kill") {
 
         val rl = RequestedLevel()
         if (args.size <= rangeSpecifiedFlag) {
-            sender.sendMessage("No value was specified for /levels")
+            LocalizedMessages.send(sender, "command.levelledmobs.kill.levels-value-missing")
             rl.hadInvalidArguments = true
             return rl
         }
 
         val value = args[rangeSpecifiedFlag]
         if (!rl.setLevelFromString(value)) {
-            sender.sendMessage("Invalid number or range specified for /levels")
+            LocalizedMessages.send(sender, "command.levelledmobs.kill.levels-value-invalid")
             rl.hadInvalidArguments = true
         }
 

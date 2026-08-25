@@ -113,7 +113,7 @@ class LevelledMobs : JavaPlugin() {
 
         this.ver.load()
         if (ver.minecraftVersion.isLessThan("1.21.1"))
-            Log.sev("This minecraft version is NOT supported. Use at your own risk!")
+            Log.sevKey("console.lifecycle.unsupported-minecraft")
 
         NmsMappings.load()
         this.definitions.load()
@@ -136,7 +136,7 @@ class LevelledMobs : JavaPlugin() {
         nametagQueueManager.nametagSenderHandler.refresh()
         mainCompanion.registerListeners()
 
-        Log.inf("Running misc procedures")
+        Log.infKey("console.lifecycle.misc-procedures")
         if (nametagQueueManager.hasNametagSupport) {
             levelManager.startNametagAutoUpdateTask()
             levelManager.startNametagTimer()
@@ -157,7 +157,7 @@ class LevelledMobs : JavaPlugin() {
         mainCompanion.checkUpdates()
 
         loadTime += timer.timer
-        Log.inf("Start-up complete (took ${loadTime}ms)")
+        Log.infKey("console.lifecycle.startup-complete", mapOf("time" to loadTime.toString()))
     }
 
     override fun onDisable() {
@@ -167,7 +167,7 @@ class LevelledMobs : JavaPlugin() {
         levelManager.stopNametagAutoUpdateTask()
         mainCompanion.shutDownAsyncTasks()
 
-        Log.inf("Shut-down complete (took ${disableTimer.timer}ms)")
+        Log.infKey("console.lifecycle.shutdown-complete", mapOf("time" to disableTimer.timer.toString()))
     }
 
     private fun prepareToLoadCustomDrops(){
@@ -222,10 +222,7 @@ class LevelledMobs : JavaPlugin() {
         }
 
         if (customDropsHandler.customDropsParser.hadParsingError && sender is Player){
-            sender.sendMessage(MessageUtils.colorizeAll(
-                "&b&lLevelledMobs:&r &6There was an error parsing customdrops.yml&r\n" +
-                "Check the console log for more details"
-            ))
+            LocalizedMessages.send(sender, "other.customdrops-parse-error")
         }
 
         rulesManager.clearTempDisabledRulesCounts()
@@ -245,10 +242,7 @@ class LevelledMobs : JavaPlugin() {
         })
 
         if (mainCompanion.errorMessages.isNotEmpty() && sender is Player){
-            sender.sendMessage("There were errors reported. Check the console or " +
-                    "run the following command to view them:\n" +
-                    "/lm debug show-errors"
-            )
+            LocalizedMessages.send(sender, "other.errors-reported")
         }
     }
 }

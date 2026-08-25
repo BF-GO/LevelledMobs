@@ -1,5 +1,6 @@
 package io.github.arcaneplugins.levelledmobs.listeners
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import java.time.Instant
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.debug.DebugManager
@@ -57,7 +58,7 @@ class EntityDamageListener : Listener {
             if (priority == lastPriority) return
 
             HandlerList.unregisterAll(this)
-            Log.inf("Changing event priority for $settingName from $lastPriority to $priority")
+            Log.infKey("console.events.priority-changed", mapOf("event" to settingName, "old" to lastPriority.toString(), "new" to priority.toString()))
         }
 
         Bukkit.getPluginManager().registerEvent(
@@ -258,7 +259,7 @@ class EntityDamageListener : Listener {
                 Addition.CUSTOM_RANGED_ATTACK_DAMAGE, event.damage.toFloat()
             ).multiplierAmount
         DebugManager.log(DebugType.RANGED_DAMAGE_MODIFICATION, shooter) {
-            "damage: &b${event.damage}&7, new damage: &b$newDamage&7"
+            LocalizedMessages.text("command.levelledmobs.debug.runtime.d032", mapOf("value-1" to (event.damage), "value-2" to (newDamage)), false)
         }
         event.damage = newDamage.toDouble()
     }
@@ -284,7 +285,7 @@ class EntityDamageListener : Listener {
             event.damage.toFloat()
         ).multiplierAmount.toDouble() // use ranged attack damage value
         DebugManager.log(DebugType.RANGED_DAMAGE_MODIFICATION, livingEntity)
-        { "old damage: &b: $oldDamage&r, new damage: &b${event.damage}&r" }
+        { LocalizedMessages.text("command.levelledmobs.debug.runtime.d033", mapOf("value-1" to (oldDamage), "value-2" to (event.damage)), false) }
         lmEntity.free()
     }
 }

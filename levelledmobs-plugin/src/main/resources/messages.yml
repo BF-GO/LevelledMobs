@@ -28,13 +28,19 @@
 common:
   prefix: '&b&lLevelledMobs:&7'
   no-permission:
-    - '%prefix% You don''t have access to that.'
+    - '%prefix% Недостаточно прав для выполнения этой команды.'
   players-only:
-    - '%prefix% Only players have access to that.'
+    - '%prefix% Эта команда доступна только игрокам.'
   player-offline:
-    - '%prefix% Player ''&r%player%&7'' is offline.'
+    - '%prefix% Игрок ''&r%player%&7'' не в сети.'
   invalid-command:
-    - '%prefix% Invalid command.'
+    - '%prefix% Неизвестная команда.'
+  not-available-on-folia:
+    - '%prefix% Эта команда недоступна на Folia.'
+  invalid-time:
+    - '%prefix% Некорректный интервал времени: &b%input%&7.'
+  invalid-time-unit:
+    - '%prefix% Некорректная единица времени: &b%input%&7 (&b%unit%&7).'
 
 
 #
@@ -44,16 +50,18 @@ common:
 #
 command:
   levelledmobs:
+    fallback-options:
+      - '%prefix% Доступные варианты: reload / info / show-errors'
     main-usage:
-      - '%prefix% Available commands:'
-      - '&8 &m->&b /%label% debug &8- &7various commands relating to debugging'
-      - '&8 &m->&b /%label% egg &8- &7create spawner eggs'
-      - '&8 &m->&b /%label% help &8- &7show URL to the wiki'
-      - '&8 &m->&b /%label% info &8- &7view info about the plugin'
-      - '&8 &m->&b /%label% kill &8- &7mass kill levelled mobs'
-      - '&8 &m->&b /%label% reload &8- &7reload the configuration files'
-      - '&8 &m->&b /%label% rules &8- &7printout of the rules system'
-      - '&8 &m->&b /%label% summon &8- &7summon specific levelled mobs'
+      - '%prefix% Доступные команды:'
+      - '&8 &m->&b /%label% debug &8- &7команды диагностики'
+      - '&8 &m->&b /%label% egg &8- &7создание яиц призыва'
+      - '&8 &m->&b /%label% help &8- &7ссылка на wiki'
+      - '&8 &m->&b /%label% info &8- &7информация о плагине'
+      - '&8 &m->&b /%label% kill &8- &7массовое удаление уровневых мобов'
+      - '&8 &m->&b /%label% reload &8- &7перезагрузка конфигурации'
+      - '&8 &m->&b /%label% rules &8- &7просмотр системы правил'
+      - '&8 &m->&b /%label% summon &8- &7призыв уровневых мобов'
 
 
     #
@@ -63,55 +71,59 @@ command:
     #
     summon:
       invalid-amount:
-        - '%prefix% Invalid amount ''&b%amount%&7''.'
+        - '%prefix% Некорректное количество: ''&b%amount%&7''.'
       invalid-entity-type:
-        - '%prefix% Invalid entity type ''&b%entityType%&7''.'
+        - '%prefix% Некорректный тип сущности: ''&b%entityType%&7''.'
       invalid-level:
-        - '%prefix% Invalid level ''&b%level%&7''.'
+        - '%prefix% Некорректный уровень: ''&b%level%&7''.'
       invalid-summon-type:
-        - '%prefix% Invalid summon type ''&b%summonType%&7''.'
+        - '%prefix% Некорректный способ призыва: ''&b%summonType%&7''.'
       invalid-summon-type-console:
-        - '%prefix% Only players may use summon type ''&bhere''&7, you must use ''&batPlayer&7'' or ''&batLocation&7'' instead.'
+        - '%prefix% Способ ''&bhere''&7 доступен только игрокам. Используйте ''&batPlayer&7'' или ''&batLocation&7''.'
       invalid-location:
-        - '%prefix% Invalid location.'
+        - '%prefix% Некорректное местоположение.'
+      no-safe-location:
+        - '%prefix% Подходящее безопасное место для появления не найдено.'
+      nbt-error:
+        - '%prefix% Не удалось применить NBT к %entity%: %error%'
       here:
         usage:
-          - '%prefix% Usage: &b/%label% summon <amount> <entity> <level> here'
+          - '%prefix% Использование: &b/%label% summon <amount> <entity> <level> here'
         success:
-          - '%prefix% Spawned &b%amount%&7 of &fLvl.%level% &b%entity%(s)&7 at your location.'
+          - '%prefix% Призвано сущностей &b%entity%&7: &b%amount%&7, уровень &f%level%&7, в текущей позиции.'
       atLocation:
         usage:
-          - '%prefix% Usage: &b/%label% summon <amount> <entity> <level> atLocation <x> <y> <z> [world]'
+          - '%prefix% Использование: &b/%label% summon <amount> <entity> <level> atLocation <x> <y> <z> [world]'
         success:
-          - '%prefix% Spawned &b%amount%&7 of &fLvl.%level% &b%entity%(s)&7 at &8(&b%x%&7, &b%y%&7, &b%z%&7 in world ''&b%world%&7''&8)&7.'
+          - '%prefix% Призвано сущностей &b%entity%&7: &b%amount%&7, уровень &f%level%&7, координаты &8(&b%x%&7, &b%y%&7, &b%z%&7, мир ''&b%world%&7''&8)&7.'
         usage-console:
-          - '%prefix% Usage (console): &b/%label% summon <amount> <entity> <level> atLocation <x> <y> <z> <world>'
+          - '%prefix% Использование из консоли: &b/%label% summon <amount> <entity> <level> atLocation <x> <y> <z> <world>'
         invalid-world:
-          - '%prefix% Invalid world ''&b%world%&7''.'
+          - '%prefix% Некорректный мир: ''&b%world%&7''.'
         invalid-location:
-          - '%prefix% Invalid location.'
+          - '%prefix% Некорректное местоположение.'
       atPlayer:
         usage:
-          - '%prefix% Usage: &b/%label% summon <amount> <entityType> <level> atPlayer <player>'
+          - '%prefix% Использование: &b/%label% summon <amount> <entityType> <level> atPlayer <player>'
         success:
-          - '%prefix% Spawned &b%amount%&7 of &fLvl.%level% &b%entity%(s)&7 at &r%targetDisplayname%&7''s location.'
+          - '%prefix% Призвано сущностей &b%entity%&7: &b%amount%&7, уровень &f%level%&7, возле игрока &r%targetDisplayname%&7.'
       usage:
-        - '%prefix% Summon command syntax:'
+        - '%prefix% Синтаксис команды призыва:'
         - '&8 &m->&b /%label% summon <amount> <entity> <level> here'
         - '&8 &m->&b /%label% summon <amount> <entity> <level> atPlayer <player>'
         - '&8 &m->&b /%label% summon <amount> <entity> <level> atLocation <x> <y> <z> [world]'
       amount-limited:
         min:
-          - '%prefix% Summon amount limited to a minimum of &b1&7 mob.'
+          - '%prefix% Минимальное количество для призыва: &b1&7.'
         max:
-          - '%prefix% Summon amount limited to a maximum of &b%maxAmount%&7 mobs.'
+          - '%prefix% Максимальное количество для призыва: &b%maxAmount%&7.'
       level-limited:
         min:
-          - '%prefix% Level limited to a minimum of &bLvl.%minLevel%&7.'
+          - '%prefix% Минимальный уровень: &b%minLevel%&7.'
         max:
-          - '%prefix% Level limited to a maximum of &bLvl.%maxLevel%&7.'
+          - '%prefix% Максимальный уровень: &b%maxLevel%&7.'
       not-levellable:
-        - '%prefix% &b%entity%&7 is not levellable.'
+        - '%prefix% Для сущности &b%entity%&7 нельзя назначить уровень.'
 
 
     #
@@ -120,28 +132,32 @@ command:
     #   ---------------  -  ------------------------------
     #
     kill:
+      levels-value-missing:
+        - '%prefix% Не указано значение параметра /levels.'
+      levels-value-invalid:
+        - '%prefix% Для /levels указано некорректное число или диапазон.'
       usage:
-        - '%prefix% Usage: &b/%label% kill <all/near>'
+        - '%prefix% Использование: &b/%label% kill <all/near>'
       all:
         invalid-world:
-          - '%prefix% Invalid world ''&b%world%&7''.'
+          - '%prefix% Некорректный мир: ''&b%world%&7''.'
         success:
-          - '%prefix% Killed &b%killed%&7 levelled mobs in &b%worlds%&7 world(s) &8(&b%skipped%&7 mobs were skipped&8)&7.'
+          - '%prefix% Удалено уровневых мобов: &b%killed%&7; миров: &b%worlds%&7; пропущено: &b%skipped%&7.'
         usage:
-          - '%prefix% Usage: &b/%label% kill all [world/*]'
+          - '%prefix% Использование: &b/%label% kill all [world/*]'
         usage-console:
-          - '%prefix% Usage (console): /%label% kill all <world/*>'
+          - '%prefix% Использование из консоли: /%label% kill all <world/*>'
       near:
         invalid-radius:
-          - '%prefix% Invalid radius ''&b%radius%&7''.'
+          - '%prefix% Некорректный радиус: ''&b%radius%&7''.'
         invalid-radius-min:
-          - '%prefix% Specified radius has been adjusted to the minimum radius &8(&b%minRadius%&8)&7.'
+          - '%prefix% Радиус увеличен до минимального значения &8(&b%minRadius%&8)&7.'
         invalid-radius-max:
-          - '%prefix% Specified radius has been adjusted to the maximum radius &8(&b%maxRadius%&8)&7.'
+          - '%prefix% Радиус уменьшен до максимального значения &8(&b%maxRadius%&8)&7.'
         success:
-          - '%prefix% Killed &b%killed%&7 levelled mobs within a radius of &b%radius%&7 block(s) &8(&b%skipped%&7 mobs were skipped&8)&7.'
+          - '%prefix% В радиусе &b%radius%&7 блоков удалено уровневых мобов: &b%killed%&7; пропущено: &b%skipped%&7.'
         usage:
-          - '%prefix% Usage: &b/%label% kill near <radius>'
+          - '%prefix% Использование: &b/%label% kill near <radius>'
 
 
     #
@@ -150,55 +166,57 @@ command:
     #   ---------------  -  ------------------------------
     #
     spawner:
+      invalid-spawn-type:
+        - '%prefix% Некорректный тип сущности: &b%value%&7.'
       usage:
-        - '%prefix% Spawner command syntax:'
+        - '%prefix% Синтаксис команды спавнера:'
         - '&8 &m->&b /%label% spawner create'
         - '&8 &m->&b /%label% spawner copy'
         - '&8 &m->&b /%label% spawner info'
         - ' '
-        - '&fSample syntax:'
-        - '&8 &m->&b /%label% spawner create &3/minlevel&b 1 &3/maxlevel&b 10 &3/name&b "My customized LM spawner" &3/customDropId&b Id1'
+        - '&fПример:'
+        - '&8 &m->&b /%label% spawner create &3/minlevel&b 1 &3/maxlevel&b 10 &3/name&b "Настроенный спавнер LM" &3/customDropId&b Id1'
       no-value:
-        - '%prefix% No value was specified for key ''&b%keyname%&7''.'
+        - '%prefix% Не указано значение параметра ''&b%keyname%&7''.'
       no-player:
-        - '%prefix% Command can only be run by a player unless the &b/giveplayer&7 parameter is specified.'
+        - '%prefix% Команда доступна только игроку, если не указан параметр &b/giveplayer&7.'
       invalid-value:
-        - '%prefix% Invalid value for &b%keyname%&7, must be a number.'
+        - '%prefix% Значение &b%keyname%&7 должно быть числом.'
       no-level-specified:
-        - '%prefix% You must specify minLevel and/or maxLevel.'
+        - '%prefix% Необходимо указать minLevel и/или maxLevel.'
       inventory-full:
-        - '%prefix% Your inventory is full.'
+        - '%prefix% В инвентаре нет свободного места.'
       spawner-give-message:
-        - '%prefix% Gave you a LM spawner.'
+        - '%prefix% Получен спавнер LM.'
       spawner-give-message-console:
-        - '%prefix% Gave &r%playername%&7 a LM spawner. &8|&7 minLevel: &b%minlevel%&7, maxLevel: &b%maxlevel%&7'
+        - '%prefix% Игроку &r%playername%&7 выдан спавнер LM. &8|&7 minLevel: &b%minlevel%&7, maxLevel: &b%maxlevel%&7'
       permission-denied:
-        - '%prefix% You don''t have permission to update or convert a LM spawner.'
+        - '%prefix% Недостаточно прав для обновления или преобразования спавнера LM.'
       spawner-converted:
-        - '%prefix% Converted vanilla spawner into a LM spawner with name "%spawnername%".'
+        - '%prefix% Обычный спавнер преобразован в спавнер LM с именем "%spawnername%".'
       spawner-updated:
-        - '%prefix% Updated LM spawner from spawn egg. Spawner name: "%spawnername%"'
+        - '%prefix% Спавнер LM обновлён с помощью яйца призыва. Имя: "%spawnername%"'
       info:
         status-enabled:
-          - '%prefix% Spawner info is &aenabled&f.'
+          - '%prefix% Просмотр информации о спавнере &aвключён&f.'
         status-not-enabled:
-          - '%prefix% Spawner info is &cnot enabled&f.'
+          - '%prefix% Просмотр информации о спавнере &cвыключен&f.'
         enabled:
-          - '%prefix% Spawner info is &aenabled&f. Right-Click any Spawner for details!'
+          - '%prefix% Просмотр информации &aвключён&f. Нажмите ПКМ по спавнеру.'
         disabled:
-          - '%prefix% Spawner info has been &cdisabled&f.'
+          - '%prefix% Просмотр информации о спавнере &cвыключен&f.'
       copy:
         vanilla-spawner:
-          - '%prefix% Spawner copy only works with LM spawners.'
+          - '%prefix% Копирование доступно только для спавнеров LM.'
         status-enabled:
-          - '%prefix% Spawner copy is &aenabled&f.'
+          - '%prefix% Копирование спавнеров &aвключено&f.'
         status-not-enabled:
-          - '%prefix% Spawner copy is &cnot enabled&f.'
+          - '%prefix% Копирование спавнеров &cвыключено&f.'
         enabled:
-          - '%prefix% Spawner copy is &aenabled&f. Right-Click a LM Spawner to make a copy.'
-          - 'Your hand must be empty.'
+          - '%prefix% Копирование &aвключено&f. Нажмите ПКМ по спавнеру LM с пустой рукой.'
+          - 'Рука должна быть пустой.'
         disabled:
-          - '%prefix% Spawner copy has been &cdisabled&f.'
+          - '%prefix% Копирование спавнеров &cвыключено&f.'
 
 
     #
@@ -207,29 +225,33 @@ command:
     #   ---------------  -  ------------------------------
     #
     spawn_egg:
+      invalid-spawn-type:
+        - '%prefix% Некорректный тип сущности: &b%value%&7.'
+      invalid-material:
+        - '%prefix% Некорректный материал: &b%material%&7.'
       usage:
-        - '%prefix% egg command syntax:'
+        - '%prefix% Синтаксис команды egg:'
         - '&8 &m->&b /%label% egg /minlevel <level> /maxlevel <level> /entity <entity type>'
-        - '&7&o Sample Spawn Egg'
-        - '&7/%label% egg &b/minlevel&7 1 &b/maxlevel&7 10 &b/name&7 "My customized LM spawn egg" &b/customDropId&7 Id1'
+        - '&7&oПример яйца призыва'
+        - '&7/%label% egg &b/minlevel&7 1 &b/maxlevel&7 10 &b/name&7 "Настроенное яйцо LM" &b/customDropId&7 Id1'
       no-paper:
-        - '%prefix% This feature is only available on servers running Paper or forks of Paper'
+        - '%prefix% Функция доступна только на Paper и его форках.'
       no-value:
-        - '%prefix% No value was specified for: &b%keyname%&7'
+        - '%prefix% Не указано значение параметра: &b%keyname%&7'
       no-player:
-        - '%prefix% Command can only be run by a player unless /giveplayer is specified'
+        - '%prefix% Команда доступна только игроку, если не указан /giveplayer.'
       no-player-specified:
-        - '%prefix% No player was specified'
+        - '%prefix% Игрок не указан.'
       invalid-value:
-        - '%prefix% Invalid value for &b%keyname%&7, must be a number'
+        - '%prefix% Значение &b%keyname%&7 должно быть числом.'
       no-level-specified:
-        - '%prefix% You must specify minLevel, maxLevel and entity'
+        - '%prefix% Необходимо указать minLevel, maxLevel и entity.'
       inventory-full:
-        - '%prefix% &4Your inventory is full!'
+        - '%prefix% &4В инвентаре нет свободного места.'
       give-message:
-        - '%prefix% Gave you a LM spawn egg'
+        - '%prefix% Получено яйцо призыва LM.'
       give-message-console:
-        - '%prefix% Gave &r%playername%&7 a LM spawn egg. &8|&7 minLevel: &b%minlevel%&7, maxLevel: &b%maxlevel%&7, entity: &b%entitytype%&7'
+        - '%prefix% Игроку &r%playername%&7 выдано яйцо LM. &8|&7 minLevel: &b%minlevel%&7, maxLevel: &b%maxlevel%&7, entity: &b%entitytype%&7'
 
 
     #
@@ -238,43 +260,54 @@ command:
     #   ---------------  -  ------------------------------
     #
     rules:
+      effective-rules-console:
+        - '%prefix% Действующие правила выведены в консоль.'
+      no-disabled-rules:
+        - '%prefix% Временно отключённых правил нет.'
+      disabled-rules-heading: 'Сейчас временно отключено правил: %count%:'
+      seconds-left: ': осталось секунд: '
+      preset-rule-heading: "\n&r-------------------------------- Правило пресета -------------------------------"
+      default-values-heading: "\n&r------------------------------ Значения по умолчанию ---------------------------"
+      custom-rule-heading: "\n&r----------------------------- Пользовательское правило -------------------------"
+      rules-footer: "\n&r--------------------------------------------------------------------------------------"
+      source: ', &1источник: %source%'
       incomplete-command:
-        - '%prefix% Incomplete command'
+        - '%prefix% Команда указана не полностью.'
       console-rules:
-        - '%prefix% Rules have been printed on the console'
+        - '%prefix% Правила выведены в консоль.'
       discord-invite:
-        - '%prefix% Click for Discord invite'
+        - '%prefix% Нажмите, чтобы открыть приглашение в Discord.'
       wiki-link:
-        - '%prefix% Click to open the wiki'
+        - '%prefix% Нажмите, чтобы открыть wiki.'
       rules-reprocessed:
-        - '%prefix% Rules Reprocessed for &b%entitycount%&7 mobs in &b%worldcount%&7 world(s)'
+        - '%prefix% Правила повторно применены к мобам: &b%entitycount%&7; миров: &b%worldcount%&7.'
       reset:
-        - '%prefix% Running this command will reset your rules to one of 4 defaults.'
-        - 'You must select if you want vanilla/bronze/silver/gold/platinum difficulty.'
-        - 'A backup will be made and your rules.yml reset to default.'
+        - '%prefix% Команда заменит правила одним из стандартных наборов.'
+        - 'Необходимо выбрать сложность: vanilla, bronze, silver, gold или platinum.'
+        - 'Будет создана резервная копия, после чего rules.yml будет сброшен.'
       resetting:
-        - '%prefix% Resetting rules to %difficulty%'
+        - '%prefix% Сброс правил на сложность %difficulty%.'
       reset-syntax:
-        - '%prefix% To reset your rules to %difficulty% difficulty, type in the following command:'
+        - '%prefix% Для сброса правил на сложность %difficulty% выполните:'
         - '%label% rules reset %difficulty% confirm'
       reset-complete:
-        - '%prefix% rules.yml updated successfully'
+        - '%prefix% rules.yml успешно обновлён.'
       invalid-difficulty:
-        - '%prefix% Invalid difficulty: %difficulty%'
+        - '%prefix% Некорректная сложность: %difficulty%.'
       rule-name-missing:
-        - '%prefix% Must specify a rule name.'
+        - '%prefix% Необходимо указать имя правила.'
       rule-name-invalid:
-        - '%prefix% No rule was found with name %rulename%'
+        - '%prefix% Правило с именем %rulename% не найдено.'
       showing-rules:
-        - 'Showing all values for rule: &b%rulename%&r'
+        - 'Все значения правила: &b%rulename%&r'
       no-entities-visible:
-        - '%prefix% Must be looking at a nearby entity'
+        - '%prefix% Необходимо смотреть на ближайшую сущность.'
       no-entities-near:
-        - '%prefix% No entities were found within a 10 block radius'
+        - '%prefix% В радиусе 10 блоков сущности не найдены.'
       effective-rules:
-        - '%prefix% Showing effective rules for: %entitytype% (lvl %level% %mobname%) in %world%, %location%'
+        - '%prefix% Действующие правила для %entitytype% (ур. %level% %mobname%), мир %world%, %location%:'
       no-effective-rules:
-        - '%prefix% No effective rules were found'
+        - '%prefix% Действующие правила не найдены.'
 
     #
     #   ---------------  -  ------------------------------
@@ -283,29 +316,408 @@ command:
     #
     reload:
       started:
-        - '%prefix% Reloading configuration files...'
+        - '%prefix% Перезагрузка файлов конфигурации...'
       finished:
-        - '%prefix% Reload complete.'
+        - '%prefix% Перезагрузка завершена.'
       usage:
-        - '%prefix% Usage: &b/%label% reload'
+        - '%prefix% Использование: &b/%label% reload'
     info:
       about:
         - ' '
         - '&b&lLevelledMobs&b v%version%'
         - '&7&o%description%'
         - ' '
-        - '&7Maintainers: &f%maintainers%'
-        - '&7Contributors: &f%contributors%'
-        - '&7Support for: &fMC &f%supportedVersions%'
+        - '&7Сопровождают: &f%maintainers%'
+        - '&7Участники: &f%contributors%'
+        - '&7Поддерживаемые версии: &fMC &f%supportedVersions%'
         - ' '
       listSeparator: '&7, &f'
       usage:
-        - '%prefix% Usage: &b/%label% info'
+        - '%prefix% Использование: &b/%label% info'
     compatibility:
       notice:
-        - '%prefix% Compatibility checks have been printed to your logs. Please check the console :)'
+        - '%prefix% Результаты проверки совместимости выведены в консоль.'
       usage:
-        - '%prefix% Usage: &b/%label% compatibility'
+        - '%prefix% Использование: &b/%label% compatibility'
+    debug:
+      created-file:
+        - '%prefix% Создан файл: &b%file%'
+      select-option: '%prefix% Укажите параметр команды debug.'
+      no-recorded-errors: '%prefix% Зарегистрированных ошибок нет.'
+      recorded-errors-cleared: '%prefix% Список зарегистрированных ошибок очищен.'
+      recorded-errors: '%prefix% Зарегистрировано ошибок: %count%'
+      mob-groups: |-
+        Группы сущности: %entity%
+        %groups%
+      damage-output-status: '%prefix% Вывод отладки урона: %status%.'
+      damage-output-already-enabled: '%prefix% Вывод отладки урона уже включён.'
+      damage-output-enabled: '%prefix% Вывод отладки урона включён.'
+      damage-output-disabled: '%prefix% Вывод отладки урона выключен.'
+      damage-output-already-disabled: '%prefix% Вывод отладки урона уже выключен.'
+      invalid-option: '%prefix% Некорректный параметр: %option%.'
+      select-filter-option: '%prefix% Укажите параметр фильтра.'
+      y-filters-cleared: '%prefix% Фильтры высоты очищены.'
+      y-filter-values: '%prefix% min-y-height: %min%, max-y-height: %max%.'
+      task-null: '(нет задачи)'
+      task-status: 'id: %id%, выполняется: %running%, отменена: %cancelled%'
+      queue-status: |-
+        %prefix% Элементов менеджера тегов: %nametag-count%; элементов очереди мобов: %mob-count%
+        Состояние задач мобов: %mob-tasks%
+        Состояние задачи тегов: %nametag-task%
+      pdc-entry: 'ключ: &b%key%&r, %value%'
+      no-pdc-keys: 'PDC-ключи не найдены для'
+      showing-pdc-keys: 'PDC-ключи для'
+      pdc-keys-console: '%prefix% PDC-ключи выведены в консоль.'
+      chunk-cache-cleared: '%prefix% Кэш счётчика убийств в чанках очищен.'
+      chunk-cache-options: '%prefix% Доступные варианты: reset'
+      no-external-plugins: '%prefix% Внешние плагины не определены.'
+      external-plugins-heading: 'Определённые внешние плагины:'
+      unknown-nms: '%prefix% Невозможно получить данные: обнаружена неизвестная версия NMS.'
+      nbt-console: '%prefix% NBT-данные выведены в консоль.'
+      showing-nbt: 'NBT-данные для'
+      dump-format: '%title%: %entity% (ур. %level%), мир %world%, %location%&r%values%'
+      dump-format-with-type: '%title%: %entity% (ур. %level%, %type%), мир %world%, %location%&r%values%'
+      value-missing: '%prefix% Значение не указано.'
+      timer-disabled: '%prefix% Таймер отладки выключен.'
+      timer-enabled: '%prefix% Отладка включена на %time%.'
+      current-value: '%prefix% Текущее значение: %value%.'
+      output-updated: '%prefix% Режим вывода отладки изменён на %output%.'
+      chat-spam-warning: '%prefix% &eВнимание: вывод отладки в чат может создать большой поток сообщений.'
+      already-enabled-timer-disabled: '%prefix% Отладка уже включена; таймер выключен.'
+      already-enabled: '%prefix% Отладка уже включена.'
+      all-options-enabled: '%prefix% Все параметры отладки включены.'
+      enabled: '%prefix% Отладка включена.'
+      disabled: '%prefix% Отладка выключена.'
+      already-disabled: '%prefix% Отладка уже выключена.'
+      invalid-debug-type: '%prefix% Некорректный тип отладки: %type%.'
+      debug-type-set: '%prefix% Установлен тип отладки: %type%.'
+      filters-cleared: '%prefix% Все фильтры очищены.'
+      distance-current: '%prefix% Текущее расстояние до игроков: %value%.'
+      distance-set: '%prefix% Расстояние до игроков установлено на %value%.'
+      min-y-current: '%prefix% Текущая минимальная высота: %value%.'
+      min-y-set: '%prefix% Минимальная высота установлена на %value%.'
+      max-y-current: '%prefix% Текущая максимальная высота: %value%.'
+      max-y-set: '%prefix% Максимальная высота установлена на %value%.'
+      invalid-number: '%prefix% Некорректное число: %value%.'
+      listen-both: '%prefix% Отслеживаются все события отладки.'
+      listen-failure: '%prefix% Отслеживаются неуспешные события отладки.'
+      listen-success: '%prefix% Отслеживаются успешные события отладки.'
+      invalid-listen-type: '%prefix% Некорректный тип %value%. Допустимо: failure, success, both.'
+      list-filters-cleared: '%prefix% Очищены все фильтры списка «%list%».'
+      no-values-defined: '%prefix% Значения не заданы.'
+      values-defined: '%prefix% Заданные значения: %values%.'
+      invalid-entity-type: '%prefix% Некорректный тип сущности: %type%.'
+      invalid-rule-name: '%prefix% Некорректное имя правила: %rule%.'
+      values-added: '%prefix% В список %list% добавлены значения: %values%.'
+      values-removed: '%prefix% Из списка %list% удалены значения: %values%.'
+      lew-cache-cleared: '%prefix% Кэш LEW очищен.'
+      lew-status: '%prefix% Размер кэша LEW: %size%; непустых элементов: %non-empty%.'
+      spawn-distance: '%prefix% Расстояние от точки появления до %entity%: %distance% (ур. %level%, %name%), мир %world%, %location%.'
+      player-required-console: '%prefix% При запуске из консоли необходимо указать игрока.'
+      no-nearby-mob: '%prefix% Возле игрока %player% не найден подходящий моб.'
+      player-location: '%prefix% Координаты: %x%, %y%, %z%, мир %world%.'
+      runtime:
+        d001: "%value-1%"
+        d002: "формула: '%value-1%'"
+        d003: "формулаPre: '%value-1%'"
+        d004: "формула: '%value-1%'"
+        d005: "результат (ошибка, %value-1%)\n%value-2%"
+        d006: "формула: '%value-1%'"
+        d007: "формулаPre: '%value-1%'"
+        d008: "формула: '%value-1%'"
+        d009: "%value-1%, результат: %value-2%\n%value-3%"
+        d010: "&8- &7Группы: &b"
+        d011: "&7, &б"
+        d012: "Достигнут лимит на количество позиций %value-1% для %value-2%."
+        d013: "Достигнут общий лимит %value-1% для группы: %value-2%."
+        d014: "Достигнут общий лимит %value-1% для группы: %value-2%."
+        d015: "&7item: &b%value-1%&r, зачаровывает"
+        d016: "%value-1%"
+        d017: "(l-%value-1%): &4%value-2%&r &b(%value-3%)&r"
+        d018: "&b(%value-1% шанс)"
+        d019: "&2%value-1%&r &b(%value-2%)"
+        d020: "(l-%value-1%): %value-2%&r"
+        d021: ", используется dflt: &2%value-1%&r"
+        d022: "Групповые ограничения:"
+        d023: "Примененные данные НБТ, %value-1%"
+        d024: "формула: '%value-1%'"
+        d025: "формулаPre: '%value-1%'"
+        d026: "формула: '%value-1%'"
+        d027: "результат (ошибка, %value-1%)\n%value-2%"
+        d028: "формула: '%value-1%'"
+        d029: "формулаPre: '%value-1%'"
+        d030: "формула: '%value-1%'"
+        d031: "результат %value-1%\n%value-2%"
+        d032: "урон: &b%value-1%&7, новый урон: &b%value-2%&7"
+        d033: "старый урон: &b: %value-1%&r, новый урон: &b%value-2%&r"
+        d034: "%value-1%: игрок: %value-2%, достигнут предел уничтожения чанков, максимум: %value-3%"
+        d035: ", дропид: %value-1%"
+        d036: "Созданный моб из спавнера LM: minLevel:&b %value-1%&7, maxLevel: &b%value-2%&7,generatedLevel: &b%value-3%&b%value-4%"
+        d037: "Порожденный моб из ванильного спавнера"
+        d038: "запрещено перевыравнивание до &b%value-1%&r из-за отключения понижения уровня"
+        d039: "мир: &b%value-1%&7 не был выровнен -> состояние выравнивания: &b%value-2%"
+        d040: "экземпляр CreatureSpawnListener: &b%value-1%"
+        d041: "&7, с spawnReason &b%value-1%&7."
+        d042: "не экземпляр CreatureSpawnListener: &b%value-1%"
+        d043: "Выравниваемое состояние было %value-1%"
+        d044: "no-level-conditions.tamed = &btrue"
+        d045: "Удален уровень прирученного моба."
+        d046: "Применение уровня к прирученному мобу"
+        d047: "объект &bне&7 был экземпляром LivingEntity"
+        d048: "исходная сущность была &bnot&7 выровнена"
+        d049: "сущность&b не&7 была экземпляром LivingEntity (цикл)"
+        d050: "преобразованный объект &bне&7 можно было выравнивать, причина: &b%value-1%"
+        d051: "сущность была преобразована"
+        d052: ", %value-1%: %value-2%"
+        d053: "%value-1%: %value-2%"
+        d054: ", %value-1%: %value-2%"
+        d055: "%value-1%: %value-2%"
+        d056: "формула: '%value-1%'"
+        d057: "формулаPre: '%value-1%'\n   формула: '%value-2%'"
+        d058: "результат (ошибка, %value-1%)\n%value-2%"
+        d059: "формула: '%value-1%'"
+        d060: "формулаPre: '%value-1%'\n   формула: '%value-2%'"
+        d061: "результат %value-1%\n%value-2%"
+        d062: "Получен пустой результат для «%value-1%» от PAPI. Игрок %value-2% в %value-3%, %value-4%, %value-5% в %value-6%"
+        d063: "Получен пустой результат для «%value-1%» от PAPI. Игрок %value-2% в %value-3%, %value-4%, %value-5% в %value-6%"
+        d064: "удаление любых присутствующих капель"
+        d065: "%value-1%, ванильные капли: &b%value-2%&7, все капли: &b%value-3%&7, дополнение: &b%value-4%&7."
+        d066: "&7Элемент неуправляем."
+        d067: "&7Выпадение: &b%value-1%&7, старая сумма: &b%value-2%&7, добавленная стоимость: &b%value-3%&7,"
+        d068: "новая сумма: &b%value-1%&7."
+        d069: "xp-ваниль: &b%value-1%&7, новый-xp: &b0&7"
+        d070: "XP-ваниль: &b%value-1%&7, новый-XP: &b%value-2%&7"
+        d071: "mob-lvl был 0 или maxlevel был 0"
+        d072: "'(%value-1% - %value-2%) / (%value-3% - %value-4%)', результат: %value-5%"
+        d073: "Достигнуто значение %value-1% мс, очистка кэша LEW,"
+        d074: "&7был ребенком, а теперь стал взрослым и применяет правила прокачки"
+        d075: "мульп: ноль, результат: 3"
+        d076: "mulp: %value-1%, максимум: %value-2%, результат: %value-3%"
+        d077: "Достигнут предел экипировки %value-1%, предмет: %value-2%, группа: %value-3%."
+        d078: "&7 имел прикрепленный &bnoLevelKey&7"
+        d079: "Время ожидания применения уровня к мобу истекло."
+        d080: "Примененные данные НБТ, %value-1%"
+        d081: "атрибут: %value-1%, старая база: %value-2%,"
+        d082: "новая база: %value-1%"
+        d083: "атрибут: %value-1%, база: %value-2%,"
+        d084: "дополнение: %value-1%"
+        d085: "Ошибка установки maxhealth = %value-1%, %value-2%"
+        d086: "%value-1%,%value-2%,%value-3%"
+        d087: "Удаление %value-1% в %value-2%"
+        d088: "%value-1%, формулаPre: '%value-2%'\nформула:"
+        d089: "«%value-1%», результат: «%value-2%»"
+        d090: "maxLevel был 0"
+        d091: "множитель был 0"
+        d092: "%value-1%; возврат 0 для %value-2%"
+        d093: "атрибут: %value-1%, формула stkd, %value-2%"
+        d094: "атрибут: %value-1%, стандартная формула, %value-2%"
+        d095: "%value-1%,"
+        d096: "%value-1%,"
+        d097: "%value-1%"
+        d098: "в %value-1%"
+        d099: "игнорирование моба %value-1% из-за отсутствия контекста игрока в %value-2%"
+        d100: "Время ожидания применения уровня к мобу истекло."
+        d101: "количество правил: &b%value-1%&r"
+        d102: "время восстановления достигнуто, правило отключено"
+        d103: "минимальный уровень правила: &b%value-1%&7"
+        d104: "правило maxlvl: &b%value-1%&7"
+        d105: "имя: &b%value-1%&7"
+        d106: "причина появления: &b%value-1%&7"
+        d107: "плагины мобов: &b%value-1%&7"
+        d108: "mm_name: &b%value-1%&7"
+        d109: "спаунер: &b%value-1%&7"
+        d110: "spawn_egg: &b%value-1%&7"
+        d111: "ни один игрок не был предоставлен"
+        d112: "игрок: &b%value-1%&7, разрешение отклонено"
+        d113: "игрок: &b%value-1%&7, разрешение получено"
+        d114: "ни один игрок не был предоставлен"
+        d115: "игрок: &b%value-1%&r"
+        d116: "ни один игрок не был предоставлен"
+        d117: "игрок: &b%value-1%&7, режим игры: %value-2%&r"
+        d118: "именной тег: %value-1%"
+        d119: "именной тег: %value-1%"
+        d120: "приручен: %value-1%"
+        d121: "приручен: %value-1%"
+        d122: "световой люк: %value-1%, критерии: %value-2%"
+        d123: "xCoord: %value-1%, startX: %value-2%, endX: %value-3%"
+        d124: "yCoord: %value-1%, startY: %value-2%, endY: %value-3%"
+        d125: "zCoord: %value-1%, startZ: %value-2%, endZ: %value-3%"
+        d126: "zCoord: %value-1%, startZ: %value-2%, endZ: %value-3%"
+        d127: "мир мобов: &b%value-1%&7"
+        d128: "Биом мобов: &b%value-1%&7"
+        d129: "wg_regions: &b%value-1%&7"
+        d130: "wg_owners: &b%value-1%&7"
+        d131: "уровень y: &b%value-1%&7, max-y: &b%value-2%&7"
+        d132: "уровень y: &b%value-1%&7, мин-y: &b%value-2%&7"
+        d133: "расстояние появления: &b%value-1%&7, мин-SD: &b%value-2%&7"
+        d134: "расстояние появления: &b%value-1%&7, мин-SD: &b%value-2%&7"
+        d135: "время тика: &b%value-1%&7"
+        d136: "шанс: &b%value-1%&7, роль шанса: &b%value-2%&7"
+        d137: "удалены записи о времени восстановления, до: %value-1%, после: %value-2%"
+        d138: "формула не указана, используется 1"
+        d139: "FormulaPre: '%value-1%', FormulaPost: '%value-2%', результат: %value-3%"
+        d140: "игрок: %value-1%, ввод: %value-2%, масштаб: %value-3%,%value-4% не совпадают уровни"
+        d141: "игрок: %value-1%, ввод: '%value-2%', %value-3% не совпадают уровни"
+        d142: "игрок: %value-1%, ввод: %value-2%%value-3%%value-4%, масштаб: %value-5%, %value-6%результат: %value-7%"
+        d143: "игрок: %value-1%, ввод: %value-2%%value-3%%value-4%, масштаб: %value-5%, уровень: %value-6%, %value-7%результат: %value-8%"
+        d144: "игрок: %value-1%, ввод: '%value-2%'%value-3%, уровень: %value-4%, %value-5%, результат: %value-6%"
+        d145: "Неверный ввод: %value-1%"
+        d146: "мин. %value-1%, макс.: %value-2%, результат: %value-3%."
+        d147: "SpawnDistanceStrategy сгенерировал NaN, levelDistance: %value-1%, увеличенияLevelDistance: %value-2%"
+        d148: "BlendedLevel генерирует NaN, возвращая 0.transitionYHeight: %value-1%, yPos: %value-2%,"
+        d149: "yHeightPeriod: %value-1%, lvlMultiplier: %value-2%, sda: %value-3%"
+        d150: "Неверный хэш, местоположение: %value-1%"
+        d151: "Хэш отсутствует, местоположение: %value-1%"
+        d152: "Хэш отсутствует, местоположение: %value-1%"
+        d153: "getPDCLock не удалось заблокировать поток — %value-1%:%value-2%"
+        d154: "getPDCLock повторить %value-1% - %value-2%:%value-3%"
+        d155: "общий шанс не составил%value-1%"
+        d156: "не предоставлен общий шанс для игрока: &b%value-1%&r"
+        d157: "&7Пользовательские капли%value-1%:"
+        d158: "&7Специальное оборудование для &b%value-1% &r(%value-2%)"
+        d159: "&7Специальное оборудование для &b%value-1%&r"
+        d160: "%value-1%"
+        d161: "&8 --- &7Добавлены пользовательские элементы: &b%value-1%&7."
+        d162: "&8 - &7item: &b%value-1%&7, причина смерти: &b%value-2%&7, не была вызвана игроком"
+        d163: ", удалено: &bfalse&7."
+        d164: "предмет: %value-1%, моб исключен"
+        d165: "fromSpawner: &b%value-1%&7, предмет: &b%value-2%&7,"
+        d166: "minL: &b%value-1%&7, maxL: &b%value-2%&7, nospawner: &b%value-3%&7, выброшено: &bfalse"
+        d167: "&8- custom-cmd, fromSpawner: &b%value-1%&7, minL: &b%value-2%&7,"
+        d168: "maxL: &b%value-1%&7, nospawner: &b%value-2%&7, выполнено: &bfalse"
+        d169: "&8 - &7предмет: &b%value-1%&7, не был экипирован на моба, выпал: &bfalse&7."
+        d170: "item: &b%value-1%&7, gId: &b%value-2%&7, достигнуто количество уничтожений фрагментов"
+        d171: "элемент: пользовательская команда, gId: &b%value-1%&7, достигнуто количество уничтожений фрагментов"
+        d172: "&8 - &7предмет: &b%value-1%&7, сумма: &b%value-2%&7, шанс: &b%value-3%&7,"
+        d173: "шансРоль: &b%value-1%&7, выброшено: &bfalse&7."
+        d174: "&8 - &7Пользовательская команда&7, шанс: &b%value-1%&7, шансРоль:"
+        d175: "&b%value-1%&7, выполнено: &bfalse&7."
+        d176: "элемент: &b%value-1%&7, gId: &b%value-2%&7,"
+        d177: "maxDropGroup: &b%value-1%&7, groupDropCount: &b%value-2%&7, drop: &bfalse"
+        d178: "элемент: пользовательская команда, gId: &b%value-1%&7,"
+        d179: "maxDropGroup: &b%value-1%&7, groupDropCount: &b%value-2%&7, выполнено: &bfalse"
+        d180: "&8 - &7предмет: &b%value-1%&7, экипировкаШанс: &b%value-2%&7, шансРоль:"
+        d181: "&b%value-1%&7, оборудовано: &btrue&7."
+        d182: "&8 - &7элемент: &b%value-1%&7, сумма: &b%value-2%&7, newAmount: &b%value-3%&7,"
+        d183: "шанс: &b%value-1%&7, шансРоль:"
+        d184: "&b%value-1%&7, удалено: &btrue&7%value-2%."
+        d185: "предмет: &b%value-1%&7, шанс экипировки:"
+        d186: "&b%value-1%&7, шанс:"
+        d187: "&b%value-1%&7, не удалось использовать шанс"
+        d188: "&8 - &7элемент: &b%value-1%&7, причина смерти: &b%value-2%&7, причина смерти-req:"
+        d189: "&b%value-1%&7, удалено: &bfalse&7."
+        d190: "&8 - &7предмет: &b%value-1%&7, ни одному игроку не были предоставлены разрешения на предмет"
+        d191: "&8 - &7предмет: &b%value-1%&7, игрок: &b%value-2%&7 не имел разрешения: &b%value-3%&7"
+        d192: "элемент: %value-1%, значение PAPI: %value-2%, соответствует: %value-3%"
+        d193: "(customCommand), значение PAPI: $, сопоставлено: %value-1%"
+        d194: "элемент: %value-1%, значение PAPI: %value-2%, совпадений не найдено"
+        d195: "(customCommand), значение PAPI: %value-1%, совпадений не найдено"
+        d196: "&8 - &7Моб: &b%value-1%&7, предмет: %value-2%, lvl-src: %value-3%,"
+        d197: "minlvl: %value-1%, maxlvl: %value-2% критерии уровня игрока не соблюдены"
+        d198: "&8 - &7Mob: &b%value-1%&7, (customCommand), lvl-src: %value-2%, minlvl: %value-3%,"
+        d199: "maxlvl: критерии уровня игрока %value-1% не соблюдены"
+      status-heading: "\nСостояние отладки: %status%"
+      status-time-left: ' (осталось: %time%)'
+      status-filters-heading: "\n--------------------------\nТекущие фильтры:"
+      status-filters-bypassed: "\n- Все фильтры игнорируются"
+      status-debug-types: "\n- Типы отладки: %value%"
+      status-entity-types: "\n- Типы сущностей: %value%"
+      status-rule-names: "\n- Имена правил: %value%"
+      status-player-names: "\n- Имена игроков: %value%"
+      status-listen-for: "\n- Отслеживаемые события: %value%"
+      status-max-distance: "\n- Максимальное расстояние до игрока: %value%"
+      status-min-y: "\n- Минимальная высота: %value%"
+      status-max-y: "\n- Максимальная высота: %value%"
+      status-max-y-inline: ', максимальная высота: %value%'
+      status-output: "\n- Режим вывода: %value%"
+      damage-heading: '%prefix% &8&m+---+&r Отладочная информация: &b%entity%&r &8&m+---+&r'
+      damage-global-values: '&f&nОбщие значения:'
+      damage-level: '&8&m->&b Уровень: &7%level%'
+      damage-health: '&8&m->&b Текущее здоровье: &7%health%'
+      damage-nametag: '&8&m->&b Тег: &7%nametag%'
+      damage-attributes: '&f&nАтрибуты:'
+      damage-attribute: '&8&m->&b %attribute%: &7%value%'
+      damage-base: '), базовое значение: '
+      damage-unique-values: '&f&nУникальные значения:'
+      damage-creeper-radius: '&8&m->&b Радиус взрыва крипера: &7%radius%'
+      damage-end: '&8(Конец информации.)'
+      output-line: '&8[&bОтладка: %type%&8]&7 %message%'
+      entity-level: ' (&7ур. %level%&r)'
+      entity-no-level: ' (&7без уровня&r)'
+      entity-prefix: 'моб: &b%entity%&7%level%'
+      result: 'результат: %result%'
+      result-inline: ', результат: %result%'
+      timer-elapsed: 'Время отладки истекло; режим отладки отключён.'
+      customdrops-summary: 'экземпляры дропа: %instances%, пользовательские группы: %custom-groups%, группы предметов: %item-groups%, предметы: %items%, команды: %commands%'
+      customdrops-override: ' (замена обычного дропа)'
+      customdrops-overall-chance: ' (общий шанс: %chance%)'
+      customdrops-mob: "\nмоб: &b"
+      customdrops-baby: '(детёныш) '
+      customdrops-overall-permissions: ' (общие права: '
+      customdrops-group: 'группа: '
+      customdrops-item: '  &b%item%&r, количество: &b%amount%&r, шанс: &b%chance%&r'
+      customdrops-command: '  КОМАНДА, шанс: &b%chance%&r, при появлении: %spawn%, при смерти: %death%'
+      customdrops-min-level: ', мин. уровень: &b'
+      customdrops-max-level: ', макс. уровень: &b'
+      customdrops-min-player-level: ', мин. уровень игрока: &b'
+      customdrops-max-player-level: ', макс. уровень игрока: &b'
+      customdrops-permissions: ', права: &b'
+      customdrops-no-spawner: ', без спавнера'
+      customdrops-group-id: ', ID группы: &b'
+      customdrops-group-max: ', максимум группы: &b'
+      customdrops-priority: ', приоритет: &b'
+      customdrops-name: ', имя: &b'
+      customdrops-no-multiplier: ', без множителя'
+      customdrops-has-lore: ', есть описание'
+      customdrops-has-name: ', есть имя'
+      customdrops-damage: ', урон: &b'
+      customdrops-has-exclusions: ', есть исключения'
+      customdrops-equip-chance: ', шанс экипировки: &b'
+      customdrops-only-equipped: ', &bтолько если экипирован&r'
+      customdrops-equip-helmet: ', &bэкипировать как шлем&r'
+      customdrops-item-flags: ', флагов предмета: &b'
+      customdrops-external: ', внешний плагин: '
+      customdrops-external-type: ', внешний тип: '
+      customdrops-external-id: ', внешний ID: '
+      customdrops-external-amount: ', внешнее количество: '
+      customdrops-external-extras: ', дополнительных параметров: '
+      customdrops-enchantment-levels: 'уровни зачарований: '
+      customdrops-default-level: ', по умолчанию: '
+      customdrops-no-shuffle: ', без перемешивания'
+
+
+display:
+  enabled: 'включено'
+  disabled: 'выключено'
+  players: 'игроки'
+  rule-names: 'имена правил'
+  entity-types: 'типы сущностей'
+  debug-types: 'типы отладки'
+  unknown-entity: 'неизвестная сущность'
+  task:
+    cancelled: 'отменена'
+    not-running: 'не выполняется'
+    queue-size: 'размер очереди: %size%'
+  duration:
+    seconds: '%count% с'
+    minutes-seconds: '%minutes% мин %seconds% с'
+  rules:
+    mob-hash: 'хеш моба'
+    external-plugin-type: 'тип внешнего плагина'
+    value-prefix: 'значение: '
+  spawner:
+    levelledmobs: 'Спавнер LevelledMobs'
+    vanilla: 'Обычный спавнер'
+    min-level: 'минимальный уровень'
+    max-level: 'максимальный уровень'
+    delay: 'задержка'
+    max-nearby-entities: 'максимум сущностей поблизости'
+    min-spawn-delay: 'минимальная задержка спавна'
+    max-spawn-delay: 'максимальная задержка спавна'
+    required-player-range: 'дальность до игрока'
+    spawn-count: 'число существ за спавн'
+    spawn-type: 'тип сущности'
+    custom-drop-id: 'ID пользовательского дропа'
 
 
 #
@@ -314,35 +726,237 @@ command:
 #   ---------------  -  ------------------------------
 #
 other:
+  join-errors-reported:
+    - '%prefix% &6LevelledMobs сообщил об ошибках.'
+    - '&7Проверьте консоль или выполните &b/lm debug show-errors&7.'
+  command-framework-spigot:
+    - '%prefix% &6Командный фреймворк не поддерживается на Spigot.'
+    - '&7Будет доступна только часть команд.'
+  command-framework-error:
+    - '%prefix% &6Не удалось загрузить командный фреймворк.'
+    - '&7Будет доступна только часть команд.'
+  customdrops-parse-error:
+    - '%prefix% &6Ошибка чтения customdrops.yml.&r'
+    - '&7Подробности доступны в консоли.'
+  errors-reported:
+    - '%prefix% Во время перезагрузки обнаружены ошибки.'
+    - '&7Проверьте консоль или выполните &b/lm debug show-errors&7.'
+  rules-file-load-error:
+    - '%prefix% &4Не удалось прочитать &brules.yml&4 из-за ошибки синтаксиса YAML. Подробности доступны в консоли.'
+  severe-notification:
+    - '%prefix% &4Критическая ошибка: &c%message%&r'
   compatibility-notice:
     enabled: true
     messages:
-      - '%prefix% LevelledMobs compatibility notice:'
-      - '&8 &m->&r &b%incompatibilities% &7possible incompatibilities were found. Please run ''&b/levelledmobs compatibility&7'' to check them.'
-      - '&8 &m->&7 This message is sent as you have the permission &blevelledmobs.compatibility-notice&7. You can disable this message in &bmessages.yml&7.'
-      - '&8 &m->&7 Please ensure you have followed all instructions on the plugin''s Wiki page.'
+      - '%prefix% Уведомление о совместимости LevelledMobs:'
+      - '&8 &m->&r &b%incompatibilities% &7возможных несовместимостей. Выполните ''&b/levelledmobs compatibility&7'' для проверки.'
+      - '&8 &m->&7 Сообщение отправлено из-за права &blevelledmobs.compatibility-notice&7. Его можно отключить в &bmessages.yml&7.'
+      - '&8 &m->&7 Убедитесь, что выполнены инструкции из wiki плагина.'
   update-notice:
     messages:
-      - '&b&nLevelledMobs Update Checker Notice:'
-      - '&7Your &bLevelledMobs&7 version is &boutdated&7! Please update to &bv%latestVersion%&7 as soon as possible. &8(&7You''re running &bv%currentVersion%&8)'
+      - '&b&nДоступно обновление LevelledMobs:'
+      - '&7Установленная версия &bLevelledMobs&7 устарела. Обновите плагин до &bv%latestVersion%&7. &8(&7Текущая версия: &bv%currentVersion%&8)'
     send-in-console: true
     send-on-join: true
 
-  mob-head-drop-name: '%mob_name%''s head'
-  no-drop-in-chunk: '%prefix% &7Your levelled mob kill count has reached the maximum for this area. You will no longer receive levelled drops from these mobs. Please come back after a while.'
+  mob-head-drop-name: 'Голова: %mob_name%'
+  no-drop-in-chunk: '%prefix% &7В этой области достигнут лимит убийств уровневых мобов. Дополнительный дроп временно отключён.'
   create-debug:
-    - '&b&nCreate a Debugging ZIP'
-    - '&7You should only run this command if a LevelledMobs developer has asked you to. It is used to assist users who are experiencing issues with the plugin.'
+    - '&b&nСоздание диагностического ZIP-архива'
+    - '&7Выполняйте эту команду только по просьбе разработчика LevelledMobs. Архив помогает диагностировать проблемы плагина.'
     - ''
-    - '&7This command will generate a ZIP file containing the following required data:'
-    - '&8 &m->&b Plugins list'
-    - '&8 &m->&b Server version'
-    - '&8 &m->&b Current and maximum online player count'
-    - '&8 &m->&b The latest.log file&7 &8(/logs/latest.log)'
+    - '&7В ZIP-файл будут добавлены следующие данные:'
+    - '&8 &m->&b Список плагинов'
+    - '&8 &m->&b Версия сервера'
+    - '&8 &m->&b Текущее и максимальное число игроков'
+    - '&8 &m->&b Файл latest.log&7 &8(/logs/latest.log)'
     - ''
-    - '&7LevelledMobs developers will not redistribute or retain the data beyond the purpose of resolving any issue you may be experiencing. You may also verify the contents prior to sending the file.'
-    - '&7To proceed in creating the ZIP file, please run:'
+    - '&7Данные используются только для диагностики. Перед отправкой можно проверить содержимое архива.'
+    - '&7Для создания ZIP-файла выполните:'
     - '&b/lm debug create-zip confirm&7'
+
+
+console:
+  customdrops:
+    invalid-droptable-id: 'В правиле указано некорректное значение use-droptable-id: %id%'
+    unsupported-drop-type: 'Неподдерживаемый тип дропа: %type%'
+    lm-items-missing: 'Невозможно получить внешний пользовательский предмет: LM_Items не установлен.'
+    lm-items-outdated-item: 'customdrops.yml ссылается на внешний предмет ''%item%'', но версия LM_Items устарела.'
+    lm-items-missing-item: 'customdrops.yml ссылается на внешний предмет ''%item%'', но LM_Items не установлен.'
+    unsupported-external-plugin: 'customdrops.yml ссылается на предмет плагина ''%plugin%'', который не поддерживается LM_Items.'
+    items-api-unavailable: 'Не удалось получить ItemsAPI из LM_Items для плагина %plugin%.'
+    external-plugin-missing: 'Пользовательский предмет ссылается на неустановленный плагин ''%plugin%''.'
+    external-type-unsupported: 'Пользовательский предмет ''%item%'' не поддерживает тип %type%.'
+    external-null-item: '&4Пользовательский предмет ''%item%'' вернул null вместо предмета.&r'
+    external-null-item-with-type: '&4Пользовательский предмет ''%item%'' (%type%) вернул null вместо предмета.&r'
+    defaults-null: 'Секция defaults имеет значение null.'
+    invalid-universal-group: 'Некорректная универсальная группа в customdrops.yml: %group%'
+    invalid-mob-type: 'Некорректный тип моба в customdrops.yml: %type%'
+    droptable-not-found: 'Не найдена таблица дропа с ID %id%.'
+    droptable-id-missing: 'Обнаружена ссылка на таблицу дропа без ID.'
+    invalid-amount-range: 'Некорректное число или диапазон количества для %target%: %value%'
+    invalid-damage-range: 'Некорректный диапазон урона для %target%: %value%'
+    invalid-nbt: 'Пользовательский дроп %item% для %target% содержит некорректные данные NBT: %error%'
+    command-missing: 'Для пользовательской команды не указана команда.'
+    invalid-damage-cause: 'Некорректная причина урона: %cause%'
+    invalid-enchantment: 'Некорректное зачарование: %enchantment%'
+    invalid-enchantment-level: 'Для зачарования %enchantment% указан некорректный уровень %level%.'
+    invalid-enchantment-chance: 'Для зачарования %enchantment% указан некорректный шанс %chance%.'
+    invalid-item-flag: 'Некорректный флаг предмета %flag%; предмет %item%, моб или группа %target%.'
+    invalid-material: 'В customdrops.yml для %target% указан некорректный материал %material%.'
+  migration:
+    success: '&fЗагрузчик файлов: &8(миграция) &7файл &b%file%&7 успешно перенесён.'
+    failed: '&fЗагрузчик файлов: &8(миграция) &7не удалось перенести &b%file%&7. Трассировка стека:'
+    array-value-added: '&fЗагрузчик файлов: &8(миграция) &7добавлено значение массива: &b%value%'
+    key-added: '&fЗагрузчик файлов: &8(миграция) &7добавлен ключ &b%key%&7 со значением &r%value%&7.'
+    key-reset-false: '&fЗагрузчик файлов: &8(миграция) &7ключ &b%key%&7 сброшен в &rfalse&7.'
+    value-replaced: '&fЗагрузчик файлов: &8(миграция) &7в ключе &b%key%&7 значение &r%old%&7 заменено на &r%new%&7.'
+    value-removed: '&fЗагрузчик файлов: &8(миграция) &7из ключа &b%key%&7 удалено значение &r%value%&7.'
+    summary: '&fЗагрузчик файлов: &8(миграция) &7совпало ключей: &b%keys%&7, значений: &b%values%&7, обновлено значений: &b%updated%&7.'
+  events:
+    priority-changed: 'Приоритет события %event% изменён с %old% на %new%.'
+  lifecycle:
+    unsupported-minecraft: 'Эта версия Minecraft не поддерживается. Используйте плагин на свой риск.'
+    misc-procedures: 'Выполнение дополнительных процедур.'
+    startup-complete: 'Запуск завершён за %time% мс.'
+    shutdown-complete: 'Остановка завершена за %time% мс.'
+    loading-files: '&fЗагрузчик файлов: &7загрузка файлов...'
+    registering-listeners: '&fОбработчики: &7регистрация обработчиков событий...'
+    stopping-async-tasks: '&fЗадачи: &7остановка остальных асинхронных задач...'
+    starting-nametag-task: '&fЗадачи: &7запуск асинхронной задачи автоматического обновления тегов...'
+    stopping-nametag-task: '&fЗадачи: &7остановка асинхронной задачи автоматического обновления тегов...'
+  command-framework:
+    limited-commands: 'Плагин продолжит работу с ограниченным набором команд. Для серверов Spigot это ожидаемое поведение.'
+  integration:
+    essentials-found: 'Обнаружен Essentials; загружается интеграция.'
+    missing-key-name: 'Для плагина %plugin% не задан key-name.'
+    elitemobs-version-error: 'Не удалось сравнить версии EliteMobs: %error%'
+    simplepet-check-error: 'Не удалось проверить, является ли %entity% питомцем SimplePet.'
+    mythicmobs-manager-null: 'MythicMobs установлен, но fieldMMmobManager имеет значение null.'
+    mythicmobs-info-error: 'Не удалось получить сведения MythicMob: %error%'
+    placeholderapi-missing: 'PlaceholderAPI не установлен; невозможно получить переменную %variable%.'
+    essentials-missing-home: 'Невозможно получить точку дома игрока: Essentials не установлен.'
+    essentials-player-missing: 'Не удалось найти сведения об игроке в Essentials.'
+  entity:
+    health-error: 'Не удалось получить оставшееся здоровье (%error%) для моба %entity%, позиция %location% в мире %world%, здоровье %health%, максимум %max-health%.'
+  formula:
+    evaluation-error: 'Ошибка вычисления формулы для %entity%: ''%formula%'', %error%'
+    construct-level-error: 'Ошибка вычисления формулы construct-level для моба %entity%: %error%'
+    customdrop-error: 'Ошибка вычисления формулы %name% для моба %entity% (ур. %level%): %error%'
+    customdrop-extra-error: 'Ошибка вычисления формулы дополнительного параметра пользовательского дропа ''%name%'' для моба %entity%: %error%'
+    infinite-result: 'Результат бесконечен.'
+    nan-result: 'Результат имеет значение NaN (не число).'
+  concurrency:
+    cache-build-interrupted: 'Построение кэша прервано: %error%'
+    pdc-lock-interrupted: 'Ожидание блокировки PDC прервано: %error%'
+    skylight-retry-succeeded: 'При получении уровня небесного света возник ConcurrentModificationException; повторная попытка успешна.'
+    skylight-failed: 'При получении уровня небесного света дважды возник ConcurrentModificationException.'
+    level-check-retry-succeeded: 'При проверке уровня сущности возник ConcurrentModificationException; повторная попытка успешна.'
+    level-check-failed: 'При проверке уровня сущности дважды возник ConcurrentModificationException.'
+  items:
+    invalid-serialized-length: 'Не удалось десериализовать подобранный предмет: некорректная длина %length%.'
+    deserialize-error: 'Не удалось десериализовать ItemStack: %error%'
+  nametag:
+    build-reflection-cache: 'Создание кэша рефлексии; простые имена: %simple-names%.'
+    reflection-error: 'Не удалось получить методы рефлексии для операций nbt-dump: %error%'
+    nms-version: 'Для поддержки тегов используется версия NMS %version%.'
+    invalid-nms-mapping: 'Некорректное сопоставление NMS: %name%'
+  queue:
+    mob-processing-stopped: 'Диспетчер очереди обработки мобов остановлен.'
+    mob-processing-restarting: 'Перезапуск задачи очереди обработки мобов; состояние: %status%.'
+    nametag-stopped-error: 'Диспетчер очереди обновления тегов остановлен с ошибкой.'
+    nametag-stopped: 'Диспетчер очереди обновления тегов остановлен.'
+    nametag-restarting: 'Перезапуск задачи очереди обновления тегов; состояние: %status%.'
+    nametag-processing-error: 'Не удалось обработать обновление тега для сущности ''%entity%''.'
+  update:
+    empty-version: 'Не удалось получить последнюю версию: сервер вернул пустую строку.'
+    invalid-version: 'Не удалось обработать сведения о версиях: %error%'
+    file-not-found: 'Не удалось проверить последнюю версию: файл не найден (%error%).'
+    check-error: 'Ошибка проверки последней версии: %error%'
+  player:
+    invalid-nether-coordinates: 'Не удалось получить координаты портала Нижнего мира игрока %player%: %error%'
+    pdc-update-error: 'Не удалось обновить PDC игрока %player%: %error%'
+  debug:
+    no-chat-recipient: 'Не выбран игрок для отправки отладочных сообщений в чат.'
+  nbt:
+    apply-error: 'Не удалось применить NBT ''%nbt%'' к %entity%: %error%'
+    api-required-summon: 'Переданы данные NBT, но обязательный плагин NBTAPI не установлен.'
+    api-required-customdrops: 'В customdrops.yml заданы данные NBT, но обязательный плагин NBTAPI не установлен.'
+  rules:
+    resource-stream-null: '%operation%: поток встроенного ресурса имеет значение null.'
+    particle-error: 'Не удалось создать эффект частиц: %error%'
+    hash-error: 'Не удалось вычислить хеш SHA-256: %error%'
+  rules-parser:
+    invalid-modal-option: 'Некорректный параметр модального списка: ''%option%''.'
+    invalid-modal-option-rule: 'Некорректный параметр модального списка ''%option%'' в правиле %rule%.'
+    invalid-group: 'Некорректная группа: %group%'
+    invalid-item-group: 'Некорректная группа типа %item%: %group%'
+    invalid-biome: 'Некорректное имя биома: %biome%'
+    invalid-spawn-reason: 'В правиле %rule% указана некорректная причина появления: %reason%'
+    structure-unavailable: 'Условия структур недоступны в этой версии сервера.'
+    invalid-list-item: 'Некорректное значение списка (%mode%, %type%): %item%'
+    config-null: 'Конфигурация правил имеет значение null.'
+    current-hash: 'Текущий хеш правил: %hash%'
+    default-rule-null: 'Секция default-rule имеет значение null.'
+    empty-preset: 'Для пресета %preset% ничего не указано.'
+    custom-rule-null: 'Не удалось прочитать секцию при разборе custom-rules.'
+    invalid-option: 'Некорректный параметр ''%option%'' в правиле %rule%.'
+    preset-not-found: 'Правило %rule% ссылается на несуществующий пресет %preset%.'
+    invalid-number-range: 'Некорректный числовой диапазон: %value%'
+    invalid-nametag-visibility: 'Некорректное значение nametag-visibility-method %value% в правиле %rule%.'
+    invalid-setting: 'Некорректная настройка ''%setting%'' в правиле %rule%.'
+    invalid-death-message-weight: 'Некорректное число в секции DeathMessages: %value%'
+    death-message-weight-limit: 'Вес сообщения о смерти %value% превышает предел 100.'
+    invalid-spawner-particle: 'Некорректное значение spawner-particles %value% в правиле %rule%.'
+    invalid-value: 'Некорректное значение: %value%'
+    invalid-condition: 'Некорректное условие ''%condition%'' в правиле %rule%.'
+    external-plugin-not-found: 'Не найдено определение внешнего плагина ''%plugin%''.'
+    invalid-axis-value: 'В правиле %rule% для %option% указано некорректное значение %value%.'
+    invalid-y-option: 'Некорректный параметр y-coordinate ''%option%'' в правиле %rule%.'
+    invalid-distance-option: 'Некорректный параметр distance-from-origin ''%option%'' в правиле %rule%.'
+    invalid-strategy: 'Некорректная стратегия ''%strategy%'' в правиле %rule%.'
+    invalid-modifier: 'Некорректный модификатор ''%modifier%'' в правиле %rule%.'
+    modifier-name-required: 'Для модификатора ''%modifier%'' необходимо уникальное имя.'
+    invalid-config-value: 'Некорректное значение %option%: ''%value%'' в правиле %rule%.'
+    colored-tier-empty: 'Для цветового диапазона %tier% не задано значение.'
+    colored-tier-number-missing: 'Некорректный цветовой диапазон без номера: %tier%'
+    colored-tier-duplicate: 'Повторяющийся цветовой диапазон: %tier%'
+    value-missing: 'Не задано значение для %option%.'
+    invalid-origin-option: 'Некорректный параметр origin-coordinates ''%option%'' в правиле %rule%.'
+    invalid-fine-tuning-entity: 'Некорректный тип сущности %entity% для точной настройки в правиле %rule%.'
+    invalid-multiplier: 'Некорректный множитель: %value%'
+  yaml:
+    parse-path-error: '%path%: невозможно прочитать конфигурацию типа %type%, значение %value%. Проверьте отступы.'
+    parse-error: 'Невозможно прочитать конфигурацию типа %type%, значение %value%.'
+  file-loader:
+    loading-file: '&fЗагрузчик файлов: &7загрузка ''&b%file%&7''...'
+    creating-file: '&fЗагрузчик файлов: &7файл ''&b%file%&7'' не существует, создаётся новый.'
+    backup-created: '&fЗагрузчик файлов: &8(миграция) &b%file%&7 сохранён как &b%backup%&7.'
+    migrating-file: '&fЗагрузчик файлов: &8(миграция) &7перенос настроек &b%file%&7 в новую версию.'
+    messages-replaced: '&fЗагрузчик файлов: &8(миграция) &7messages.yml заменён русским каталогом v%new-version%; предыдущая версия v%old-version% сохранена.'
+    rules-reset: '&fЗагрузчик файлов: &7rules.yml относится к версии до 4.0. Создана копия, файл будет сброшен.'
+    invalid-messages-reset: '&fЗагрузчик файлов: &4messages.yml повреждён и восстановлен. Копия: &b%backup%&4. Ошибка: %error%'
+    yaml-error: |-
+      LevelledMobs не удалось прочитать &b%file%&r из-за ошибки синтаксиса YAML.
+      Проверьте файл с помощью YAML-парсера, например < https://tinyurl.com/yamlp >.
+      &b---- НАЧАЛО ОШИБКИ ----&r
+      &4%error%&r
+      &b---- КОНЕЦ ОШИБКИ ----&r
+    version-outdated: '&fЗагрузчик файлов: &7установленная версия &b%file%&7 устарела. Плагин может работать неправильно.'
+    version-ahead: '&fЗагрузчик файлов: &7версия &b%file%&7 новее поддерживаемой. Плагин может работать неправильно.'
+    version-details: '&fЗагрузчик файлов: &8(&7установлено: &bv%installed%&7, требуется: &bv%compatible%&8)'
+  validation:
+    invalid-debug-value: 'Некорректное значение debug-misc: %value%'
+    invalid-event-priority: 'Некорректный приоритет события %event%: %priority%'
+    invalid-value: 'Некорректное значение: %value%'
+    invalid-key-value-type: 'Некорректный key-valuetype: %value%'
+    invalid-spawner-egg-type: 'Некорректный тип сущности в яйце призыва: %type%'
+    invalid-tiered-color-key: 'Некорректный ключ цветового диапазона: %key%'
+    invalid-tiered-color-number: 'Некорректное число в ключе цветового диапазона: %key%'
+    invalid-weighted-random-range: 'Некорректный диапазон взвешенного случайного значения: %range%'
+    invalid-wildcard: 'Некорректный шаблон с подстановочными знаками: %pattern%'
+    invalid-time: 'Некорректный интервал времени: %input%.'
+    invalid-time-unit: 'Некорректная единица времени: %input% (%unit%).'
 
 
 #
@@ -350,4 +964,4 @@ other:
 #        Section 10  |  Developer Settings / Do Not Edit Beyond This Point
 #   ---------------  -  ------------------------------
 #
-file-version: 9
+file-version: 10

@@ -1,5 +1,6 @@
 package io.github.arcaneplugins.levelledmobs.listeners
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.debug.DebugManager
 import io.github.arcaneplugins.levelledmobs.result.AdditionalLevelInformation
@@ -44,7 +45,7 @@ class EntityTransformListener : Listener {
             if (priority == lastPriority) return
 
             HandlerList.unregisterAll(this)
-            Log.inf("Changing event priority for $settingName from $lastPriority to $priority")
+            Log.infKey("console.events.priority-changed", mapOf("event" to settingName, "old" to lastPriority.toString(), "new" to priority.toString()))
         }
 
         Bukkit.getPluginManager().registerEvent(
@@ -62,7 +63,7 @@ class EntityTransformListener : Listener {
         // is the original entity a living entity
         if (event.entity !is LivingEntity) {
             DebugManager.log(DebugType.ENTITY_MISC, event.entity, false) {
-                "entity was &bnot&7 an instance of LivingEntity"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d047", colorize = false)
             }
             return
         }
@@ -71,7 +72,7 @@ class EntityTransformListener : Listener {
         // is the original entity levelled
         if (!main.levelManager.isLevelled(event.entity as LivingEntity)) {
             DebugManager.log(DebugType.ENTITY_MISC, event.entity, false) {
-                "original entity was &bnot&7 levelled"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d048", colorize = false)
             }
             if (event.transformReason == EntityTransformEvent.TransformReason.SPLIT)
                 checkForSlimeSplit(event.entity as LivingEntity,event.transformedEntities)
@@ -91,7 +92,7 @@ class EntityTransformListener : Listener {
         for (transformedEntity in event.transformedEntities) {
             if (transformedEntity !is LivingEntity) {
                 DebugManager.log(DebugType.ENTITY_MISC, event.entity, false) {
-                    "entity was&b not&7 an instance of LivingEntity (loop)"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d049", colorize = false)
                 }
                 continue
             }
@@ -103,7 +104,7 @@ class EntityTransformListener : Listener {
             )
             if (levelledState != LevellableState.ALLOWED) {
                 DebugManager.log(DebugType.ENTITY_MISC, event.entity, false) {
-                    "transformed entity was &bnot&7 levellable, reason: &b$levelledState"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d050", mapOf("value-1" to (levelledState)), false)
                 }
                 main.levelManager.updateNametagWithDelay(transformedLmEntity)
                 transformedLmEntity.free()
@@ -114,7 +115,7 @@ class EntityTransformListener : Listener {
                 DebugType.ENTITY_MISC,
                 transformedEntity,
                 true
-            ) { "entity was transformed" }
+            ) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d051", colorize = false) }
 
             if (useInheritance) {
                 val internalSpawnReason = lmEntity.spawnReason.getInternalSpawnReason(lmEntity)

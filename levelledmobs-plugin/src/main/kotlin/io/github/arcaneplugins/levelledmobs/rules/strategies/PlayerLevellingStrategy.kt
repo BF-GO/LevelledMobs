@@ -1,5 +1,6 @@
 package io.github.arcaneplugins.levelledmobs.rules.strategies
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.debug.DebugManager
 import io.github.arcaneplugins.levelledmobs.debug.DebugType
 import io.github.arcaneplugins.levelledmobs.misc.NamespacedKeys
@@ -111,11 +112,11 @@ class PlayerLevellingStrategy : LevellingStrategy, Cloneable {
             if (!foundMatch) {
                 if (playerLevelSourceResult.isNumericResult) {
                     DebugManager.log(DebugType.PLAYER_LEVELLING, lmEntity) {
-                        "player: ${player.name}, input: $origLevelSource, scale: $levelSource,$capDisplay no tiers matched"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d140", mapOf("value-1" to (player.name), "value-2" to (origLevelSource), "value-3" to (levelSource), "value-4" to (capDisplay)), false)
                     }
                 } else {
                     DebugManager.log(DebugType.PLAYER_LEVELLING, lmEntity) {
-                        "player: ${player.name}, input: '${playerLevelSourceResult.stringResult}', $capDisplay no tiers matched"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d141", mapOf("value-1" to (player.name), "value-2" to (playerLevelSourceResult.stringResult), "value-3" to (capDisplay)), false)
                     }
                 }
                 if (options.outputCap != null) {
@@ -150,17 +151,17 @@ class PlayerLevellingStrategy : LevellingStrategy, Cloneable {
 
         if (tierMatched == null) {
             DebugManager.log(DebugType.PLAYER_LEVELLING, lmEntity) {
-                "player: ${player.name}, input: ${origLevelSource}${homeName}${varianceDebug}, scale: ${levelSource}, ${capDisplay}result: $results"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d142", mapOf("value-1" to (player.name), "value-2" to (origLevelSource), "value-3" to (homeName), "value-4" to (varianceDebug), "value-5" to (levelSource), "value-6" to (capDisplay), "value-7" to (results)), false)
             }
         } else {
             val tierMatchedFinal: String = tierMatched
             if (playerLevelSourceResult.isNumericResult) {
                 DebugManager.log(DebugType.PLAYER_LEVELLING, lmEntity) {
-                    "player: ${player.name}, input: ${origLevelSource}${homeName}$varianceDebug, scale: $levelSource, tier: $tierMatchedFinal, ${capDisplay}result: $results"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d143", mapOf("value-1" to (player.name), "value-2" to (origLevelSource), "value-3" to (homeName), "value-4" to (varianceDebug), "value-5" to (levelSource), "value-6" to (tierMatchedFinal), "value-7" to (capDisplay), "value-8" to (results)), false)
                 }
             } else {
                 DebugManager.log(DebugType.PLAYER_LEVELLING, lmEntity) {
-                    "player: ${player.name}, input: '${playerLevelSourceResult.stringResult}'$varianceDebug, tier: $tierMatchedFinal, ${capDisplay}result: $results"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d144", mapOf("value-1" to (player.name), "value-2" to (playerLevelSourceResult.stringResult), "value-3" to (varianceDebug), "value-4" to (tierMatchedFinal), "value-5" to (capDisplay), "value-6" to (results)), false)
                 }
             }
         }

@@ -1,5 +1,6 @@
 package io.github.arcaneplugins.levelledmobs.listeners
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.debug.DebugManager
 import io.github.arcaneplugins.levelledmobs.result.AdditionalLevelInformation
@@ -28,23 +29,23 @@ class EntityTameListener : Listener {
         val levellableState: LevellableState = main.levelInterface.getLevellableState(lmEntity)
 
         if (levellableState != LevellableState.ALLOWED) {
-            DebugManager.log(DebugType.ENTITY_TAME, lmEntity) { "Levelable state was $levellableState" }
+            DebugManager.log(DebugType.ENTITY_TAME, lmEntity) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d043", mapOf("value-1" to (levellableState)), false) }
             lmEntity.free()
             return
         }
 
         if (main.rulesManager.getRuleMobTamedStatus(lmEntity) === MobTamedStatus.NOT_TAMED) {
-            DebugManager.log(DebugType.ENTITY_TAME, lmEntity) { "no-level-conditions.tamed = &btrue" }
+            DebugManager.log(DebugType.ENTITY_TAME, lmEntity) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d044", colorize = false) }
 
             // if mob was levelled then remove it
             main.levelInterface.removeLevel(lmEntity)
 
-            DebugManager.log(DebugType.ENTITY_TAME, lmEntity) { "Removed level of tamed mob" }
+            DebugManager.log(DebugType.ENTITY_TAME, lmEntity) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d045", colorize = false) }
             lmEntity.free()
             return
         }
 
-        DebugManager.log(DebugType.ENTITY_TAME, lmEntity) { "Applying level to tamed mob" }
+        DebugManager.log(DebugType.ENTITY_TAME, lmEntity) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d046", colorize = false) }
         var level = -1
         if (lmEntity.isLevelled)
             level = lmEntity.getMobLevel

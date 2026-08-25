@@ -14,6 +14,7 @@ import io.github.arcaneplugins.levelledmobs.misc.NamespacedKeys
 import io.github.arcaneplugins.levelledmobs.misc.RequestedLevel
 import io.github.arcaneplugins.levelledmobs.result.AdditionalLevelInformation
 import io.github.arcaneplugins.levelledmobs.util.PaperUtils
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.SpigotUtils
 import io.github.arcaneplugins.levelledmobs.util.Utils
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
@@ -173,7 +174,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
 
                 location = getRelativeLocation(sender, xStr, yStr, zStr, world)
                 if (location == null){
-                    sender.sendMessage("Invalid location")
+                    LocalizedMessages.send(sender, "command.levelledmobs.summon.invalid-location")
                     return
                 }
 
@@ -359,7 +360,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
                 // val locationTemp = getSpawnLocation(target, location, options.lmPlaceholder.entityType!!)
                 val locationTemp = getSpawnLocation(location, options)
                 if (locationTemp == null) {
-                    sender.sendMessage("Unable to find a suitable spawn location")
+                    LocalizedMessages.send(sender, "command.levelledmobs.summon.no-safe-location")
                     return
                 }
                 location = locationTemp

@@ -13,6 +13,7 @@ import io.github.arcaneplugins.levelledmobs.misc.Cooldown
 import io.github.arcaneplugins.levelledmobs.misc.NamespacedKeys
 import io.github.arcaneplugins.levelledmobs.misc.Point
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils.colorizeAll
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import org.bukkit.Material
@@ -143,7 +144,7 @@ class PlayerInteractEventListener : MessagesBase(), Listener {
                 try {
                     spawnType = EntityType.valueOf(temp)
                 } catch (_: Exception) {
-                    Log.war("Invalid spawn type on spawner egg: $temp")
+                    Log.warKey("console.validation.invalid-spawner-egg-type", mapOf("type" to temp))
                 }
             }
         }
@@ -335,7 +336,7 @@ class PlayerInteractEventListener : MessagesBase(), Listener {
         val sb = StringBuilder()
 
         if (pdc.has(NamespacedKeys.keySpawner, PersistentDataType.INTEGER)) {
-            sb.append("LM Spawner")
+            sb.append(LocalizedMessages.text("display.spawner.levelledmobs", colorize = false))
             if (pdc.has(NamespacedKeys.keySpawnerCustomName, PersistentDataType.STRING)) {
                 sb.append(": &7")
                 sb.append(
@@ -344,29 +345,29 @@ class PlayerInteractEventListener : MessagesBase(), Listener {
                 sb.append("&r\n")
             }
         } else
-            sb.append("Vanilla Spawner\n")
+            sb.append(LocalizedMessages.text("display.spawner.vanilla", colorize = false)).append('\n')
 
         addSpawnerAttributeFromPdcInt(
-            "min level", NamespacedKeys.keySpawnerMinLevel, pdc,
+            LocalizedMessages.text("display.spawner.min-level", colorize = false), NamespacedKeys.keySpawnerMinLevel, pdc,
             sb
         )
         addSpawnerAttributeFromPdcInt(
-            "max level", NamespacedKeys.keySpawnerMaxLevel, pdc,
+            LocalizedMessages.text("display.spawner.max-level", colorize = false), NamespacedKeys.keySpawnerMaxLevel, pdc,
             sb
         )
         sb.append('\n')
-        addSpawnerAttribute("delay", cs.delay, sb)
-        addSpawnerAttribute("max nearby entities", cs.maxNearbyEntities, sb)
-        addSpawnerAttribute("min spawn delay", cs.minSpawnDelay, sb)
+        addSpawnerAttribute(LocalizedMessages.text("display.spawner.delay", colorize = false), cs.delay, sb)
+        addSpawnerAttribute(LocalizedMessages.text("display.spawner.max-nearby-entities", colorize = false), cs.maxNearbyEntities, sb)
+        addSpawnerAttribute(LocalizedMessages.text("display.spawner.min-spawn-delay", colorize = false), cs.minSpawnDelay, sb)
         sb.append('\n')
-        addSpawnerAttribute("max spawn delay", cs.maxSpawnDelay, sb)
-        addSpawnerAttribute("required player range", cs.requiredPlayerRange, sb)
-        addSpawnerAttribute("spawn count", cs.spawnCount, sb)
+        addSpawnerAttribute(LocalizedMessages.text("display.spawner.max-spawn-delay", colorize = false), cs.maxSpawnDelay, sb)
+        addSpawnerAttribute(LocalizedMessages.text("display.spawner.required-player-range", colorize = false), cs.requiredPlayerRange, sb)
+        addSpawnerAttribute(LocalizedMessages.text("display.spawner.spawn-count", colorize = false), cs.spawnCount, sb)
         sb.append('\n')
         addSpawnerAttributeFromPdcStr(NamespacedKeys.keySpawnerCustomDropId, pdc, sb)
         // customName
         if (cs.spawnedType != null)
-            addSpawnerAttribute("spawn type", cs.spawnedType!!, sb)
+            addSpawnerAttribute(LocalizedMessages.text("display.spawner.spawn-type", colorize = false), cs.spawnedType!!, sb)
 
         player.sendMessage(colorizeAll(sb.toString()))
     }
@@ -398,7 +399,7 @@ class PlayerInteractEventListener : MessagesBase(), Listener {
         if (sb.substring(sb.length - 1) != "\n")
             sb.append(", ")
 
-        sb.append("&7custom drop id: &b")
+        sb.append("&7").append(LocalizedMessages.text("display.spawner.custom-drop-id", colorize = false)).append(": &b")
             .append(pdc.get(key, PersistentDataType.STRING)).append("&r")
     }
 

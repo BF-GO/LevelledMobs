@@ -36,7 +36,7 @@ object MythicMobUtils {
         val def = LevelledMobs.instance.definitions
 
         if (def.fieldMMmobManager == null) {
-            Log.war("Mythic Mobs is installed but fieldMMmobManager is null")
+            Log.warKey("console.integration.mythicmobs-manager-null")
             return null
         }
 
@@ -61,9 +61,9 @@ object MythicMobUtils {
 
             return result
         } catch (e: InvocationTargetException) {
-            Log.war("Error getting MythicMob info: " + e.message)
+            Log.warKey("console.integration.mythicmobs-info-error", mapOf("error" to (e.message ?: "-")))
         } catch (e: IllegalAccessException) {
-            Log.war("Error getting MythicMob info: " + e.message)
+            Log.warKey("console.integration.mythicmobs-info-error", mapOf("error" to (e.message ?: "-")))
         }
         return null
     }

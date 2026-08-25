@@ -15,6 +15,7 @@ import io.github.arcaneplugins.levelledmobs.debug.DebugType
 import io.github.arcaneplugins.levelledmobs.misc.YmlParsingHelper
 import io.github.arcaneplugins.levelledmobs.rules.MinAndMax
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils.colorizeAll
 import io.github.arcaneplugins.levelledmobs.util.MiscUtils
 import io.github.arcaneplugins.levelledmobs.util.Utils
@@ -84,11 +85,11 @@ class CustomDropsParser(
             parseCustomDrops(customDropsCfg)
         }
 
-        DebugManager.log(DebugType.CUSTOM_DROPS) { "Group Limits: " + handler.groupLimitsMap }
+        DebugManager.log(DebugType.CUSTOM_DROPS) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d022", colorize = false) + handler.groupLimitsMap }
     }
 
-    private fun hadError(message: String){
-        Log.war(message)
+    private fun hadError(path: String, values: Map<String, String> = emptyMap()){
+        Log.warKey(path, values)
         hadParsingError = true
     }
 
@@ -96,7 +97,7 @@ class CustomDropsParser(
         cs: ConfigurationSection?
     ) {
         if (cs == null) {
-            hadError("Defaults section was null")
+            hadError("console.customdrops.defaults-null")
             return
         }
 
@@ -162,7 +163,7 @@ class CustomDropsParser(
                             mobTypeOrGroup.uppercase()
                         )
                     } catch (_: Exception) {
-                        hadError("invalid universal group in customdrops.yml: $mobTypeOrGroup")
+                        hadError("console.customdrops.invalid-universal-group", mapOf("group" to mobTypeOrGroup))
                         continue
                     }
                     dropInstance = CustomDropInstance(universalGroup)
@@ -180,7 +181,7 @@ class CustomDropsParser(
                         entityType = EntityType.valueOf(mobTypeOrGroup.uppercase())
                     } catch (_: Exception) {
                         if (!invalidEntityTypesToIgnore.contains(mobTypeOrGroup.uppercase()))
-                            hadError("invalid mob type in customdrops.yml: $mobTypeOrGroup")
+                            hadError("console.customdrops.invalid-mob-type", mapOf("type" to mobTypeOrGroup))
 
                         continue
                     }
@@ -203,9 +204,9 @@ class CustomDropsParser(
                         val useEntityDropId = YmlParsingHelper.getString(csItem, "usedroptable")
 
                         if (useEntityDropId != null && !handler.customItemGroups.containsKey(useEntityDropId))
-                            hadError("Did not find droptable id match for name: $useEntityDropId")
+                            hadError("console.customdrops.droptable-not-found", mapOf("id" to useEntityDropId))
                         else if (useEntityDropId == null)
-                            hadError("Found a drop-table reference with no id!")
+                            hadError("console.customdrops.droptable-id-missing")
                         else {
                             val refDrop = handler.customItemGroups[useEntityDropId]!!
                             for (itemDrop in refDrop.customItems) {
@@ -319,7 +320,7 @@ class CustomDropsParser(
             val useEntityDropId = itemEntry.value.toString()
 
             if (!handler.customItemGroups.containsKey(useEntityDropId))
-                hadError("Did not find droptable id match for name: $useEntityDropId")
+                hadError("console.customdrops.droptable-not-found", mapOf("id" to useEntityDropId))
             else {
                 val refDrop = handler.customItemGroups[useEntityDropId]!!
                 for (itemDrop in refDrop.customItems)
@@ -415,10 +416,10 @@ class CustomDropsParser(
 
         if (!ymlHelper.getString( "amount").isNullOrEmpty()) {
             if (!dropBase.setAmountRangeFromString(ymlHelper.getString( "amount"))) {
-                hadError(
-                    "Invalid number or number range for amount on " +
-                            "${dropInstance.getMobOrGroupName()}, ${ymlHelper.getString( "amount")}"
-                )
+                hadError("console.customdrops.invalid-amount-range", mapOf(
+                    "target" to dropInstance.getMobOrGroupName(),
+                    "value" to (ymlHelper.getString("amount") ?: "null")
+                ))
             }
         }
 
@@ -548,9 +549,10 @@ class CustomDropsParser(
 
         if (!ymlHelper.getString("damage").isNullOrEmpty()) {
             if (!item.setDamageRangeFromString(ymlHelper.getString( "damage"))) {
-                hadError(
-                    "Invalid number range for damage on ${dropInstance.getMobOrGroupName()}, ${ymlHelper.getString("damage")}"
-                )
+                hadError("console.customdrops.invalid-damage-range", mapOf(
+                    "target" to dropInstance.getMobOrGroupName(),
+                    "value" to (ymlHelper.getString("damage") ?: "null")
+                ))
             }
         }
         item.lore = ymlHelper.getStringOrList("lore")
@@ -570,17 +572,21 @@ class CustomDropsParser(
             if (ExternalCompatibilityManager.hasNbtApiInstalled) {
                 val result = NBTManager.applyNBTDataItem(item, item.nbtData!!)
                 if (result.hadException)
-                    hadError("custom drop ${item.material} for ${dropInstance.getMobOrGroupName()} has invalid NBT data: ${result.exceptionMessage}")
+                    hadError("console.customdrops.invalid-nbt", mapOf(
+                        "item" to item.material.toString(),
+                        "target" to dropInstance.getMobOrGroupName(),
+                        "error" to (result.exceptionMessage ?: "-")
+                    ))
                 else if (result.itemStack != null) {
                     item.itemStack = result.itemStack
                     this.dropsUtilizeNBTAPI = true
 
                     DebugManager.log(DebugType.NBT_APPLICATION) {
-                        "Applied NBT data, ${MiscUtils.getNBTDebugMessage(mutableListOf(result))}"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d023", mapOf("value-1" to (MiscUtils.getNBTDebugMessage(mutableListOf(result)))), false)
                     }
                 }
             } else if (!hasMentionedNBTAPIMissing) {
-                hadError("NBT Data has been specified in customdrops.yml but required plugin NBTAPI is not installed!")
+                hadError("console.nbt.api-required-customdrops")
                 hasMentionedNBTAPIMissing = true
             }
         }
@@ -620,7 +626,7 @@ class CustomDropsParser(
         parseRangedVariables(customCommand, ymlHelper.cs)
 
         if (customCommand.commands.isEmpty())
-            hadError("no command was specified for custom command")
+            hadError("console.customdrops.command-missing")
         else
             dropInstance.customItems.add(customCommand)
     }
@@ -664,7 +670,7 @@ class CustomDropsParser(
                     EntityDamageEvent.DamageCause.valueOf(item.trim().uppercase()).toString()
                 cachedModalList.includedList.add(cause)
             } catch (_: IllegalArgumentException) {
-                hadError("Invalid damage cause: $item")
+                hadError("console.customdrops.invalid-damage-cause", mapOf("cause" to item))
             }
         }
         if (cs2 == null)  return cachedModalList
@@ -683,7 +689,7 @@ class CustomDropsParser(
                     EntityDamageEvent.DamageCause.valueOf(item.trim().uppercase()).toString()
                 cachedModalList.excludedList.add(cause)
             } catch (_: IllegalArgumentException) {
-                hadError("Invalid damage cause: $item")
+                hadError("console.customdrops.invalid-damage-cause", mapOf("cause" to item))
             }
         }
 
@@ -708,7 +714,7 @@ class CustomDropsParser(
                 val enchantment = Utils.getEnchantment(enchantName)
 
                 if (enchantment == null) {
-                    hadError("Invalid enchantment: $enchantName")
+                    hadError("console.customdrops.invalid-enchantment", mapOf("enchantment" to enchantName))
                     continue
                 }
 
@@ -734,7 +740,7 @@ class CustomDropsParser(
                     item.itemStack!!.addUnsafeEnchantment(enchantment, enchantLevel)
             }
             else
-                hadError("Invalid enchantment: $enchantName")
+                hadError("console.customdrops.invalid-enchantment", mapOf("enchantment" to enchantName))
         }
     }
 
@@ -766,7 +772,10 @@ class CustomDropsParser(
 
             if (!isDefault) {
                 if (!Utils.isInteger(key.toString())) {
-                    hadError("Enchantment: $enchantment, invalid enchantment level $key")
+                    hadError("console.customdrops.invalid-enchantment-level", mapOf(
+                        "enchantment" to enchantment.toString(),
+                        "level" to key.toString()
+                    ))
                     continue
                 }
                 enchantmentLevel = key.toString().toInt()
@@ -776,7 +785,10 @@ class CustomDropsParser(
             try {
                 chanceValue = value.toString().toDouble()
             } catch (_: Exception) {
-                hadError("Enchantment: $enchantment, invalid chance specified: $value")
+                hadError("console.customdrops.invalid-enchantment-chance", mapOf(
+                    "enchantment" to enchantment.toString(),
+                    "chance" to value.toString()
+                ))
                 continue
             }
 
@@ -871,7 +883,11 @@ class CustomDropsParser(
                 val newFlag = ItemFlag.valueOf(flag.trim().uppercase())
                 results.add(newFlag)
             } catch (_: Exception) {
-                hadError("Invalid itemflag: $flag, item: ${item.material.name}, mobOrGroup: ${dropInstance.getMobOrGroupName()}")
+                hadError("console.customdrops.invalid-item-flag", mapOf(
+                    "flag" to flag,
+                    "item" to item.material.name,
+                    "target" to dropInstance.getMobOrGroupName()
+                ))
             }
         }
 
@@ -918,9 +934,9 @@ class CustomDropsParser(
             }
             else {
                 if (ExternalCompatibilityManager.hasLMItemsInstalled)
-                    hadError("Custom drop '$useMaterialName' requires plugin LM_Items but it is an old version")
+                    hadError("console.customdrops.lm-items-outdated-item", mapOf("item" to useMaterialName))
                 else
-                    hadError("Custom drop '$useMaterialName' requires plugin LM_Items but it is not installed")
+                    hadError("console.customdrops.lm-items-missing-item", mapOf("item" to useMaterialName))
 
                 return false
             }
@@ -933,7 +949,10 @@ class CustomDropsParser(
             try {
                 material = Material.valueOf(useMaterialName.uppercase())
             } catch (_: Exception) {
-                hadError("Invalid material type specified in customdrops.yml for: ${dropInstance.getMobOrGroupName()}, $useMaterialName")
+                hadError("console.customdrops.invalid-material", mapOf(
+                    "target" to dropInstance.getMobOrGroupName(),
+                    "material" to useMaterialName
+                ))
                 return false
             }
 
@@ -976,13 +995,13 @@ class CustomDropsParser(
         val itemsCount =
             allGroups.size + handler.customDropsitemsBabies.size
         val customItemGroupCount = handler.customItemGroups.size
-        sbMain.append(
-            "drop instances: ${handler.getCustomDropsitems().size}, " +
-            "custom groups: $itemsCount, " +
-            "item groups: $customItemGroupCount, " +
-            "items: $dropsCount, " +
-            "commands: $commandsCount"
-        )
+        sbMain.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-summary", mapOf(
+            "instances" to handler.getCustomDropsitems().size.toString(),
+            "custom-groups" to itemsCount.toString(),
+            "item-groups" to customItemGroupCount.toString(),
+            "items" to dropsCount.toString(),
+            "commands" to commandsCount.toString()
+        ), false))
 
         for (msg in invalidExternalItems) {
             sbMain.append("\n&4").append(msg).append("&r")
@@ -1007,17 +1026,20 @@ class CustomDropsParser(
             val dropInstance = if (isBaby) handler.customDropsitemsBabies[ent]!!
             else handler.getCustomDropsitems()[ent]!!
 
-            val override = if (dropInstance.getOverrideStockDrops) " (override)" else ""
-            val overallChance = if (dropInstance.overallChance != null) (" (overall-chance: "
-                    + dropInstance.overallChance + ")") else ""
-            sbMain.append("\nmob: &b")
+            val override = if (dropInstance.getOverrideStockDrops)
+                LocalizedMessages.text("command.levelledmobs.debug.customdrops-override", colorize = false) else ""
+            val overallChance = if (dropInstance.overallChance != null)
+                LocalizedMessages.text("command.levelledmobs.debug.customdrops-overall-chance", mapOf(
+                    "chance" to dropInstance.overallChance.toString()
+                ), false) else ""
+            sbMain.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-mob", colorize = false))
             if (isBaby) {
-                sbMain.append("(baby) ")
+                sbMain.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-baby", colorize = false))
             }
             sbMain.append(ent.name).append("&r")
             sbMain.append(override).append(overallChance)
             if (dropInstance.overallPermissions.isNotEmpty()) {
-                sbMain.append(" (overall perms: ")
+                sbMain.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-overall-permissions", colorize = false))
                 sbMain.append(dropInstance.overallPermissions).append(")")
             }
 
@@ -1030,12 +1052,15 @@ class CustomDropsParser(
         }
 
         for ((key, value) in allGroups) {
-            val override = if (value.getOverrideStockDrops) " (override)" else ""
-            val overallChance = if (value.overallChance != null) (" (overall-chance: "
-                    + value.overallChance + ")") else ""
+            val override = if (value.getOverrideStockDrops)
+                LocalizedMessages.text("command.levelledmobs.debug.customdrops-override", colorize = false) else ""
+            val overallChance = if (value.overallChance != null)
+                LocalizedMessages.text("command.levelledmobs.debug.customdrops-overall-chance", mapOf(
+                    "chance" to value.overallChance.toString()
+                ), false) else ""
             if (sbMain.isNotEmpty()) sbMain.append("\n")
 
-            sbMain.append("group: ").append(key)
+            sbMain.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-group", colorize = false)).append(key)
             sbMain.append(override).append(overallChance)
             for (baseItem in value.customItems) {
                 val result = showCustomDropsDebugInfo2(baseItem)
@@ -1059,60 +1084,64 @@ class CustomDropsParser(
         val sb = StringBuilder()
         if (item != null) {
             val itemMaterial = item.material.toString()
-            sb.append(
-                "  &b$itemMaterial&r, amount: &b${item.amountAsString}&r, chance: &b${baseItem.chance}&r"
-            )
+            sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-item", mapOf(
+                "item" to itemMaterial,
+                "amount" to item.amountAsString,
+                "chance" to baseItem.chance.toString()
+            ), false))
         } else if (baseItem is CustomCommand) {
-            sb.append(
-                "  COMMAND, chance: &b${baseItem.chance}&r, run-on-spawn: ${baseItem.runOnSpawn}, run-on-death: ${baseItem.runOnDeath}"
-            )
+            sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-command", mapOf(
+                "chance" to baseItem.chance.toString(),
+                "spawn" to baseItem.runOnSpawn.toString(),
+                "death" to baseItem.runOnDeath.toString()
+            ), false))
         }
 
         if (baseItem.minLevel > -1) {
-            sb.append(", minL: &b")
+            sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-min-level", colorize = false))
             sb.append(baseItem.minLevel).append("&r")
         }
         if (baseItem.maxLevel > -1) {
-            sb.append(", maxL: &b")
+            sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-max-level", colorize = false))
             sb.append(baseItem.maxLevel).append("&r")
         }
 
         if (baseItem.minPlayerLevel > -1) {
-            sb.append(", minPL: &b")
+            sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-min-player-level", colorize = false))
             sb.append(baseItem.minPlayerLevel).append("&r")
         }
         if (baseItem.maxPlayerLevel > -1) {
-            sb.append(", maxPL: &b")
+            sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-max-player-level", colorize = false))
             sb.append(baseItem.maxPlayerLevel).append("&r")
         }
 
         if (baseItem.permissions.isNotEmpty()) {
-            sb.append(", perms: &b")
+            sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-permissions", colorize = false))
             sb.append(baseItem.permissions).append("&r")
         }
 
-        if (baseItem.noSpawner) sb.append(", nospn")
+        if (baseItem.noSpawner) sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-no-spawner", colorize = false))
 
         if (baseItem.causeOfDeathReqs != null)
             sb.append(", ").append(baseItem.causeOfDeathReqs)
 
         if (baseItem.hasGroupId) {
-            sb.append(", gId: &b")
+            sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-group-id", colorize = false))
             sb.append(baseItem.groupId).append("&r")
 
             if (baseItem.maxDropGroup > 0 && !handler.groupLimitsMap.containsKey(baseItem.groupId)) {
-                sb.append(", maxDropGroup: &b")
+                sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-group-max", colorize = false))
                 sb.append(baseItem.maxDropGroup).append("&r")
             }
         }
         if (baseItem.priority > 0) {
-            sb.append(", pri: &b")
+            sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-priority", colorize = false))
             sb.append(baseItem.priority).append("&r")
         }
 
         if (command != null) {
             if (!command.commandName.isNullOrEmpty()) {
-                sb.append(", name: &b")
+                sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-name", colorize = false))
                 sb.append(command.commandName).append("&r")
             }
 
@@ -1122,54 +1151,54 @@ class CustomDropsParser(
         if (item == null)
             return sb.toString() // this shuts up the IDE for possible null reference
 
-        if (item.noMultiplier) sb.append(", nomultp")
-        if (item.lore != null && item.lore!!.isNotEmpty()) sb.append(", hasLore")
-        if (item.customName != null && item.customName!!.isNotEmpty()) sb.append(", hasName")
+        if (item.noMultiplier) sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-no-multiplier", colorize = false))
+        if (item.lore != null && item.lore!!.isNotEmpty()) sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-has-lore", colorize = false))
+        if (item.customName != null && item.customName!!.isNotEmpty()) sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-has-name", colorize = false))
 
         if (item.damage != 0 || item.hasDamageRange) {
-            sb.append(", dmg: &b")
+            sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-damage", colorize = false))
             sb.append(item.getDamageAsString()).append("&r")
         }
-        if (item.excludedMobs.isNotEmpty()) sb.append(", hasExcludes")
+        if (item.excludedMobs.isNotEmpty()) sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-has-exclusions", colorize = false))
 
         if (item.equippedChance != null && !item.equippedChance!!.isDefault) {
-            sb.append(", equipChance: &b")
+            sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-equip-chance", colorize = false))
             sb.append(item.equippedChance).append("&r")
         }
 
-        if (item.onlyDropIfEquipped) sb.append(", &bonlyDropIfEquipped&r")
-        if (item.equipOnHelmet) sb.append(", &bequipHelmet&r")
+        if (item.onlyDropIfEquipped) sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-only-equipped", colorize = false))
+        if (item.equipOnHelmet) sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-equip-helmet", colorize = false))
 
         if (item.itemFlags != null && item.itemFlags!!.isNotEmpty()) {
-            sb.append(", itemflags: &b")
+            sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-item-flags", colorize = false))
             sb.append(item.itemFlags!!.size).append("&r")
         }
 
         if (item.isExternalItem) {
-            sb.append(", ext: ")
+            sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-external", colorize = false))
             sb.append(item.externalPluginName)
 
             if (item.externalType != null) {
-                sb.append(", ex-type: ")
+                sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-external-type", colorize = false))
                 sb.append(item.externalType)
             }
             if (item.externalItemId != null) {
-                sb.append(", ex-id: ")
+                sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-external-id", colorize = false))
                 sb.append(item.externalItemId)
             }
             if (item.externalAmount != null) {
-                sb.append(", ex-amt: ")
+                sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-external-amount", colorize = false))
                 sb.append(item.externalAmount)
             }
             if (item.externalExtras != null) {
-                sb.append(", ex-xtras: ")
+                sb.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-external-extras", colorize = false))
                 sb.append(item.externalExtras!!.size)
             }
         }
 
         if (item.enchantmentChances != null && !item.enchantmentChances!!.isEmpty) {
             val enchantmentLevels = StringBuilder()
-            enchantmentLevels.append("encht-lvls: ")
+            enchantmentLevels.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-enchantment-levels", colorize = false))
 
             for (enchantment in item.enchantmentChances!!.items.keys) {
                 if (enchantmentLevels.length > 12) enchantmentLevels.append("; ")
@@ -1186,8 +1215,8 @@ class CustomDropsParser(
 
                 if (item.enchantmentChances!!.options.containsKey(enchantment)) {
                     val opts = item.enchantmentChances!!.options[enchantment]
-                    if (opts!!.defaultLevel != null) enchantmentLevels.append(", dflt: ").append(opts.defaultLevel)
-                    if (!opts.doShuffle) enchantmentLevels.append(", no shfl")
+                    if (opts!!.defaultLevel != null) enchantmentLevels.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-default-level", colorize = false)).append(opts.defaultLevel)
+                    if (!opts.doShuffle) enchantmentLevels.append(LocalizedMessages.text("command.levelledmobs.debug.customdrops-no-shuffle", colorize = false))
                 }
             }
 

@@ -24,6 +24,7 @@ import io.github.arcaneplugins.levelledmobs.rules.strategies.LevellingStrategy
 import io.github.arcaneplugins.levelledmobs.rules.strategies.PlayerLevellingStrategy
 import io.github.arcaneplugins.levelledmobs.rules.strategies.StrategyType
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.Utils.capitalize
 import io.github.arcaneplugins.levelledmobs.util.Utils.isBiomeInModalList
 import io.github.arcaneplugins.levelledmobs.util.Utils.isIntegerInModalList
@@ -760,7 +761,7 @@ class RulesManager {
                     DebugType.SETTING_STOP_PROCESSING,
                     ruleInfo, lmInterface, result
                 ) {
-                    "rule count: &b${applicableRules.allApplicableRules.size}&r"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d101", mapOf("value-1" to (applicableRules.allApplicableRules.size)), false)
                 }
                 if (result) break
             }
@@ -805,7 +806,7 @@ class RulesManager {
                     return
                 }
                 DebugManager.log(DebugType.SETTING_COOLDOWN, ruleInfo, lmInterface,true) {
-                    "cooldown reached, disabling rule"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d102", colorize = false)
                 }
                 ruleInfo.isTempDisabled = true
             }
@@ -823,7 +824,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_MAXLEVEL, ri, lmEntity, result
             ) {
-                "rule minlvl: &b${ri.conditionsMinLevel}&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d103", mapOf("value-1" to (ri.conditionsMinLevel)), false)
             }
             if (!result) return false
         }
@@ -834,7 +835,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_MAXLEVEL, ri, lmEntity, result
             ) {
-                "rule maxlvl: &b${ri.conditionsMaxLevel}&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d104", mapOf("value-1" to (ri.conditionsMaxLevel)), false)
             }
             if (!result) return false
         }
@@ -855,7 +856,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_CUSTOM_NAME, ri, lmEntity, result
             ) {
-                "name: &b$customName&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d105", mapOf("value-1" to (customName)), false)
             }
 
             if (!result) return false
@@ -869,7 +870,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_SPAWN_REASON, ri, lmEntity, result
             ) {
-                "spawn reason: &b${lmEntity.spawnReason}&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d106", mapOf("value-1" to (lmEntity.spawnReason)), false)
             }
             if (!result) return false
         }
@@ -889,7 +890,7 @@ class RulesManager {
 
             DebugManager.log(
                 DebugType.CONDITION_PLUGIN_COMPAT, ri, lmEntity, madeIt
-            ) { "mob plugins: &b$mobCompats&7" }
+            ) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d107", mapOf("value-1" to (mobCompats)), false) }
             if (!madeIt) return false
         }
 
@@ -902,7 +903,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_MYTHICMOBS_INTERNAL_NAME, ri, lmEntity, result
             ) {
-                "mm_name: &b$mmNameFinal&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d108", mapOf("value-1" to (mmNameFinal)), false)
             }
 
             if (!result) return false
@@ -915,7 +916,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_SPAWNER_NAME, ri, lmEntity, result
             ) {
-                "spawner: &b$checkName&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d109", mapOf("value-1" to (checkName)), false)
             }
 
             if (!result) return false
@@ -928,7 +929,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_SPAWNER_NAME, ri, lmEntity, result
             ) {
-                "spawn_egg: &b$checkName&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d110", mapOf("value-1" to (checkName)), false)
             }
 
             if (!result) return false
@@ -939,7 +940,7 @@ class RulesManager {
                 DebugManager.log(
                     DebugType.CONDITION_PERMISSION, ri, lmEntity, false
                 ) {
-                    "no player was provided"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d111", colorize = false)
                 }
                 return false
             }
@@ -952,7 +953,7 @@ class RulesManager {
                 DebugManager.log(
                     DebugType.CONDITION_PERMISSION, ri, lmEntity, false
                 ) {
-                    "player: &b${lmEntity.associatedPlayer!!.name}&7, permission denied"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d112", mapOf("value-1" to (lmEntity.associatedPlayer!!.name)), false)
                 }
                 return false
             }
@@ -960,7 +961,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_PERMISSION, ri, lmEntity, true
             ) {
-                "player: &b${lmEntity.associatedPlayer!!.name}&7, permission granted"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d113", mapOf("value-1" to (lmEntity.associatedPlayer!!.name)), false)
             }
         }
 
@@ -969,7 +970,7 @@ class RulesManager {
                 DebugManager.log(
                     DebugType.CONDITION_PLAYER_NAMES, ri, lmEntity, false
                 ) {
-                    "no player was provided"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d114", colorize = false)
                 }
                 return false
             }
@@ -979,7 +980,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_PLAYER_NAMES, ri, lmEntity, result
             ) {
-                "player: &b${lmEntity.associatedPlayer!!.name}&r"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d115", mapOf("value-1" to (lmEntity.associatedPlayer!!.name)), false)
             }
 
             if (!result) return false
@@ -990,7 +991,7 @@ class RulesManager {
                 DebugManager.log(
                     DebugType.CONDITION_GAMEMODE, ri, lmEntity, false
                 ) {
-                    "no player was provided"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d116", colorize = false)
                 }
                 return false
             }
@@ -1001,7 +1002,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_GAMEMODE, ri, lmEntity, result
             ) {
-                "player: &b${lmEntity.associatedPlayer!!.name}&7, gamemode: $gameModeStr&r"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d117", mapOf("value-1" to (lmEntity.associatedPlayer!!.name), "value-2" to (gameModeStr)), false)
             }
 
             if (!result) return false
@@ -1018,7 +1019,7 @@ class RulesManager {
                 DebugManager.log(
                     DebugType.CONDITION_CUSTOM_NAME, ri, lmEntity, false
                 ) {
-                    "nametag: ${lmEntity.livingEntity.customName}"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d118", mapOf("value-1" to (lmEntity.livingEntity.customName)), false)
                 }
                 return false
             }
@@ -1026,7 +1027,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_CUSTOM_NAME, ri, lmEntity, true
             ) {
-                "nametag: ${lmEntity.livingEntity.customName}"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d119", mapOf("value-1" to (lmEntity.livingEntity.customName)), false)
             }
         }
 
@@ -1039,7 +1040,7 @@ class RulesManager {
                 DebugManager.log(
                     DebugType.ENTITY_TAME, ri, lmEntity, false
                 ) {
-                    "tamed: ${lmEntity.isMobTamed}"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d120", mapOf("value-1" to (lmEntity.isMobTamed)), false)
                 }
                 return false
             }
@@ -1047,7 +1048,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.ENTITY_TAME, ri, lmEntity, true
             ) {
-                "tamed: ${lmEntity.isMobTamed}"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d121", mapOf("value-1" to (lmEntity.isMobTamed)), false)
             }
         }
 
@@ -1092,7 +1093,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.SKYLIGHT_LEVEL, ri, lmEntity, result
             ) {
-                "skylight: $lightLevel, criteria: ${ri.conditionsSkyLightLevel}"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d122", mapOf("value-1" to (lightLevel), "value-2" to (ri.conditionsSkyLightLevel)), false)
             }
             return result
         }
@@ -1108,27 +1109,27 @@ class RulesManager {
 
         if (mdr.getHasX && !mdr.isLocationWithinRange(lmEntity.location.blockX, WithinCoordinates.Axis.X)) {
             DebugManager.log(DebugType.CONDITION_WITH_COORDINATES, rule, lmEntity, false) {
-                "xCoord: ${lmEntity.location.blockX}, startX: ${mdr.startX}, endX: ${mdr.endX}"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d123", mapOf("value-1" to (lmEntity.location.blockX), "value-2" to (mdr.startX), "value-3" to (mdr.endX)), false)
             }
             return false
         }
 
         if (mdr.getHasY && !mdr.isLocationWithinRange(lmEntity.location.blockY, WithinCoordinates.Axis.Y)) {
             DebugManager.log(DebugType.CONDITION_WITH_COORDINATES, rule, lmEntity, false) {
-                "yCoord: ${lmEntity.location.blockY}, startY: ${mdr.startY}, endY: ${mdr.endY}"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d124", mapOf("value-1" to (lmEntity.location.blockY), "value-2" to (mdr.startY), "value-3" to (mdr.endY)), false)
             }
             return false
         }
 
         if (mdr.getHasZ && !mdr.isLocationWithinRange(lmEntity.location.blockZ, WithinCoordinates.Axis.Z)) {
             DebugManager.log(DebugType.CONDITION_WITH_COORDINATES, rule, lmEntity, false) {
-                "zCoord: ${lmEntity.location.blockZ}, startZ: ${mdr.startZ}, endZ: ${mdr.endZ}"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d125", mapOf("value-1" to (lmEntity.location.blockZ), "value-2" to (mdr.startZ), "value-3" to (mdr.endZ)), false)
             }
             return false
         }
 
         DebugManager.log(DebugType.CONDITION_WITH_COORDINATES, rule, lmEntity, true) {
-            "zCoord: ${lmEntity.location.blockZ}, startZ: ${mdr.startZ}, endZ: ${mdr.endZ}"
+            LocalizedMessages.text("command.levelledmobs.debug.runtime.d126", mapOf("value-1" to (lmEntity.location.blockZ), "value-2" to (mdr.startZ), "value-3" to (mdr.endZ)), false)
         }
 
         return true
@@ -1167,7 +1168,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_WORLD_LIST, ri, lmInterface, result
             ) {
-                "mob world: &b${lmInterface.world!!.name}&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d127", mapOf("value-1" to (lmInterface.world!!.name)), false)
             }
             if (!result) return RuleCheckResult(false)
         }
@@ -1180,7 +1181,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_BIOME_LIST, ri, lmInterface, result
             ) {
-                "mob biome: &b${lmInterface.location!!.block.biome}&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d128", mapOf("value-1" to (lmInterface.location!!.block.biome)), false)
             }
             if (!result) return RuleCheckResult(false)
         }
@@ -1206,7 +1207,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_WG_REGION, ri, lmInterface, isInList
             ) {
-                "wg_regions: &b$wgRegions&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d129", mapOf("value-1" to (wgRegions)), false)
             }
             if (!isInList) return RuleCheckResult(false)
         }
@@ -1232,7 +1233,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_WG_REGION_OWNER, ri, lmInterface, isInList
             ) {
-                "wg_owners: &b$wgRegionOwners&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d130", mapOf("value-1" to (wgRegionOwners)), false)
             }
 
             if (!isInList) return RuleCheckResult(false)
@@ -1243,7 +1244,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_Y_LEVEL, ri, lmInterface, result
             ) {
-                "y-level: &b${lmInterface.location!!.blockY}&7, max-y: &b${ri.conditionsApplyAboveY}&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d131", mapOf("value-1" to (lmInterface.location!!.blockY), "value-2" to (ri.conditionsApplyAboveY)), false)
             }
             if (!result) return RuleCheckResult(false)
         }
@@ -1253,7 +1254,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_Y_LEVEL, ri, lmInterface, result
             ) {
-                "y-level: &b${lmInterface.location!!.blockY}&7, min-y: &b${ri.conditionsApplyBelowY}&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d132", mapOf("value-1" to (lmInterface.location!!.blockY), "value-2" to (ri.conditionsApplyBelowY)), false)
             }
             if (!result) return RuleCheckResult(false)
         }
@@ -1263,7 +1264,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_MIN_SPAWN_DISTANCE, ri, lmInterface, result
             ) {
-                "spawn-distance: &b${round(lmInterface.distanceFromSpawn)}&7, min-sd: &b${ri.conditionsMinDistanceFromSpawn}&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d133", mapOf("value-1" to (round(lmInterface.distanceFromSpawn)), "value-2" to (ri.conditionsMinDistanceFromSpawn)), false)
             }
 
             if (!result) return RuleCheckResult(false)
@@ -1274,7 +1275,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_MAX_SPAWN_DISTANCE, ri, lmInterface, result
             ) {
-                "spawn-distance: &b${round(lmInterface.distanceFromSpawn)}&7, min-sd: &b${ri.conditionsMaxDistanceFromSpawn}&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d134", mapOf("value-1" to (round(lmInterface.distanceFromSpawn)), "value-2" to (ri.conditionsMaxDistanceFromSpawn)), false)
             }
 
             if (!result) return RuleCheckResult(false)
@@ -1286,7 +1287,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_WORLD_TIME_TICK, ri, lmInterface, result
             ) {
-                "tick time: &b$currentWorldTickTime&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d135", mapOf("value-1" to (currentWorldTickTime)), false)
             }
 
             if (!result) return RuleCheckResult(useResult = false, ruleMadeChance = false)
@@ -1310,7 +1311,7 @@ class RulesManager {
             DebugManager.log(
                 DebugType.CONDITION_CHANCE, ri, lmInterface, result
             ) {
-                "chance: &b${ri.conditionsChance}&7, chance role: &b${round(chanceRole.toDouble(), 4)}&7"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d136", mapOf("value-1" to (ri.conditionsChance), "value-2" to (round(chanceRole.toDouble(), 4))), false)
             }
 
             if (!result) return RuleCheckResult(useResult = false, ruleMadeChance = false)
@@ -1389,7 +1390,7 @@ class RulesManager {
                                 > rule.conditionsCooldownTime!!)
                     }) {
                     DebugManager.log(DebugType.SETTING_COOLDOWN) {
-                        "removed cooldown entries, pre: $preCount, post: ${instants.size}"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d137", mapOf("value-1" to (preCount), "value-2" to (instants.size)), false)
                     }
                     if (instants.isEmpty()) {
                         rule.isTempDisabled = false
@@ -1403,20 +1404,25 @@ class RulesManager {
     fun showTempDisabledRules(sender: CommandSender) {
         synchronized(ruleLocker) {
             if (rulesCooldown.isEmpty()) {
-                sender.sendMessage("No rules are currently temporarily disabled")
+                LocalizedMessages.send(sender, "command.levelledmobs.rules.no-disabled-rules")
                 return
             }
             checkTempDisabledRules()
 
-            val sb = StringBuilder()
-            sb.append(" ${rulesCooldown.size} rule(s) currently disabled:")
+            val sb = StringBuilder(LocalizedMessages.text(
+                "command.levelledmobs.rules.disabled-rules-heading",
+                mapOf("count" to rulesCooldown.size.toString()),
+                false
+            ))
 
             for (ruleName in rulesCooldown.keys) {
                 val rule = ruleNameMappings[ruleName]
                 if (rule?.conditionsCooldownTime == null) continue
 
                 sb.append(System.lineSeparator())
-                sb.append(ruleName).append(": seconds left: ")
+                sb.append(ruleName).append(LocalizedMessages.text(
+                    "command.levelledmobs.rules.seconds-left", colorize = false
+                ))
                 val instant = rulesCooldown[ruleName]!![0]
                 val millisecondsSince = Duration.between(instant, Instant.now()).toMillis()
                 val duration = Duration.ofMillis(
@@ -1448,7 +1454,7 @@ class RulesManager {
             )
             this.currentRulesHash = bytesToHex(hashbytes)
         } catch (e: NoSuchAlgorithmException) {
-            Log.war("Unable to run SHA-256 hash: " + e.message)
+            Log.warKey("console.rules.hash-error", mapOf("error" to (e.message ?: "-")))
             this.currentRulesHash = "1234"
         }
     }

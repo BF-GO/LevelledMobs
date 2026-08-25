@@ -15,6 +15,7 @@ import io.github.arcaneplugins.levelledmobs.debug.DebugType
 import io.github.arcaneplugins.levelledmobs.managers.ExternalCompatibilityManager
 import io.github.arcaneplugins.levelledmobs.util.MiscUtils
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils
 import io.github.arcaneplugins.levelledmobs.util.Utils
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
@@ -38,7 +39,9 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
     fun buildCommand() : LiteralCommandNode<CommandSourceStack> {
         return createLiteralCommand("debug")
             .executes { ctx ->
-                ctx.source.sender.sendMessage("Please enter a debug option.")
+                LocalizedMessages.send(
+                    ctx.source.sender, "command.levelledmobs.debug.select-option"
+                )
                 return@executes Command.SINGLE_SUCCESS
             }
             .then(createLiteralCommand("create-zip")
@@ -179,7 +182,9 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
     ){
         val errors = MainCompanion.instance.errorMessages
         if (errors.isEmpty()){
-            ctx.source.sender.sendMessage("There are no errors currently recorded")
+            LocalizedMessages.send(
+                ctx.source.sender, "command.levelledmobs.debug.no-recorded-errors"
+            )
             return
         }
 
@@ -195,16 +200,20 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         if (doClear){
             if (sender.hasPermission("$basePermission.show-errors.clear")) {
                 errors.clear()
-                sender.sendMessage("Recorded errors have been cleared")
+                LocalizedMessages.send(
+                    sender, "command.levelledmobs.debug.recorded-errors-cleared"
+                )
             }
             else
-                sender.sendMessage("You don't have the required permission for this command.")
+                LocalizedMessages.send(sender, "common.no-permission")
 
             return
         }
 
-        val msg = if (errors.size == 1)
-            "There is 1 error" else "There are ${errors.size} errors"
+        val msg = LocalizedMessages.text(
+            "command.levelledmobs.debug.recorded-errors",
+            mapOf("count" to errors.size), colorize = false
+        )
         val sb = StringBuilder(msg)
         if (errors.isNotEmpty()) sb.append(":\n")
 
@@ -230,8 +239,12 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         val lmEntity = lmMobResult.lmEntity
         val nameIfDifferent = if (lmEntity.nameIfBaby == lmEntity.typeName)
             "" else " ${lmEntity.typeName}"
-        val entityMsg = "${lmEntity.nameIfBaby} (lvl ${lmEntity.getMobLevel}$nameIfDifferent), ${lmEntity.locationStr}"
-        val msg = "Showing groups for: $entityMsg\n${lmEntity.getApplicableGroupsAsString}"
+        val entityMsg = "${lmEntity.nameIfBaby} (${lmEntity.getMobLevel}$nameIfDifferent), ${lmEntity.locationStr}"
+        val msg = LocalizedMessages.text(
+            "command.levelledmobs.debug.mob-groups",
+            mapOf("entity" to entityMsg, "groups" to lmEntity.getApplicableGroupsAsString),
+            colorize = false
+        )
 
         if (lmMobResult.showOnConsole)
             Log.inf(msg)
@@ -250,46 +263,52 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         val debugMgr = LevelledMobs.instance.debugManager
 
         if (operation.isNullOrEmpty()){
-            val status = if (debugMgr.damageDebugOutputIsEnabled) "enabled" else "disabled"
-            sender.sendMessage("Damage Debug Output status: $status")
+            val status = LocalizedMessages.text(
+                if (debugMgr.damageDebugOutputIsEnabled) "display.enabled" else "display.disabled",
+                colorize = false
+            )
+            LocalizedMessages.send(
+                sender, "command.levelledmobs.debug.damage-output-status",
+                mapOf("status" to status)
+            )
             return
         }
 
         if ("enable".equals(operation, true)){
             if (debugMgr.damageDebugOutputIsEnabled)
-                sender.sendMessage("Damage Debug Output is enabled.")
+                LocalizedMessages.send(sender, "command.levelledmobs.debug.damage-output-already-enabled")
             else{
                 debugMgr.toggleDamageDebugOutput(true)
-                sender.sendMessage("Damage Debug Output is now enabled.")
+                LocalizedMessages.send(sender, "command.levelledmobs.debug.damage-output-enabled")
             }
         }
         else if ("disable".equals(operation, true)){
             if (debugMgr.damageDebugOutputIsEnabled){
                 debugMgr.toggleDamageDebugOutput(false)
-                sender.sendMessage("Damage Debug Output is now disabled.")
+                LocalizedMessages.send(sender, "command.levelledmobs.debug.damage-output-disabled")
             }
             else
-                sender.sendMessage("Damage Debug Output is disabled.")
+                LocalizedMessages.send(sender, "command.levelledmobs.debug.damage-output-already-disabled")
         }
         else
-            sender.sendMessage("Invalid option: $operation")
+            LocalizedMessages.send(
+                sender, "command.levelledmobs.debug.invalid-option", mapOf("option" to operation)
+            )
     }
 //
     private fun createFilterResultsCommand(): LiteralCommandNode<CommandSourceStack>{
-        val genericMessage = "Please select a filter option"
-
         return createLiteralCommand("filter-results")
             .then(buildGenericListTypes("set-debug", ListTypes.DEBUG))
-            .executes { ctx -> ctx.source.sender.sendMessage(genericMessage)
+            .executes { ctx -> LocalizedMessages.send(ctx.source.sender, "command.levelledmobs.debug.select-filter-option")
                 return@executes Command.SINGLE_SUCCESS }
             .then(buildGenericListTypes("set-entities", ListTypes.ENTITY))
-            .executes { ctx -> ctx.source.sender.sendMessage(genericMessage)
+            .executes { ctx -> LocalizedMessages.send(ctx.source.sender, "command.levelledmobs.debug.select-filter-option")
                 return@executes Command.SINGLE_SUCCESS }
             .then(buildGenericListTypes("set-rules", ListTypes.RULE_NAMES))
-            .executes { ctx -> ctx.source.sender.sendMessage(genericMessage)
+            .executes { ctx -> LocalizedMessages.send(ctx.source.sender, "command.levelledmobs.debug.select-filter-option")
                 return@executes Command.SINGLE_SUCCESS }
             .then(buildGenericListTypes("set-players", ListTypes.PLAYERS))
-            .executes { ctx -> ctx.source.sender.sendMessage(genericMessage)
+            .executes { ctx -> LocalizedMessages.send(ctx.source.sender, "command.levelledmobs.debug.select-filter-option")
                 return@executes Command.SINGLE_SUCCESS }
             .then(createLiteralCommand("listen-for")
                 .then(createStringArgument("value")
@@ -336,16 +355,21 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
             .executes { ctx ->
                 LevelledMobs.instance.debugManager.minYLevel = null
                 LevelledMobs.instance.debugManager.maxYLevel = null
-                ctx.source.sender.sendMessage("All y-height filters cleared")
+                LocalizedMessages.send(
+                    ctx.source.sender, "command.levelledmobs.debug.y-filters-cleared"
+                )
                 return@executes Command.SINGLE_SUCCESS
             })
         .build()
     }
 
     private fun showYHeightSettings(sender: CommandSender){
-        sender.sendMessage(
-            "min-y-height: ${LevelledMobs.instance.debugManager.minYLevel}" +
-            ", max-y-height: ${LevelledMobs.instance.debugManager.maxYLevel}"
+        LocalizedMessages.send(
+            sender, "command.levelledmobs.debug.y-filter-values",
+            mapOf(
+                "min" to LevelledMobs.instance.debugManager.minYLevel,
+                "max" to LevelledMobs.instance.debugManager.maxYLevel
+            )
         )
     }
 
@@ -354,17 +378,41 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         val nametagQueueTask = LevelledMobs.instance.nametagQueueManager.queueTask
         val mobQueueNum = LevelledMobs.instance.mobsQueueManager.getNumberQueued()
         val isNametagTaskRunning = if (nametagQueueTask != null) Bukkit.getScheduler().isCurrentlyRunning(nametagQueueTask.taskId) else false
-        val nametagtaskStatus = if (nametagQueueTask == null) "(null)" else "id: ${nametagQueueTask.taskId}, is running: $isNametagTaskRunning, is cancelled: ${nametagQueueTask.isCancelled}"
+        val nametagtaskStatus = if (nametagQueueTask == null)
+            LocalizedMessages.text("command.levelledmobs.debug.task-null", colorize = false)
+        else LocalizedMessages.text(
+            "command.levelledmobs.debug.task-status",
+            mapOf(
+                "id" to nametagQueueTask.taskId,
+                "running" to isNametagTaskRunning,
+                "cancelled" to nametagQueueTask.isCancelled
+            ), colorize = false
+        )
         val mobsTaskStatus = StringBuilder()
         for (task in LevelledMobs.instance.mobsQueueManager.queueTasks.values){
             val isRunning = Bukkit.getScheduler().isCurrentlyRunning(task.taskId)
             mobsTaskStatus.append("\n   ")
-            mobsTaskStatus.append("id: ${task.taskId}, is running: $isRunning, is cancelled: ${task.isCancelled}")
+            mobsTaskStatus.append(
+                LocalizedMessages.text(
+                    "command.levelledmobs.debug.task-status",
+                    mapOf(
+                        "id" to task.taskId,
+                        "running" to isRunning,
+                        "cancelled" to task.isCancelled
+                    ), colorize = false
+                )
+            )
         }
 
-        sender.sendMessage("Nametag Manager items: $nametagQueueNum, Mob Queue Manager items: $mobQueueNum\n" +
-                "Mobs queue statuses: $mobsTaskStatus\n" +
-                "Nametag task status: $nametagtaskStatus")
+        LocalizedMessages.send(
+            sender, "command.levelledmobs.debug.queue-status",
+            mapOf(
+                "nametag-count" to nametagQueueNum,
+                "mob-count" to mobQueueNum,
+                "mob-tasks" to mobsTaskStatus,
+                "nametag-task" to nametagtaskStatus
+            )
+        )
     }
 
     private fun getListenForValues(
@@ -415,7 +463,7 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         val sender = ctx.source.sender
         val player = sender as? Player
         if (player == null){
-            sender.sendMessage("This command must be run by a player")
+            LocalizedMessages.send(sender, "common.players-only")
             return
         }
 
@@ -433,18 +481,23 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
             else
                 sb.append("\n")
 
-            sb.append("key: &b${items.key}&r, ${items.value}")
+            sb.append(
+                LocalizedMessages.text(
+                    "command.levelledmobs.debug.pdc-entry",
+                    mapOf("key" to items.key, "value" to items.value), colorize = false
+                )
+            )
         }
 
         val message = if (results.isEmpty()){
             formatDumpMessage(
-                "No PDC keys were found for",
+                "command.levelledmobs.debug.no-pdc-keys",
                 lmEntity,
                 null
             )
         } else{
             formatDumpMessage(
-                "Showing PDC keys for",
+                "command.levelledmobs.debug.showing-pdc-keys",
                 lmEntity,
                 sb.toString()
             )
@@ -454,7 +507,7 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
 
         if (showOnConsole && results.isNotEmpty()) {
             Log.inf(message)
-            sender.sendMessage("PDC keys have been printed in the console")
+            LocalizedMessages.send(sender, "command.levelledmobs.debug.pdc-keys-console")
         }
         else
             sender.sendMessage(MessageUtils.colorizeAll(message))
@@ -473,18 +526,26 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
 
         if (lastNodeName == name && name.equals(ctx.getArgument(name, String::class.java), true)) {
             MainCompanion.instance.clearChunkKillCache()
-            ctx.source.sender.sendMessage("cache has been cleared")
+            LocalizedMessages.send(
+                ctx.source.sender, "command.levelledmobs.debug.chunk-cache-cleared"
+            )
         }
         else
-            ctx.source.sender.sendMessage("Options: reset")
+            LocalizedMessages.send(
+                ctx.source.sender, "command.levelledmobs.debug.chunk-cache-options"
+            )
     }
 
     private fun showPluginDefinitions(sender: CommandSender){
         val ext = ExternalCompatibilityManager.instance
         if (ext.externalPluginDefinitions.isEmpty())
-            sender.sendMessage("No external plugins defined")
+            LocalizedMessages.send(sender, "command.levelledmobs.debug.no-external-plugins")
 
-        val sb = StringBuilder("Currently defined plugins:")
+        val sb = StringBuilder(
+            LocalizedMessages.text(
+                "command.levelledmobs.debug.external-plugins-heading", colorize = false
+            )
+        )
         for (plugin in ext.externalPluginDefinitions.values){
             sb.append("\n    ")
             sb.append(plugin.toString())
@@ -498,12 +559,16 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
     ) {
 
         if (!LevelledMobs.instance.ver.isNMSVersionValid) {
-            ctx.source.sender.sendMessage("Unable to dump, an unknown NMS version was detected")
+            LocalizedMessages.send(
+                ctx.source.sender, "command.levelledmobs.debug.unknown-nms"
+            )
             return
         }
         doNbtDump(ctx)
         if (ctx.source.sender !is ConsoleCommandSender)
-            ctx.source.sender.sendMessage("NBT data has been written to the console")
+            LocalizedMessages.send(
+                ctx.source.sender, "command.levelledmobs.debug.nbt-console"
+            )
     }
 
     private fun doNbtDump(ctx: CommandContext<CommandSourceStack>) {
@@ -512,7 +577,7 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         val lmEntity = getNearbyMob(sender, optionalTarget) ?: return
 
         val message = formatDumpMessage(
-            "Showing nbt dump for",
+            "command.levelledmobs.debug.showing-nbt",
             lmEntity,
             MiscUtils.getNBTDump(lmEntity.livingEntity)
         )
@@ -523,7 +588,7 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
 
     @Suppress("DEPRECATION")
     private fun formatDumpMessage(
-        messageStart: String,
+        titlePath: String,
         lmEntity: LivingEntityWrapper,
         values: String?
     ): String {
@@ -542,12 +607,24 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
                     "${lmEntity.livingEntity.location.blockZ}"
 
         val mobLevel = if (lmEntity.isLevelled) lmEntity.getMobLevel.toString() else "0"
-        val showValues = if (values != null) "\n$values" else ""
-
-        return if (lmEntity.nameIfBaby.equals(entityName, ignoreCase = true))
-            "$messageStart: $entityName (lvl $mobLevel) in ${lmEntity.worldName}, $locationStr&r$showValues"
-        else
-            "$messageStart: $entityName (lvl $mobLevel ${lmEntity.typeName}) in ${lmEntity.worldName}, $locationStr&r$showValues"
+        val title = LocalizedMessages.text(titlePath, colorize = false)
+        val showValues = values?.let { "\n$it" }.orEmpty()
+        val path = if (lmEntity.nameIfBaby.equals(entityName, ignoreCase = true))
+            "command.levelledmobs.debug.dump-format" else
+            "command.levelledmobs.debug.dump-format-with-type"
+        return LocalizedMessages.text(
+            path,
+            mapOf(
+                "title" to title,
+                "entity" to entityName,
+                "level" to mobLevel,
+                "type" to lmEntity.typeName,
+                "world" to lmEntity.worldName,
+                "location" to locationStr,
+                "values" to showValues
+            ),
+            colorize = false
+        )
     }
 
     private fun parseEnableTimer(
@@ -556,7 +633,7 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         val sender = ctx.source.sender
         val input = getStringArgument(ctx, "time")
         if (input.isEmpty()) {
-            sender.sendMessage("No value was specified")
+            LocalizedMessages.send(sender, "command.levelledmobs.debug.value-missing")
             return
         }
 
@@ -565,7 +642,7 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
             main.debugManager.disableAfter = null
             main.debugManager.disableAfterStr = null
             main.debugManager.timerWasChanged(false)
-            sender.sendMessage("Debug timer disabled")
+            LocalizedMessages.send(sender, "command.levelledmobs.debug.timer-disabled")
             return
         }
 
@@ -580,7 +657,9 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
 
             main.debugManager.disableAfter = disableAfter
             main.debugManager.disableAfterStr = input
-            sender.sendMessage("Debug enabled for $input")
+            LocalizedMessages.send(
+                sender, "command.levelledmobs.debug.timer-enabled", mapOf("time" to input)
+            )
             if (main.debugManager.isEnabled) main.debugManager.timerWasChanged(true)
             else main.debugManager.enableDebug(sender, usetimer = true, bypassFilters = false)
         }
@@ -591,8 +670,9 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         val sender = ctx.source.sender
         val output = getStringArgument(ctx, "output")
         if (output.isEmpty()) {
-            sender.sendMessage(
-                "Current value: " + main.debugManager.outputType.name.lowercase().replace("_", "-")
+            LocalizedMessages.send(
+                sender, "command.levelledmobs.debug.current-value",
+                mapOf("value" to main.debugManager.outputType.name.lowercase().replace("_", "-"))
             )
             return
         }
@@ -603,17 +683,19 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
             "to-chat" -> main.debugManager.outputType = DebugManager.OutputTypes.TO_CHAT
             "to-both" -> main.debugManager.outputType = DebugManager.OutputTypes.TO_BOTH
             else -> {
-                sender.sendMessage("Invalid option: $output")
+                LocalizedMessages.send(
+                    sender, "command.levelledmobs.debug.invalid-option", mapOf("option" to output)
+                )
                 wasInvalid = true
             }
         }
-        if (!wasInvalid) sender.sendMessage(
-            "Output-debug updated to " + main.debugManager.outputType.name.replace("_", "-")
-                .lowercase()
+        if (!wasInvalid) LocalizedMessages.send(
+            sender, "command.levelledmobs.debug.output-updated",
+            mapOf("output" to main.debugManager.outputType.name.replace("_", "-").lowercase())
         )
 
         if (main.debugManager.outputType !== DebugManager.OutputTypes.TO_CONSOLE)
-            sender.sendMessage("WARNING: sending debug messages to chat can cause huge chat spam.")
+            LocalizedMessages.send(sender, "command.levelledmobs.debug.chat-spam-warning")
     }
 
     private fun showCustomDrops(sender: CommandSender) {
@@ -638,16 +720,21 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
 
             main.debugManager.enableDebug(sender, false, isEnableAll)
             if (wasEnabled && !enableAllChanged) {
-                if (wasTimerEnabled) sender.sendMessage("Debugging is already enabled, disabled timer")
-                else sender.sendMessage("Debugging is already enabled")
+                if (wasTimerEnabled) LocalizedMessages.send(
+                    sender, "command.levelledmobs.debug.already-enabled-timer-disabled"
+                ) else LocalizedMessages.send(
+                    sender, "command.levelledmobs.debug.already-enabled"
+                )
             } else {
-                if (isEnableAll) sender.sendMessage("All debug options enabled")
-                else sender.sendMessage("Debugging is now enabled")
+                if (isEnableAll) LocalizedMessages.send(
+                    sender, "command.levelledmobs.debug.all-options-enabled"
+                ) else LocalizedMessages.send(sender, "command.levelledmobs.debug.enabled")
             }
         } else {
             main.debugManager.disableDebug()
-            if (wasEnabled) sender.sendMessage("Debugging is now disabled")
-            else sender.sendMessage("Debugging is already disabled")
+            if (wasEnabled) LocalizedMessages.send(
+                sender, "command.levelledmobs.debug.disabled"
+            ) else LocalizedMessages.send(sender, "command.levelledmobs.debug.already-disabled")
         }
     }
 
@@ -659,19 +746,25 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         try {
             debugType = DebugType.valueOf(debugCategory.uppercase())
         } catch (_: Exception) {
-            sender.sendMessage("Invalid debug type: $debugCategory")
+            LocalizedMessages.send(
+                sender, "command.levelledmobs.debug.invalid-debug-type",
+                mapOf("type" to debugCategory)
+            )
             return false
         }
 
         LevelledMobs.instance.debugManager.filterDebugTypes.clear()
         LevelledMobs.instance.debugManager.filterDebugTypes.add(debugType)
-        sender.sendMessage("Debug type set to $debugCategory")
+        LocalizedMessages.send(
+            sender, "command.levelledmobs.debug.debug-type-set",
+            mapOf("type" to debugCategory)
+        )
         return true
     }
 
     private fun clearFilters(sender: CommandSender) {
         LevelledMobs.instance.debugManager.resetFilters()
-        sender.sendMessage("All filters have been cleared")
+        LocalizedMessages.send(sender, "command.levelledmobs.debug.filters-cleared")
     }
 
     private fun parseNumberValue(
@@ -688,39 +781,54 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
             when (numberSetting) {
                 NumberSettings.MAX_PLAYERS_DIST -> {
                     if (numberStr.isEmpty()){
-                        sender.sendMessage("Distance from players current value: " +
-                                main.debugManager.maxPlayerDistance)
+                        LocalizedMessages.send(
+                            sender, "command.levelledmobs.debug.distance-current",
+                            mapOf("value" to main.debugManager.maxPlayerDistance)
+                        )
                     }
                     else{
                         main.debugManager.maxPlayerDistance = value
-                        sender.sendMessage("Distance from players set to $value")
+                        LocalizedMessages.send(
+                            sender, "command.levelledmobs.debug.distance-set", mapOf("value" to value)
+                        )
                     }
                 }
 
                 NumberSettings.MIN_Y_LEVEL -> {
                     if (numberStr.isEmpty()){
-                        sender.sendMessage("Min y-height current value: " +
-                                main.debugManager.minYLevel)
+                        LocalizedMessages.send(
+                            sender, "command.levelledmobs.debug.min-y-current",
+                            mapOf("value" to main.debugManager.minYLevel)
+                        )
                     }
                     else{
                         main.debugManager.minYLevel = value
-                        sender.sendMessage("Min y-height set to $value")
+                        LocalizedMessages.send(
+                            sender, "command.levelledmobs.debug.min-y-set", mapOf("value" to value)
+                        )
                     }
                 }
 
                 NumberSettings.MAX_Y_LEVEL -> {
                     if (numberStr.isEmpty()){
-                        sender.sendMessage("Max y-height current value: " +
-                                main.debugManager.maxYLevel)
+                        LocalizedMessages.send(
+                            sender, "command.levelledmobs.debug.max-y-current",
+                            mapOf("value" to main.debugManager.maxYLevel)
+                        )
                     }
                     else{
                         main.debugManager.maxYLevel = value
-                        sender.sendMessage("Max y-height set to $value")
+                        LocalizedMessages.send(
+                            sender, "command.levelledmobs.debug.max-y-set", mapOf("value" to value)
+                        )
                     }
                 }
             }
         } catch (_: Exception) {
-            sender.sendMessage("Invalid number: $numberStr")
+            LocalizedMessages.send(
+                sender, "command.levelledmobs.debug.invalid-number",
+                mapOf("value" to numberStr)
+            )
         }
     }
 
@@ -731,7 +839,10 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         val sender = ctx.source.sender
         val value = getStringArgument(ctx, "value")
         if (value.isEmpty()) {
-            sender.sendMessage("Current value: " + main.debugManager.listenFor)
+            LocalizedMessages.send(
+                sender, "command.levelledmobs.debug.current-value",
+                mapOf("value" to main.debugManager.listenFor)
+            )
             return
         }
 
@@ -740,12 +851,21 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
                 DebugManager.ListenFor.valueOf(value.uppercase())
 
             when (main.debugManager.listenFor) {
-                DebugManager.ListenFor.BOTH -> sender.sendMessage("Listening for all debug notice events")
-                DebugManager.ListenFor.FAILURE -> sender.sendMessage("Listening for failed debug notice events")
-                DebugManager.ListenFor.SUCCESS -> sender.sendMessage("Listening for successful debug notice events")
+                DebugManager.ListenFor.BOTH -> LocalizedMessages.send(
+                    sender, "command.levelledmobs.debug.listen-both"
+                )
+                DebugManager.ListenFor.FAILURE -> LocalizedMessages.send(
+                    sender, "command.levelledmobs.debug.listen-failure"
+                )
+                DebugManager.ListenFor.SUCCESS -> LocalizedMessages.send(
+                    sender, "command.levelledmobs.debug.listen-success"
+                )
             }
         } catch (_: Exception) {
-            sender.sendMessage("Invalid listen-for type: $value, valid options are: failure, success, both")
+            LocalizedMessages.send(
+                sender, "command.levelledmobs.debug.invalid-listen-type",
+                mapOf("value" to value)
+            )
         }
     }
 
@@ -764,19 +884,22 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         when (operationType) {
             OperationType.CLEAR -> {
                 clearList(listType)
-                val listTypeMsg: String = when (listType) {
-                    ListTypes.PLAYERS -> "Players"
-                    ListTypes.RULE_NAMES -> "Rule names"
-                    ListTypes.ENTITY -> "Entity types"
-                    ListTypes.DEBUG -> "Debug types"
-                }
-                sender.sendMessage("All filters cleared for $listTypeMsg")
+                val listTypeMsg = LocalizedMessages.text(when (listType) {
+                    ListTypes.PLAYERS -> "display.players"
+                    ListTypes.RULE_NAMES -> "display.rule-names"
+                    ListTypes.ENTITY -> "display.entity-types"
+                    ListTypes.DEBUG -> "display.debug-types"
+                }, colorize = false)
+                LocalizedMessages.send(
+                    sender, "command.levelledmobs.debug.list-filters-cleared",
+                    mapOf("list" to listTypeMsg)
+                )
             }
 
             OperationType.ADD, OperationType.REMOVE -> {
                 val input = getStringArgument(ctx, "values")
                 if (input.isEmpty()){
-                    sender.sendMessage("No value was specified")
+                    LocalizedMessages.send(sender, "command.levelledmobs.debug.value-missing")
                     return
                 }
 
@@ -794,8 +917,11 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
             ListTypes.RULE_NAMES -> main.debugManager.filterRuleNames
             ListTypes.PLAYERS -> main.debugManager.filterPlayerNames
         }
-        val msg = if (useList.isEmpty()) "No values currently defined" else useList.toString()
-        sender.sendMessage(msg)
+        if (useList.isEmpty())
+            LocalizedMessages.send(sender, "command.levelledmobs.debug.no-values-defined")
+        else LocalizedMessages.send(
+            sender, "command.levelledmobs.debug.values-defined", mapOf("values" to useList)
+        )
     }
 
     private fun clearList(listType: ListTypes) {
@@ -830,7 +956,10 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
                             optionsAddedOrRemoved.add(debugType.name)
                         }
                     } catch (_: Exception) {
-                        if (isAdd) sender.sendMessage("Invalid debug type: $debugTypeStr")
+                        if (isAdd) LocalizedMessages.send(
+                            sender, "command.levelledmobs.debug.invalid-debug-type",
+                            mapOf("type" to debugTypeStr)
+                        )
                     }
                 }
             }
@@ -847,7 +976,10 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
                             optionsAddedOrRemoved.add(entityType.name)
                         }
                     } catch (_: Exception) {
-                        if (isAdd) sender.sendMessage("Invalid entity type: $entityTypeStr")
+                        if (isAdd) LocalizedMessages.send(
+                            sender, "command.levelledmobs.debug.invalid-entity-type",
+                            mapOf("type" to entityTypeStr)
+                        )
                     }
                 }
             }
@@ -872,7 +1004,10 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
                             optionsAddedOrRemoved.add(actualRuleName)
                         }
                         else
-                            sender.sendMessage("Invalid rule name: $ruleName")
+                            LocalizedMessages.send(
+                                sender, "command.levelledmobs.debug.invalid-rule-name",
+                                mapOf("rule" to ruleName)
+                            )
                     } else {
                         dm.filterRuleNames.remove(ruleName)
                         optionsAddedOrRemoved.add(ruleName)
@@ -895,8 +1030,13 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         }
         if (optionsAddedOrRemoved.isNotEmpty()) {
             val useName = listType.name.replace("_", " ").lowercase()
-            if (isAdd) sender.sendMessage("Added values to $useName : $optionsAddedOrRemoved")
-            else sender.sendMessage("Removed values from $useName: $optionsAddedOrRemoved")
+            if (isAdd) LocalizedMessages.send(
+                sender, "command.levelledmobs.debug.values-added",
+                mapOf("list" to useName, "values" to optionsAddedOrRemoved)
+            ) else LocalizedMessages.send(
+                sender, "command.levelledmobs.debug.values-removed",
+                mapOf("list" to useName, "values" to optionsAddedOrRemoved)
+            )
         }
     }
 
@@ -929,7 +1069,7 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         }
 
         LivingEntityWrapper.clearCache()
-        sender.sendMessage("Cleared the LEW cache")
+        LocalizedMessages.send(sender, "command.levelledmobs.debug.lew-cache-cleared")
     }
 
     private fun showSpawnDistance(
@@ -954,9 +1094,17 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
             entityName = ExternalCompatibilityManager.getMythicMobInternalName(lmEntity)
         }
 
-        val message =
-            "Spawn distance is ${Utils.round(distance, 1)} for: $entityName " +
-                    "(lvl $mobLevel ${lmEntity.nameIfBaby}) in ${lmEntity.worldName}, $locationStr"
+        val message = LocalizedMessages.text(
+            "command.levelledmobs.debug.spawn-distance",
+            mapOf(
+                "distance" to Utils.round(distance, 1),
+                "entity" to entityName,
+                "level" to mobLevel,
+                "name" to lmEntity.nameIfBaby,
+                "world" to lmEntity.worldName,
+                "location" to locationStr
+            )
+        )
 
         lmEntity.free()
         sender.sendMessage(message)
@@ -967,7 +1115,7 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         optionalTarget: Player?
     ): LivingEntityWrapper? {
         if (sender !is Player && optionalTarget == null) {
-            sender.sendMessage("Must specify a player when running this command from console")
+            LocalizedMessages.send(sender, "command.levelledmobs.debug.player-required-console")
             return null
         }
 
@@ -977,7 +1125,10 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
         )
 
         if (lmEntity == null) {
-            sender.sendMessage("Could not locate any mobs near player: " + usePlayer.name)
+            LocalizedMessages.send(
+                sender, "command.levelledmobs.debug.no-nearby-mob",
+                mapOf("player" to usePlayer.name)
+            )
             return null
         }
 
@@ -986,15 +1137,15 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
 
     private fun showPlayerLocation(sender: CommandSender) {
         if (sender !is Player) {
-            sender.sendMessage("The command must be run by a player")
+            LocalizedMessages.send(sender, "common.players-only")
             return
         }
 
         val l = sender.location
-        val locationStr =
-            "location is ${l.blockX}, ${l.blockY}, ${l.blockZ} in ${l.world.name}"
-
-        sender.sendMessage("Your location: $locationStr")
+        LocalizedMessages.send(
+            sender, "command.levelledmobs.debug.player-location",
+            mapOf("x" to l.blockX, "y" to l.blockY, "z" to l.blockZ, "world" to l.world.name)
+        )
     }
 
     private fun getDebugTypes(builder: SuggestionsBuilder): CompletableFuture<Suggestions> {

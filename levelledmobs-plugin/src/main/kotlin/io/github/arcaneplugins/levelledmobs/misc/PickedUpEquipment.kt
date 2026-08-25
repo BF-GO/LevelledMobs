@@ -44,7 +44,7 @@ class PickedUpEquipment(
 
         for (itemsHex in slotMappings.values) {
             if (itemsHex.length % 2 != 0) {
-                Log.inf("Unable to deserialize picked up item, invalid length: " + itemsHex.length)
+                Log.infKey("console.items.invalid-serialized-length", mapOf("length" to itemsHex.length.toString()))
                 continue
             }
 
@@ -52,7 +52,7 @@ class PickedUpEquipment(
             try {
                 results.add(ItemStack.deserializeBytes(bytes))
             } catch (e: Exception) {
-                Log.inf("Unable to deserialize itemstack: " + e.message)
+                Log.infKey("console.items.deserialize-error", mapOf("error" to (e.message ?: "-")))
             }
         }
 

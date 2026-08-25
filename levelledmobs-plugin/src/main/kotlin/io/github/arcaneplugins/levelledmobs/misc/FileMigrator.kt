@@ -116,14 +116,9 @@ object  FileMigrator {
                 to.toPath(), content.text, StandardCharsets.UTF_8,
                 StandardOpenOption.TRUNCATE_EXISTING
             )
-            Log.inf(
-                "&fFile Loader: &8(Migration) &7Migrated &b${to.name}&7 successfully."
-            )
+            Log.infKey("console.migration.success", mapOf("file" to to.name))
         } catch (e: IOException) {
-            Log.sev(
-                "&fFile Loader: &8(Migration) &7Failed to migrate &b" + to.name
-                        + "&7! Stack trace:"
-            )
+            Log.sevKey("console.migration.failed", mapOf("file" to to.name))
             e.printStackTrace()
         }
     }
@@ -304,10 +299,7 @@ object  FileMigrator {
                                                 "$padding- $oldValue" // + "\r\n" + line;
                                             newConfigLines.add(currentLine + 1, newline)
                                             if (showMessages) {
-                                                Log.inf(
-                                                    "&fFile Loader: &8(Migration) &7Added array value: &b"
-                                                            + oldValue
-                                                )
+                                                Log.infKey("console.migration.array-value-added", mapOf("value" to oldValue))
                                             }
                                         }
                                     }
@@ -336,11 +328,10 @@ object  FileMigrator {
                                                             + fi.simpleValue)
                                                 newConfigLines.add(currentLine + 1, newline)
                                                 if (showMessages) {
-                                                    Log.inf(
-                                                        ("&fFile Loader: &8(Migration) &7Adding key: &b"
-                                                                + enumeratedKey + "&7, value: &r"
-                                                                + fi.simpleValue + "&7.")
-                                                    )
+                                                    Log.infKey("console.migration.key-added", mapOf(
+                                                        "key" to enumeratedKey,
+                                                        "value" to fi.simpleValue
+                                                    ))
                                                 }
                                                 processedKeys.add(key)
                                             }
@@ -375,10 +366,7 @@ object  FileMigrator {
                                     ))
                             ) {
                                 if (showMessages) {
-                                    Log.inf(
-                                        ("&fFile Loader: &8(Migration) &7Current key: &b" + key
-                                                + "&7, resetting to: &rfalse&7.")
-                                    )
+                                    Log.infKey("console.migration.key-reset-false", mapOf("key" to key))
                                 }
                                 newConfigMap[useCustomDrops]!!.simpleValue = "false"
                                 valuesUpdated++
@@ -411,11 +399,10 @@ object  FileMigrator {
                                         padding + getEndingKey(oldValue) + ": " + fiOld.simpleValue
                                     newConfigLines.add(currentLine + 1, newline)
                                     if (showMessages) {
-                                        Log.inf(
-                                            ("&fFile Loader: &8(Migration) &7Adding key: &b"
-                                                    + "$oldValue&7, value: &r" + fiOld.simpleValue
-                                                    + "&7.")
-                                        )
+                                        Log.infKey("console.migration.key-added", mapOf(
+                                            "key" to oldValue,
+                                            "value" to fiOld.simpleValue
+                                        ))
                                     }
                                 }
                                 processedKeys.add(parentKey)
@@ -425,11 +412,11 @@ object  FileMigrator {
                                 if (migratedValue != null) {
                                     valuesUpdated++
                                     if (showMessages) {
-                                        Log.inf(
-                                            ("&fFile Loader: &8(Migration) &7Current key: &b$key"
-                                                    + "&7, replacing: &r$value&7, with: &r"
-                                                    + "$migratedValue&7.")
-                                        )
+                                        Log.infKey("console.migration.value-replaced", mapOf(
+                                            "key" to key,
+                                            "old" to value,
+                                            "new" to migratedValue
+                                        ))
                                     }
                                     line = line.replace(value, migratedValue)
                                     newConfigLines[currentLine] = line
@@ -449,10 +436,10 @@ object  FileMigrator {
                             newConfigLines.removeAt(currentLine)
                             currentLine--
                             if (showMessages) {
-                                Log.inf(
-                                    ("&fFile Loader: &8(Migration) &7Current key: &b" + key
-                                            + "&7, removing value: &r$value&7.")
-                                )
+                                Log.infKey("console.migration.value-removed", mapOf(
+                                    "key" to key,
+                                    "value" to value
+                                ))
                             }
                         }
                     }
@@ -493,17 +480,14 @@ object  FileMigrator {
                 to.toPath(), newConfigLines, StandardCharsets.UTF_8,
                 StandardOpenOption.TRUNCATE_EXISTING
             )
-            Log.inf(
-                "&fFile Loader: &8(Migration) &7Migrated &b${to.name}&7 successfully."
-            )
-            Log.inf(
-                "&fFile Loader: &8(Migration) &7Keys matched: &b$keysMatched&7, values matched: &b$valuesMatched&7, values updated: &b$valuesUpdated&7."
-            )
+            Log.infKey("console.migration.success", mapOf("file" to to.name))
+            Log.infKey("console.migration.summary", mapOf(
+                "keys" to keysMatched.toString(),
+                "values" to valuesMatched.toString(),
+                "updated" to valuesUpdated.toString()
+            ))
         } catch (e: Exception) {
-            Log.sev(
-                ("&fFile Loader: &8(Migration) &7Failed to migrate &b${to.name}"
-                        + "&7! Stack trace:")
-            )
+            Log.sevKey("console.migration.failed", mapOf("file" to to.name))
             e.printStackTrace()
         }
     }

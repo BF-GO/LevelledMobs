@@ -296,10 +296,11 @@ class YmlParsingHelper(
 
                 else -> {
                     val currentPath = if (cs.currentPath.isNullOrEmpty()) path else cs.currentPath + "." + path
-                    Log.war(
-                        "$currentPath: couldn't parse Config of type: " + obj.javaClass
-                            .simpleName + ", value: $obj (did you put enough spaces?)"
-                    )
+                    Log.warKey("console.yaml.parse-path-error", mapOf(
+                        "path" to currentPath,
+                        "type" to obj.javaClass.simpleName,
+                        "value" to obj.toString()
+                    ))
                     return null
                 }
             }
@@ -321,10 +322,10 @@ class YmlParsingHelper(
                 }
 
                 else -> {
-                    Log.war(
-                        "couldn't parse config of type: " + obj.javaClass.simpleName +
-                                ", value: $obj"
-                    )
+                    Log.warKey("console.yaml.parse-error", mapOf(
+                        "type" to obj.javaClass.simpleName,
+                        "value" to obj.toString()
+                    ))
                     return null
                 }
             }

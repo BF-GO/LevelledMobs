@@ -12,6 +12,7 @@ import io.github.arcaneplugins.levelledmobs.result.NametagResult
 import io.github.arcaneplugins.levelledmobs.enums.NametagVisibilityEnum
 import io.github.arcaneplugins.levelledmobs.util.LibsDisguisesUtils
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils
 import io.github.arcaneplugins.levelledmobs.util.Utils
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
@@ -77,9 +78,9 @@ class NametagQueueManager {
                 }
             }
             if (hadError)
-                Log.sev("Nametag update queue Manager has exited with error")
+                Log.sevKey("console.queue.nametag-stopped-error")
             else
-                Log.inf("Nametag update queue Manager has exited")
+                Log.infKey("console.queue.nametag-stopped")
 
             isRunning = false
         }
@@ -97,11 +98,11 @@ class NametagQueueManager {
         val queueSize = getNumberQueued()
 
         if (queueSize < 1000 && !qt.isCancelled || Bukkit.getScheduler().isCurrentlyRunning(qt.taskId)) return
-        val status = if (qt.isCancelled) "cancelled"
-        else if (queueSize < 1000) "not running"
-        else "queue size was $queueSize"
+        val status = if (qt.isCancelled) LocalizedMessages.text("display.task.cancelled", colorize = false)
+        else if (queueSize < 1000) LocalizedMessages.text("display.task.not-running", colorize = false)
+        else LocalizedMessages.text("display.task.queue-size", mapOf("size" to queueSize.toString()), false)
 
-        Log.war("Restarting Nametag Queue Manager task, status was $status")
+        Log.warKey("console.queue.nametag-restarting", mapOf("status" to status))
         qt.cancel()
         isRunning = false
         start()
@@ -175,9 +176,9 @@ class NametagQueueManager {
             lastEntityType = item.lmEntity.nameIfBaby
             processItem(item)
         } catch (ex: Exception) {
-            val entityName = lastEntityType ?: "Unknown Entity"
+            val entityName = lastEntityType ?: LocalizedMessages.text("display.unknown-entity", colorize = false)
 
-            Log.sev("Unable to process nametag update for '$entityName'. ")
+            Log.sevKey("console.queue.nametag-processing-error", mapOf("entity" to entityName))
             ex.printStackTrace()
         } finally {
             item.lmEntity.free()

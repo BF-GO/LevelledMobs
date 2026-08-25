@@ -6,6 +6,7 @@ import io.github.arcaneplugins.levelledmobs.commands.CommandHandler
 import io.github.arcaneplugins.levelledmobs.misc.NamespacedKeys
 import io.github.arcaneplugins.levelledmobs.misc.PlayerQueueItem
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import io.github.arcaneplugins.levelledmobs.wrappers.SchedulerWrapper
@@ -56,11 +57,7 @@ class PlayerJoinListener : Listener {
             "notify-admins-of-errors-upon-join", true)
 
         if (notifyAdmins && MainCompanion.instance.errorMessages.isNotEmpty()) {
-            event.player.sendMessage(
-                "LevelledMobs reported errors. Check the console or " +
-                        "run the following command to view them:\n" +
-                        "/lm debug show-errors"
-            )
+            LocalizedMessages.send(event.player, "other.join-errors-reported")
         }
 
 //        if (main.mainCompanion.hadRulesLoadError)
@@ -81,18 +78,10 @@ class PlayerJoinListener : Listener {
 
         if (CommandHandler.hadErrorLoading){
             if (!main.ver.isRunningPaper){
-                event.player.sendMessage(
-                    MessageUtils.colorizeAll(
-                        "&b&lLevelledMobs:&r &6The command framework is NOT supported on Spigot.&r\n" +
-                                "Only a few commands will be available."
-                    ))
+                LocalizedMessages.send(event.player, "other.command-framework-spigot")
             }
             else{
-                event.player.sendMessage(
-                    MessageUtils.colorizeAll(
-                        "&b&lLevelledMobs:&r &6There was an error loading the command framework.&r\n" +
-                                "Only a few commands will be available."
-                    ))
+                LocalizedMessages.send(event.player, "other.command-framework-error")
             }
         }
     }
@@ -129,10 +118,10 @@ class PlayerJoinListener : Listener {
                     main.mainCompanion.setPlayerWorldPortalLocation(player, location)
             }
         } catch (e: Exception) {
-            Log.war(
-                "Unable to get player nether portal coords from ${player.name}, "
-                    + e.message
-            )
+            Log.warKey("console.player.invalid-nether-coordinates", mapOf(
+                "player" to player.name,
+                "error" to (e.message ?: "-")
+            ))
         }
     }
 

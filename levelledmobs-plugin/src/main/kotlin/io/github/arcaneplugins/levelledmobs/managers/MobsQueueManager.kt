@@ -7,6 +7,7 @@ import io.github.arcaneplugins.levelledmobs.debug.DebugType
 import io.github.arcaneplugins.levelledmobs.misc.EvaluationException
 import io.github.arcaneplugins.levelledmobs.misc.QueueItem
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import java.util.UUID
 import java.util.concurrent.TimeoutException
 import java.util.concurrent.atomic.AtomicInteger
@@ -83,7 +84,7 @@ class MobsQueueManager {
         threadsCount.getAndDecrement()
         if (threadsCount.get() == 0) {
             isRunning = false
-            Log.inf("Mob processing queue Manager has exited")
+            Log.infKey("console.queue.mob-processing-stopped")
         }
     }
 
@@ -102,11 +103,11 @@ class MobsQueueManager {
             val taskId = taskEntry.key
             val task = taskEntry.value
             if (!stopAll && (!task.isCancelled || Bukkit.getScheduler().isCurrentlyRunning(taskId))) continue
-            val status = if (task.isCancelled) "cancelled"
-            else if (!stopAll) "not running"
-            else "queue size was $queueSize"
+            val status = if (task.isCancelled) LocalizedMessages.text("display.task.cancelled", colorize = false)
+            else if (!stopAll) LocalizedMessages.text("display.task.not-running", colorize = false)
+            else LocalizedMessages.text("display.task.queue-size", mapOf("size" to queueSize.toString()), false)
 
-            Log.war("Restarting Nametag Queue Manager task, status was $status")
+            Log.warKey("console.queue.mob-processing-restarting", mapOf("status" to status))
             task.cancel()
             enumerator.remove()
             threadsCount.getAndDecrement()
@@ -174,11 +175,11 @@ class MobsQueueManager {
 
         if (ignoreMobsWithNoPlayerContext && item.lmEntity.associatedPlayer == null){
             DebugManager.log(DebugType.PLAYER_CONTEXT, item.lmEntity){
-                val locationStr = "${item.lmEntity.location.blockX}, " +
-                    "${item.lmEntity.location.blockY}, " +
-                    "${item.lmEntity.location.blockZ} " +
-                    "in ${item.lmEntity.location.world.name}"
-                "ignoring mob ${item.lmEntity.nameIfBaby} due to no player context at $locationStr"
+                val locationStr = LocalizedMessages.text("command.levelledmobs.debug.runtime.d095", mapOf("value-1" to (item.lmEntity.location.blockX)), false) +
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d096", mapOf("value-1" to (item.lmEntity.location.blockY)), false) +
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d097", mapOf("value-1" to (item.lmEntity.location.blockZ)), false) +
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d098", mapOf("value-1" to (item.lmEntity.location.world.name)), false)
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d099", mapOf("value-1" to (item.lmEntity.nameIfBaby), "value-2" to (locationStr)), false)
             }
             return
         }
@@ -191,7 +192,7 @@ class MobsQueueManager {
         }
         catch (_: TimeoutException){
             DebugManager.log(DebugType.APPLY_LEVEL_RESULT, item.lmEntity, false){
-                "Timed out applying level to mob"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d100", colorize = false)
             }
         }
     }

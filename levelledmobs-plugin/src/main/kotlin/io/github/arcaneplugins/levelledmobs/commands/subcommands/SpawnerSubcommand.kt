@@ -8,6 +8,7 @@ import java.util.UUID
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.MainCompanion
 import io.github.arcaneplugins.levelledmobs.commands.MessagesHelper
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils.colorizeAll
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -217,7 +218,10 @@ object SpawnerSubcommand : SpawnerBaseClass("levelledmobs.command.spawner") {
                     try {
                         info.spawnType = EntityType.valueOf(foundValue.uppercase())
                     } catch (_: Exception) {
-                        sender.sendMessage("Invalid spawn type: $foundValue")
+                        LocalizedMessages.send(
+                            sender, "command.levelledmobs.spawner.invalid-spawn-type",
+                            mapOf("value" to foundValue)
+                        )
                         return
                     }
                 }

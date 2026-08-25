@@ -42,11 +42,11 @@ class UpdateChecker(
                 .toURL().openStream()
         }
         catch (e: FileNotFoundException) {
-            Log.war("Error checking for latest version, file not found: ${e.message}")
+            Log.warKey("console.update.file-not-found", mapOf("error" to (e.message ?: "-")))
             return
         }
         catch (e: Exception) {
-            Log.war("Error checking for latest version. ${e.message}")
+            Log.warKey("console.update.check-error", mapOf("error" to (e.message ?: "-")))
             return
         }
 

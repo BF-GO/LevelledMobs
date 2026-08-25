@@ -1,5 +1,6 @@
 package io.github.arcaneplugins.levelledmobs.customdrops
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import java.util.TreeMap
 import java.util.UUID
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
@@ -101,7 +102,7 @@ class CustomDropProcessingInfo {
         if (this.debugMessages == null || debugMessages!!.isEmpty())
             return
 
-        DebugManager.logNoComma(debugTypeToUse, lmEntity) { "\n$debugMessages" }
+        DebugManager.logNoComma(debugTypeToUse, lmEntity) { LocalizedMessages.text("command.levelledmobs.debug.runtime.d001", mapOf("value-1" to (debugMessages)), false) }
         debugMessages!!.setLength(0)
         this.debugTypeToUse = DebugType.CUSTOM_DROPS
     }

@@ -18,6 +18,7 @@ import io.github.arcaneplugins.levelledmobs.misc.LMSpawnReason
 import io.github.arcaneplugins.levelledmobs.rules.RuleInfo
 import io.github.arcaneplugins.levelledmobs.rules.strategies.StrategyType
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import org.bukkit.World
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeInstance
@@ -141,7 +142,10 @@ class LivingEntityWrapper private constructor() : LivingEntityWrapperBase(), Liv
                 }
             }
 
-            return "size: $totalSize, nonempties: $nonEmpties"
+            return LocalizedMessages.text(
+                "command.levelledmobs.debug.lew-status",
+                mapOf("size" to totalSize, "non-empty" to nonEmpties)
+            )
         }
 
         fun clearCache() {
@@ -259,7 +263,7 @@ class LivingEntityWrapper private constructor() : LivingEntityWrapperBase(), Liv
             this.invalidPlaceholderReplacement = main.rulesManager.getRuleInvalidPlaceholderReplacement(this)
             this.isBuildingCache = false
         } catch (e: InterruptedException) {
-            Log.war("exception in buildCache: " + e.message)
+            Log.warKey("console.concurrency.cache-build-interrupted", mapOf("error" to (e.message ?: "-")))
         } finally {
             if (cacheLock.isHeldByCurrentThread)
                 cacheLock.unlock()
@@ -278,18 +282,18 @@ class LivingEntityWrapper private constructor() : LivingEntityWrapperBase(), Liv
                 retryCount++
                 if (retryCount > LOCKMAXRETRYTIMES) {
                     DebugManager.log(DebugType.THREAD_LOCKS) {
-                        "getPDCLock could not lock thread - ${callingFunction.fileName}:${callingFunction.lineNumber}"
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d153", mapOf("value-1" to (callingFunction.fileName), "value-2" to (callingFunction.lineNumber)), false)
                     }
                     return false
                 }
 
                 val retryCountFinal = retryCount
                 DebugManager.log(DebugType.THREAD_LOCKS) {
-                    "getPDCLock retry $retryCountFinal - ${callingFunction.fileName}:${callingFunction.lineNumber}"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d154", mapOf("value-1" to (retryCountFinal), "value-2" to (callingFunction.fileName), "value-3" to (callingFunction.lineNumber)), false)
                 }
             }
         } catch (e: InterruptedException) {
-            Log.war("getPDCLock InterruptedException: " + e.message)
+            Log.warKey("console.concurrency.pdc-lock-interrupted", mapOf("error" to (e.message ?: "-")))
             return false
         }
     }
@@ -543,13 +547,9 @@ class LivingEntityWrapper private constructor() : LivingEntityWrapperBase(), Liv
 
             if (hadError) {
                 if (succeeded) {
-                    Log.war(
-                        "Got ConcurrentModificationException in LivingEntityWrapper getting skyLightLevel, succeeded on retry"
-                    )
+                    Log.warKey("console.concurrency.skylight-retry-succeeded")
                 } else {
-                    Log.war(
-                        "Got ConcurrentModificationException (2x) in LivingEntityWrapper getting skyLightLevel"
-                    )
+                    Log.warKey("console.concurrency.skylight-failed")
                 }
             }
 

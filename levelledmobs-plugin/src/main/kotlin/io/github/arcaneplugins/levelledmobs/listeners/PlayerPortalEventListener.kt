@@ -57,9 +57,10 @@ class PlayerPortalEventListener : Listener {
                             )
                     }
                 } catch (e: ConcurrentModificationException) {
-                    Log.war(
-                        "Error updating PDC on ${player.name}, ${e.message}"
-                    )
+                    Log.warKey("console.player.pdc-update-error", mapOf(
+                        "player" to player.name,
+                        "error" to (e.message ?: "-")
+                    ))
                 }
             }
         }

@@ -11,6 +11,7 @@ import io.github.arcaneplugins.levelledmobs.debug.DebugType
 import io.github.arcaneplugins.levelledmobs.managers.MobDataManager
 import io.github.arcaneplugins.levelledmobs.managers.NotifyManager
 import io.github.arcaneplugins.levelledmobs.util.Log
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -38,9 +39,9 @@ class LMItemsParser {
     ): Boolean {
         if (!ExternalCompatibilityManager.instance.doesLMIMeetVersionRequirement()) {
             if (ExternalCompatibilityManager.hasLMItemsInstalled)
-                Log.war("customdrops.yml references external item '$materialName' but LM_Items is an old version")
+                Log.warKey("console.customdrops.lm-items-outdated-item", mapOf("item" to materialName))
             else
-                Log.war("customdrops.yml references external item '$materialName' but LM_Items is not installed")
+                Log.warKey("console.customdrops.lm-items-missing-item", mapOf("item" to materialName))
 
             return false
         }
@@ -59,8 +60,9 @@ class LMItemsParser {
         val lmitems = LM_Items.plugin
 
         if (!lmitems.doesSupportPlugin(item.externalPluginName!!)) {
-            Log.war("customdrops.yml references item from plugin '${item.externalPluginName}' " +
-                    "but LM_Items does not support that plugin")
+            Log.warKey("console.customdrops.unsupported-external-plugin", mapOf(
+                "plugin" to item.externalPluginName!!
+            ))
             return false
         }
 
@@ -75,7 +77,9 @@ class LMItemsParser {
         val itemsAPI = LM_Items.plugin.getItemAPIForPlugin(item.externalPluginName!!)
 
         if (itemsAPI == null) {
-            Log.war("Unable to get ItemsAPI from LM_Items for plugin ${item.externalPluginName}")
+            Log.warKey("console.customdrops.items-api-unavailable", mapOf(
+                "plugin" to item.externalPluginName!!
+            ))
             return false
         }
 
@@ -122,7 +126,9 @@ class LMItemsParser {
         val result = itemsAPI.getItem(itemRequest)
 
         if (!result.pluginIsInstalled) {
-            Log.war("custom item references plugin '${item.externalPluginName}' but that plugin is not installed")
+            Log.warKey("console.customdrops.external-plugin-missing", mapOf(
+                "plugin" to item.externalPluginName!!
+            ))
             return false
         }
 
@@ -130,22 +136,30 @@ class LMItemsParser {
         if (itemStack == null) {
             if (result.typeIsNotSupported) {
                 if (item.externalType == null) {
-                    Log.war(
-                        "custom item '${item.externalPluginName}:${item.externalItemId}' doesn't support type (null)"
-                    )
+                    Log.warKey("console.customdrops.external-type-unsupported", mapOf(
+                        "item" to "${item.externalPluginName}:${item.externalItemId}",
+                        "type" to "null"
+                    ))
                 } else {
-                    Log.war(
-                        "custom item '${item.externalPluginName}:${item.externalItemId}' doesn't support type ${item.externalType}"
-                    )
+                    Log.warKey("console.customdrops.external-type-unsupported", mapOf(
+                        "item" to "${item.externalPluginName}:${item.externalItemId}",
+                        "type" to item.externalType!!
+                    ))
                 }
 
                 return false
             }
 
-            val msg = if (item.externalType == null && (result.itemStacks == null || result.itemStacks!!.isEmpty()))
-                "&4custom item '${item.externalPluginName}:${item.externalItemId}' returned a null item&r"
-            else
-                "&4custom item '${item.externalPluginName}:${item.externalItemId}' (${item.externalType}) returned a null item&r"
+            val msg = LocalizedMessages.text(
+                if (item.externalType == null && (result.itemStacks == null || result.itemStacks!!.isEmpty()))
+                    "console.customdrops.external-null-item"
+                else
+                    "console.customdrops.external-null-item-with-type",
+                mapOf(
+                    "item" to "${item.externalPluginName}:${item.externalItemId}",
+                    "type" to (item.externalType ?: "null")
+                )
+            )
 
             // on server startup show as warning message
             // after reload show as debug
@@ -183,15 +197,19 @@ class LMItemsParser {
         val formula = LevelledMobs.instance.levelManager.replaceStringPlaceholdersForFormulas(formulaPre, lmEntity)
         val evalResult = MobDataManager.evaluateExpression(formula)
         if (evalResult.hadError){
-            NotifyManager.notifyOfError("Error evaluating formula for custom drop extras for '$name' on mob: ${lmEntity.nameIfBaby}, ${evalResult.error}")
+            NotifyManager.notifyOfErrorKey("console.formula.customdrop-extra-error", mapOf(
+                "name" to name,
+                "entity" to lmEntity.nameIfBaby,
+                "error" to (evalResult.error ?: "-")
+            ))
             DebugManager.log(DebugType.CUSTOM_DROPS_FORMULA, lmEntity){
                 val msg = if (formula == formulaPre)
-                    "   formula: '$formula'"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d024", mapOf("value-1" to (formula)), false)
                 else
-                    "   formulaPre: '$formulaPre'\n" +
-                            "   formula: '$formula'"
+                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d025", mapOf("value-1" to (formulaPre)), false) +
+                            LocalizedMessages.text("command.levelledmobs.debug.runtime.d026", mapOf("value-1" to (formula)), false)
 
-                "result (error, ${evalResult.error})\n$msg" }
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d027", mapOf("value-1" to (evalResult.error), "value-2" to (msg)), false) }
             return null
         }
 
@@ -199,12 +217,12 @@ class LMItemsParser {
 
         DebugManager.log(DebugType.CUSTOM_DROPS_FORMULA, lmEntity){
             val msg = if (formula == formulaPre)
-                "   formula: '$formula'"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d028", mapOf("value-1" to (formula)), false)
             else
-                "   formulaPre: '$formulaPre'\n" +
-                        "   formula: '$formula'"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d029", mapOf("value-1" to (formulaPre)), false) +
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d030", mapOf("value-1" to (formula)), false)
 
-            "result $result\n$msg"}
+            LocalizedMessages.text("command.levelledmobs.debug.runtime.d031", mapOf("value-1" to (result), "value-2" to (msg)), false)}
 
         return result
     }

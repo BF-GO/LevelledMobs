@@ -5,6 +5,7 @@ import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.enums.AttributeNames
 import io.github.arcaneplugins.levelledmobs.misc.Cooldown
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils.colorizeAll
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.Utils
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import org.bukkit.attribute.AttributeModifier
@@ -70,37 +71,57 @@ class EntityDamageDebugListener : Listener {
         /* Now send them the debug message! :) */
         send(
             player,
-            "&8&m+---+&r Debug information for &b" + lmEntity.typeName + "&r &8&m+---+&r"
+            LocalizedMessages.text(
+                "command.levelledmobs.debug.damage-heading",
+                mapOf("entity" to lmEntity.typeName), colorize = false
+            ),
+            false
         )
 
         // Print non-attributes
-        send(player, "&f&nGlobal Values:", false)
-        send(player, "&8&m->&b Level: &7" + lmEntity.getMobLevel)
+        send(player, LocalizedMessages.text(
+            "command.levelledmobs.debug.damage-global-values", colorize = false
+        ), false)
+        send(player, LocalizedMessages.text(
+            "command.levelledmobs.debug.damage-level",
+            mapOf("level" to lmEntity.getMobLevel), colorize = false
+        ), false)
         send(
             player,
-            "&8&m->&b Current Health: &7" + Utils.round(lmEntity.livingEntity.health),
+            LocalizedMessages.text(
+                "command.levelledmobs.debug.damage-health",
+                mapOf("health" to Utils.round(lmEntity.livingEntity.health)), colorize = false
+            ),
             false
         )
         if (lmEntity.livingEntity.customName != null) {
             send(
-                player, "&8&m->&b Nametag: &7" + lmEntity.livingEntity.customName,
+                player, LocalizedMessages.text(
+                    "command.levelledmobs.debug.damage-nametag",
+                    mapOf("nametag" to lmEntity.livingEntity.customName), colorize = false
+                ),
                 false
             )
         }
 
         // Print attributes
         player.sendMessage(" ")
-        send(player, "&f&nAttribute Values:", false)
+        send(player, LocalizedMessages.text(
+            "command.levelledmobs.debug.damage-attributes", colorize = false
+        ), false)
         for (attributeName in AttributeNames.entries) {
             val attribute = Utils.getAttribute(attributeName) ?: continue
             val attributeInstance = lmEntity.livingEntity.getAttribute(attribute) ?: continue
 
             if (Utils.round(attributeInstance.value) == 0.0) continue
 
-            val sb = StringBuilder("&8&m->&b ")
-            sb.append(attribute.toString().replace("GENERIC_", ""))
-                .append(": &7")
-                .append(Utils.round(attributeInstance.value))
+            val sb = StringBuilder(LocalizedMessages.text(
+                "command.levelledmobs.debug.damage-attribute",
+                mapOf(
+                    "attribute" to attribute.toString().replace("GENERIC_", ""),
+                    "value" to Utils.round(attributeInstance.value)
+                ), colorize = false
+            ))
 
             var hadItems = false
             for (mod in attributeInstance.modifiers) {
@@ -120,7 +141,9 @@ class EntityDamageDebugListener : Listener {
             }
 
             if (hadItems) {
-                sb.append("), base: ")
+                sb.append(LocalizedMessages.text(
+                    "command.levelledmobs.debug.damage-base", colorize = false
+                ))
                 val remainingDigitsStr = attributeInstance.baseValue.toString()
                 val remainingDigits = remainingDigitsStr.substringAfter('.').length - 1
                 if (remainingDigits > 1)
@@ -134,13 +157,20 @@ class EntityDamageDebugListener : Listener {
         if (lmEntity.livingEntity is Creeper) {
             // Print unique values (per-mob)
             player.sendMessage(" ")
-            send(player, "&f&nUnique Values:", false)
+            send(player, LocalizedMessages.text(
+                "command.levelledmobs.debug.damage-unique-values", colorize = false
+            ), false)
 
-            send(player, "&8&m->&b Creeper Blast Radius: &7" +
-                    (lmEntity.livingEntity as Creeper).explosionRadius, false)
+            send(player, LocalizedMessages.text(
+                "command.levelledmobs.debug.damage-creeper-radius",
+                mapOf("radius" to (lmEntity.livingEntity as Creeper).explosionRadius),
+                colorize = false
+            ), false)
         }
 
-        send(player, "&8(End of information.)", false)
+        send(player, LocalizedMessages.text(
+            "command.levelledmobs.debug.damage-end", colorize = false
+        ), false)
 
         // Add them to a delay, and remove them after 2 seconds (40 ticks)
         cooldownMap[player.uniqueId] = Cooldown(System.currentTimeMillis(), entityId)

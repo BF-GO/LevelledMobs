@@ -62,7 +62,7 @@ class ExternalCompatibilityManager {
 
             if (pluginName.isNullOrEmpty()) continue
             if (keyName.isNullOrEmpty()){
-                Log.war("no key-name was supplied for $pluginName")
+                Log.warKey("console.integration.missing-key-name", mapOf("plugin" to pluginName))
                 continue
             }
             var requirement = ExternalPluginDetection.RequirementTypes.EXISTS
@@ -71,7 +71,7 @@ class ExternalCompatibilityManager {
                     requirement = ExternalPluginDetection.RequirementTypes.valueOf(requirementStr.uppercase())
                 }
                 catch (_: Exception){
-                    Log.war("Invalid value: $requirementStr")
+                    Log.warKey("console.validation.invalid-value", mapOf("value" to requirementStr))
                 }
             }
 
@@ -308,7 +308,7 @@ class ExternalCompatibilityManager {
                         val cutoverVersion = VersionInfo("7.3.12")
                         useNewerEliteMobsKey = pluginVer.isGreaterThanOrEqual(cutoverVersion)
                     } catch (e: InvalidObjectException) {
-                        Log.war("Got error comparing EliteMob versions: ${e.message}")
+                        Log.warKey("console.integration.elitemobs-version-error", mapOf("error" to (e.message ?: "-")))
                         // default to newer version on error
                         useNewerEliteMobsKey = true
                     }
@@ -386,7 +386,7 @@ class ExternalCompatibilityManager {
                 val methodIsPetEntity = clazzIPetsPlugin.getDeclaredMethod("isPetEntity", Entity::class.java)
                 return methodIsPetEntity.invoke(objIPetsPlugin, lmEntity.livingEntity) as Boolean
             } catch (e: Exception) {
-                Log.sev("Error checking if ${lmEntity.nameIfBaby} is a SimplePet")
+                Log.sevKey("console.integration.simplepet-check-error", mapOf("entity" to lmEntity.nameIfBaby))
                 e.printStackTrace()
             }
 

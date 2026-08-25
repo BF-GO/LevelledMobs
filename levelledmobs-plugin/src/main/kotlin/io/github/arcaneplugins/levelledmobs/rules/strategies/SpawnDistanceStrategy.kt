@@ -1,5 +1,6 @@
 package io.github.arcaneplugins.levelledmobs.rules.strategies
 
+import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import java.util.concurrent.ThreadLocalRandom
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.debug.DebugManager
@@ -71,7 +72,7 @@ class SpawnDistanceStrategy : LevellingStrategy, Cloneable{
 
         if (spawnDistanceAssignment.isNaN()){
             DebugManager.log(DebugType.STRATEGY_RESULT, lmEntity) {
-                "SpawnDistanceStrategy generated NaN, levelDistance: $levelDistance, increaseLevelDistance: $ringedTiers"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d147", mapOf("value-1" to (levelDistance), "value-2" to (ringedTiers)), false)
             }
             spawnDistanceAssignment = 0f
         }
@@ -158,8 +159,8 @@ class SpawnDistanceStrategy : LevellingStrategy, Cloneable{
 
         if (result.isNaN()){
             DebugManager.log(DebugType.STRATEGY_RESULT, lmEntity) {
-                "BlendedLevel generated NaN, returning 0. transitionYHeight: $transitionYHeight, yPos: $currentYPos, " +
-                        "yHeightPeriod: $yHeightPeriod, lvlMultiplier: $lvlMultiplier, sda: $spawnDistanceLevelAssignment"
+                LocalizedMessages.text("command.levelledmobs.debug.runtime.d148", mapOf("value-1" to (transitionYHeight), "value-2" to (currentYPos)), false) +
+                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d149", mapOf("value-1" to (yHeightPeriod), "value-2" to (lvlMultiplier), "value-3" to (spawnDistanceLevelAssignment)), false)
             }
             result = 0f
         }

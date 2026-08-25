@@ -205,7 +205,7 @@ class Definitions{
     fun load(){
         ver = LevelledMobs.instance.ver
 
-        Log.inf("Building reflection cache, use simple names: ${ver.useSimpleName}")
+        Log.infKey("console.nametag.build-reflection-cache", mapOf("simple-names" to ver.useSimpleName.toString()))
         build()
         if (hasMiniMessage) mm = MiniMessage.miniMessage()
     }
@@ -421,7 +421,7 @@ class Definitions{
             }
         }
         catch (e: Exception){
-            Log.war("Error getting reflection methods for nbt-dump operations: ${e.message}")
+            Log.warKey("console.nametag.reflection-error", mapOf("error" to (e.message ?: "-")))
         }
     }
 
