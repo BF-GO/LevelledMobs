@@ -101,19 +101,13 @@ object  FileMigrator {
         fileVersion: Int
     ) {
         try {
-            val content = StringReplacer(Files.readString(
-                from.toPath(),
-                StandardCharsets.UTF_8
-            ))
-
-            content.replace("overall_chance:", "overall-chance:")
-            content.replace("overall_permission:", "overall-permission:")
-            val foundFileVersion = "file-version:.*?\\d+".toRegex().find(content.text)
-            if (foundFileVersion != null)
-                content.replace(foundFileVersion.value, "file-version: 12")
+            val content = migrateCustomDropsContent(
+                Files.readString(from.toPath(), StandardCharsets.UTF_8),
+                fileVersion
+            )
 
             Files.writeString(
-                to.toPath(), content.text, StandardCharsets.UTF_8,
+                to.toPath(), content, StandardCharsets.UTF_8,
                 StandardOpenOption.TRUNCATE_EXISTING
             )
             Log.infKey("console.migration.success", mapOf("file" to to.name))
@@ -121,6 +115,62 @@ object  FileMigrator {
             Log.sevKey("console.migration.failed", mapOf("file" to to.name))
             e.printStackTrace()
         }
+    }
+
+    internal fun migrateCustomDropsContent(source: String, fileVersion: Int): String {
+        val content = StringReplacer(source)
+        content.replace("overall_chance:", "overall-chance:")
+        content.replace("overall_permission:", "overall-permission:")
+
+        if (fileVersion < 13) {
+            content.text = removeCustomCommands(
+                content.text,
+                setOf("jw_999_spawn_announcement", "jw_999_death_announcement")
+            )
+            content.text = content.text.replace(
+                Regex("(?m)^  # Глобальные объявления уровня 999\\..*(?:\\r?\\n)?"),
+                ""
+            )
+        }
+
+        content.text = content.text.replace(
+            Regex("(?m)^file-version:\\s*\\d+\\s*$"),
+            "file-version: ${FileLoader.CUSTOMDROPS_FILE_VERSION}"
+        )
+        return content.text
+    }
+
+    private fun removeCustomCommands(source: String, names: Set<String>): String {
+        val newline = if (source.contains("\r\n")) "\r\n" else "\n"
+        val lines = source.split(Regex("\\r?\\n"))
+        val result = mutableListOf<String>()
+        var lineIndex = 0
+
+        while (lineIndex < lines.size) {
+            if (lines[lineIndex] != "  - customCommand:") {
+                result.add(lines[lineIndex++])
+                continue
+            }
+
+            var blockEnd = lineIndex + 1
+            while (blockEnd < lines.size) {
+                val line = lines[blockEnd]
+                val nextListEntry = line.startsWith("  - ")
+                val nextRootEntry = line.isNotBlank() && !line.startsWith(' ') && !line.startsWith('#')
+                if (nextListEntry || nextRootEntry) break
+                blockEnd++
+            }
+
+            val shouldRemove = lines.subList(lineIndex, blockEnd).any { line ->
+                names.any { name -> line.trim() == "name: $name" }
+            }
+            if (!shouldRemove)
+                result.addAll(lines.subList(lineIndex, blockEnd))
+
+            lineIndex = blockEnd
+        }
+
+        return result.joinToString(newline)
     }
 
     private fun doSectionsContainSameLines(

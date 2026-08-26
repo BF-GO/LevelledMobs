@@ -37,6 +37,7 @@ dependencies {
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.15.0") // https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
     compileOnly("io.github.stumper66:LM_Items:1.3.0") // https://mvnrepository.com/artifact/io.github.stumper66/LM_Items
     testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
+    testImplementation("org.yaml:snakeyaml:2.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

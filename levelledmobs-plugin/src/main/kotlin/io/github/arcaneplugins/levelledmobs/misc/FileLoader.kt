@@ -21,7 +21,7 @@ import org.yaml.snakeyaml.Yaml
 object FileLoader {
     const val SETTINGS_FILE_VERSION = 40 // Последнее изменение: v4.5.3 b151
     const val MESSAGES_FILE_VERSION = 10 // Русский каталог и настраиваемые сообщения времени выполнения
-    const val CUSTOMDROPS_FILE_VERSION = 12 // Последнее изменение: v4.1.0 b44
+    const val CUSTOMDROPS_FILE_VERSION = 13 // Удалены глобальные объявления о мобах 999 уровня
     const val RULES_FILE_VERSION = 5 // Последнее изменение: v4.0.0 b1
     const val EXTERNALPLUGINS_FILE_VERSION = 1 // Последнее изменение: v4.0.0
 

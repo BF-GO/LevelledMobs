@@ -610,54 +610,6 @@ all_levellable_mobs:
       lore:
         - '&7Документально подтверждает: это было зря.'
 
-  # Глобальные объявления уровня 999. Мир, координаты и убийца намеренно не выводятся.
-  - customCommand:
-      name: jw_999_spawn_announcement
-      command:
-        - 'minecraft:tellraw @a {"text":"☠ СУДНАЯ НЕДЕЛЯ: в мир ввалился %displayname% [ур. %mob-lvl%]. Сервер сделал вид, что так и задумано.","color":"dark_red","bold":true}'
-        - 'minecraft:execute as @a at @s run playsound minecraft:entity.wither.spawn master @s ~ ~ ~ 1 1'
-      chance: 1.0
-      amount: 1
-      minLevel: 999
-      maxLevel: 999
-      equipped: 0
-      player-caused: true
-      nospawner: true
-      nomultiplier: true
-      use-chunk-kill-max: true
-      groupid: jw_999_spawn_announcement
-      group-limits:
-        cap-select: 1
-        cap-per-item: 1
-        cap-total: -1
-        cap-equipped: 0
-        retries: 0
-      run-on-spawn: true
-      run-on-death: false
-  - customCommand:
-      name: jw_999_death_announcement
-      command:
-        - 'minecraft:tellraw @a {"text":"✦ %displayname% [ур. %mob-lvl%] ликвидирован. Канцелярия апокалипсиса делает вид, что всё было по плану.","color":"gold","bold":true}'
-        - 'minecraft:execute as @a at @s run playsound minecraft:ui.toast.challenge_complete master @s ~ ~ ~ 1 1'
-      chance: 1.0
-      amount: 1
-      minLevel: 999
-      maxLevel: 999
-      equipped: 0
-      player-caused: false
-      nospawner: true
-      nomultiplier: true
-      use-chunk-kill-max: true
-      groupid: jw_999_death_announcement
-      group-limits:
-        cap-select: 1
-        cap-per-item: 1
-        cap-total: -1
-        cap-equipped: 0
-        retries: 0
-      run-on-spawn: false
-      run-on-death: true
-
 all_hostile_mobs:
   -
 
@@ -995,4 +947,4 @@ drop-table:
 # Раздел 05 |  Настройки разработчика / Не редактировать дальше этого момента
 #   ---------------  -  ------------------------------
 #
-file-version: 12
+file-version: 13
