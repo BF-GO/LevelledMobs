@@ -19,6 +19,7 @@ object LocalizedMessages {
     private const val EMERGENCY_PREFIX = "&b[LevelledMobs]&7 "
 
     private var bundled = YamlConfiguration()
+    @Volatile
     private var active: YamlConfiguration? = null
 
     fun initialize(plugin: JavaPlugin) {

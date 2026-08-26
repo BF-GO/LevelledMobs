@@ -176,11 +176,14 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
             return
         }
 
+        val main = LevelledMobs.instance
+        val sender = commandSender!!
+        main.reloadLM(sender) { forceRelevelAfterReload(main) }
+    }
+
+    private fun forceRelevelAfterReload(main: LevelledMobs) {
         var worldCount = 0
         var entityCount = 0
-        val main = LevelledMobs.instance
-
-        main.reloadLM(commandSender!!)
         val isUsingPlayerLevelling = main.rulesManager.isPlayerLevellingEnabled()
 
         for (world in Bukkit.getWorlds()) {
@@ -537,13 +540,12 @@ object RulesSubcommand : CommandBase("levelledmobs.command.rules") {
                     else
                         world.spawnParticle(Particle.EFFECT, location, 20, 0.0, 0.0, 0.0, 0.1)
                 }
-                scheduler.run()
+                scheduler.locationForRegionScheduler = location
+                scheduler.runDelayed(((i * 30L + 49L) / 50L).coerceAtLeast(1L))
 
                 // этот поток асинхронный, блокировки не происходит
-                Thread.sleep(30)
             }
         }
-        catch (_: InterruptedException) {}
         catch (e: IllegalArgumentException){
             Log.warKey("console.rules.particle-error", mapOf("error" to (e.message ?: "-")))
         }

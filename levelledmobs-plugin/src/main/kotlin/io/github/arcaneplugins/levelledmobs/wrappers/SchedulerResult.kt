@@ -1,46 +1,18 @@
 package io.github.arcaneplugins.levelledmobs.wrappers
 
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
-import org.bukkit.scheduler.BukkitTask
 
-/**
- * Содержит информацию о запланированной задаче, которая была выполнена.
- *
- * @see SchedulerWrapper
- * @author stumper66
- * @since 3.11.0
- */
+/** Result of a task scheduled through Paper's region scheduler API. */
 class SchedulerResult {
-    var foliaTask: ScheduledTask? = null
-        private set
-    var regularTask: BukkitTask? = null
-        private set
-    var isRunningFolia: Boolean = false
-        private set
+    private var task: ScheduledTask? = null
 
-    constructor(foliaTask: ScheduledTask?){
-        this.foliaTask = foliaTask
-        this.isRunningFolia = true
-    }
-
-    constructor(regularTask: BukkitTask?){
-        this.regularTask = regularTask
+    constructor(task: ScheduledTask?) {
+        this.task = task
     }
 
     fun cancelTask() {
-        if (isRunningFolia)
-            if (foliaTask != null) foliaTask!!.cancel()
-        else
-            if (regularTask != null) regularTask!!.cancel()
+        task?.cancel()
     }
 
-    fun isCancelled(): Boolean {
-        return if (isRunningFolia) {
-            if (foliaTask != null) foliaTask!!.isCancelled
-            else false
-        } else {
-            if (regularTask != null) regularTask!!.isCancelled
-            else false
-        }
-    }
+    fun isCancelled(): Boolean = task?.isCancelled ?: false
 }

@@ -3,6 +3,7 @@ package io.github.arcaneplugins.levelledmobs.listeners
 import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import java.time.Instant
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.MainCompanion
 import io.github.arcaneplugins.levelledmobs.customdrops.CustomDropResult
@@ -11,7 +12,6 @@ import io.github.arcaneplugins.levelledmobs.result.ChunkKillInfo
 import io.github.arcaneplugins.levelledmobs.debug.DebugType
 import io.github.arcaneplugins.levelledmobs.managers.MobDataManager
 import io.github.arcaneplugins.levelledmobs.misc.NamespacedKeys
-import io.github.arcaneplugins.levelledmobs.misc.NametagTimerChecker
 import io.github.arcaneplugins.levelledmobs.result.AdjacentChunksResult
 import io.github.arcaneplugins.levelledmobs.util.Log
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils.colorizeAll
@@ -35,7 +35,7 @@ import org.bukkit.persistence.PersistentDataType
  * @since 2.4.0
  */
 class EntityDeathListener : Listener {
-    val damageMappings = mutableMapOf<UUID, Player>()
+    val damageMappings = ConcurrentHashMap<UUID, Player>()
     private var lastPriority: EventPriority? = null
     private val settingName = "entity-death-event"
 
@@ -64,11 +64,7 @@ class EntityDeathListener : Listener {
     }
 
     private fun onDeath(event: EntityDeathEvent) {
-        var damagingPlayer: Player? = null
-        if (damageMappings.containsKey(event.entity.uniqueId)) {
-            damagingPlayer = damageMappings[event.entity.uniqueId]
-            damageMappings.remove(event.entity.uniqueId)
-        }
+        val damagingPlayer = damageMappings.remove(event.entity.uniqueId)
 
         if (event.entity is Player) return
         if (bypassEntity.contains(event.entityType)) return
@@ -76,9 +72,7 @@ class EntityDeathListener : Listener {
         val main = LevelledMobs.instance
         val killer = damagingPlayer ?: event.entity.killer
 
-        synchronized(NametagTimerChecker.entityTarget_Lock) {
-            main.nametagTimerChecker.entityTargetMap.remove(event.entity)
-        }
+        main.nametagQueueManager.clearEntity(event.entity)
 
         val lmEntity = LivingEntityWrapper.getInstance(event.entity)
 

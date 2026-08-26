@@ -199,7 +199,7 @@ class PlayerDeathListener {
         val clickEvent = def.methodClickEvent!!.invoke(null,
             suggestCommand,
             ClickEvent.Payload.string("/tell " + player.name + " ")
-        ) as ClickEvent
+        ) as ClickEvent<*>
 
         return Component.text(player.name).clickEvent(clickEvent)
     }

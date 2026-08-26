@@ -4,6 +4,8 @@ package io.github.arcaneplugins.levelledmobs.rules
 
 import java.util.TreeMap
 import java.util.TreeSet
+import java.util.concurrent.ConcurrentSkipListMap
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.regex.Pattern
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.enums.Addition
@@ -49,10 +51,16 @@ import org.bukkit.generator.structure.Structure
  */
 class RulesParser {
     private var parsingInfo = RuleInfo()
-    val rulePresets: MutableMap<String, RuleInfo> = TreeMap(String.CASE_INSENSITIVE_ORDER)
-    var customRules = mutableListOf<RuleInfo>()
+    val rulePresets: MutableMap<String, RuleInfo> =
+        ConcurrentSkipListMap(String.CASE_INSENSITIVE_ORDER)
+    @Volatile
+    var customRules = CopyOnWriteArrayList<RuleInfo>()
+    @Volatile
     var defaultRule: RuleInfo? = null
     private var customBiomeGroups: MutableMap<String, MutableSet<String>>? = null
+    private val parsedCustomStrategyPlaceholders = TreeSet(String.CASE_INSENSITIVE_ORDER)
+    private var parsedCustomMobGroups: Map<String, Set<String>> = emptyMap()
+    private var parsedBiomeGroupMappings: Map<String, Set<String>> = emptyMap()
 
     companion object{
         private const val MLINCLUDEDLIST = "included-list"
@@ -185,7 +193,7 @@ class RulesParser {
                         invalidGroup = true
                     }
                 }
-                if (LevelledMobs.instance.customMobGroups.containsKey(group))
+                if (LevelledMobs.instance.rulesParsingManager.parsedCustomMobGroups.containsKey(group))
                     results.add(group)
                 else
                     invalidGroup = true
@@ -417,9 +425,7 @@ class RulesParser {
 
         val main = LevelledMobs.instance
         rulePresets.clear()
-        main.rulesManager.rulesInEffect.clear()
-        main.customMobGroups.clear()
-        main.rulesManager.allCustomStrategyPlaceholders.clear()
+        parsedCustomStrategyPlaceholders.clear()
 
         parseCustomMobGroups(YmlParsingHelper.objToCS(config, "mob-groups"))
         parseCustomBiomeGroups(YmlParsingHelper.objToCS(config, "biome-groups"))
@@ -430,15 +436,10 @@ class RulesParser {
         }
 
         this.defaultRule = parseDefaults(YmlParsingHelper.objToCS(config, "default-rule"))
-        main.rulesManager.rulesInEffect.add(defaultRule!!)
-        main.rulesManager.anyRuleHasChance = defaultRule!!.conditionsChance != null
-        main.rulesManager.hasAnyWGCondition = (defaultRule!!.conditionsWGregions != null
-                || defaultRule!!.conditionsWGregionOwners != null)
-
-        main.rulesManager.buildBiomeGroupMappings(customBiomeGroups)
-        this.customRules = parseCustomRules(
+        parsedBiomeGroupMappings = main.rulesManager.buildBiomeGroupMappings(customBiomeGroups)
+        this.customRules = CopyOnWriteArrayList(parseCustomRules(
             config[YmlParsingHelper.getKeyNameFromConfig(config, "custom-rules")]
-        )
+        ))
 
         checkCustomRules()
         autoGenerateWeightedRandom()
@@ -447,23 +448,38 @@ class RulesParser {
     fun checkCustomRules() {
         val ruleMappings: MutableMap<String, RuleInfo> = TreeMap(String.CASE_INSENSITIVE_ORDER)
         val main = LevelledMobs.instance
+        val publishedRules = ArrayList<RuleInfo>(customRules.size + 1)
+        defaultRule?.let(publishedRules::add)
+        val publishedPlaceholders = TreeSet<String>(String.CASE_INSENSITIVE_ORDER).apply {
+            addAll(parsedCustomStrategyPlaceholders)
+            defaultRule?.customStrategy?.keys?.let { addAll(it) }
+        }
+        var anyRuleHasChance = defaultRule?.conditionsChance != null
+        var hasAnyWGCondition = defaultRule?.let {
+            it.conditionsWGregions != null || it.conditionsWGregionOwners != null
+        } ?: false
 
         for (ruleInfo in customRules) {
-            LevelledMobs.instance.rulesManager.rulesInEffect.add(ruleInfo)
+            publishedRules.add(ruleInfo)
+            publishedPlaceholders.addAll(ruleInfo.customStrategy.keys)
 
             ruleMappings[ruleInfo.ruleName] = ruleInfo
             if (ruleInfo.conditionsChance != null)
-                main.rulesManager.anyRuleHasChance = true
+                anyRuleHasChance = true
 
             if (ruleInfo.conditionsWGregions != null || ruleInfo.conditionsWGregionOwners != null)
-                main.rulesManager.hasAnyWGCondition = true
+                hasAnyWGCondition = true
         }
 
-        synchronized(RulesManager.ruleLocker) {
-            main.rulesManager.ruleNameMappings.clear()
-            main.rulesManager.ruleNameMappings.putAll(ruleMappings)
-            main.rulesManager.rulesCooldown.clear()
-        }
+        main.rulesManager.publishRules(
+            publishedRules,
+            ruleMappings,
+            publishedPlaceholders,
+            parsedCustomMobGroups,
+            parsedBiomeGroupMappings,
+            anyRuleHasChance,
+            hasAnyWGCondition
+        )
 
         main.rulesManager.updateRulesHash()
         Log.infKey("console.rules-parser.current-hash", mapOf("hash" to main.rulesManager.currentRulesHash))
@@ -485,18 +501,26 @@ class RulesParser {
     }
 
     private fun parseCustomMobGroups(cs: ConfigurationSection?) {
-        if (cs == null) return
+        val publishedGroups = TreeMap<String, Set<String>>(String.CASE_INSENSITIVE_ORDER)
+        if (cs == null) {
+            parsedCustomMobGroups = emptyMap()
+            return
+        }
 
         for (groupName in cs.getKeys(false)) {
             val names = cs.getStringList(groupName)
             val groupMembers: MutableSet<String> = TreeSet(String.CASE_INSENSITIVE_ORDER)
             groupMembers.addAll(names)
-            LevelledMobs.instance.customMobGroups[groupName] = groupMembers
+            publishedGroups[groupName] = java.util.Collections.unmodifiableSet(groupMembers)
         }
+        parsedCustomMobGroups = java.util.Collections.unmodifiableMap(publishedGroups)
     }
 
     private fun parseCustomBiomeGroups(cs: ConfigurationSection?) {
-        if (cs == null) return
+        if (cs == null) {
+            customBiomeGroups = null
+            return
+        }
 
         this.customBiomeGroups = TreeMap(String.CASE_INSENSITIVE_ORDER)
 
@@ -1239,7 +1263,7 @@ class RulesParser {
 
         if (!customStrategy.formula.isNullOrEmpty()) {
             parsingInfo.customStrategy[customStrategy.placeholderName] = customStrategy
-            RulesManager.instance.allCustomStrategyPlaceholders.add(customStrategy.placeholderName)
+            parsedCustomStrategyPlaceholders.add(customStrategy.placeholderName)
         }
     }
 

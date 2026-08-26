@@ -26,7 +26,7 @@ class ServerLoadEvent : Listener {
                 if (MainCompanion.instance.showCustomDrops)
                     LevelledMobs.instance.customDropsHandler.customDropsParser.showCustomDropsDebugInfo(null)
             }
-            scheduler.runDelayed(10L)
+            scheduler.runGlobalDelayed(10L)
         }
         else if (MainCompanion.instance.showCustomDrops)
             LevelledMobs.instance.customDropsHandler.customDropsParser.showCustomDropsDebugInfo(null)

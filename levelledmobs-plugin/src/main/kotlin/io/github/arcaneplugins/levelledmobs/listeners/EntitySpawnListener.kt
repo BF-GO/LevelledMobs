@@ -9,13 +9,11 @@ import io.github.arcaneplugins.levelledmobs.enums.InternalSpawnReason
 import io.github.arcaneplugins.levelledmobs.enums.LevellableState
 import io.github.arcaneplugins.levelledmobs.enums.NametagVisibilityEnum
 import io.github.arcaneplugins.levelledmobs.managers.ExternalCompatibilityManager
-import io.github.arcaneplugins.levelledmobs.managers.LevelManager
 import io.github.arcaneplugins.levelledmobs.managers.MobDataManager
 import io.github.arcaneplugins.levelledmobs.misc.NamespacedKeys
 import io.github.arcaneplugins.levelledmobs.misc.QueueItem
 import io.github.arcaneplugins.levelledmobs.result.AdditionalLevelInformation
 import io.github.arcaneplugins.levelledmobs.util.Log
-import io.github.arcaneplugins.levelledmobs.util.MiscUtils
 import io.github.arcaneplugins.levelledmobs.util.Utils
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import io.github.arcaneplugins.levelledmobs.wrappers.SchedulerWrapper
@@ -24,7 +22,6 @@ import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.block.CreatureSpawner
-import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
@@ -48,7 +45,7 @@ import org.bukkit.persistence.PersistentDataType
 class EntitySpawnListener : Listener{
     var processMobSpawns = true
     private var mobProcessDelay = 0
-    var mobCheckDistance = 320
+    var mobCheckDistance = 128
     private var lastPriority: EventPriority? = null
     private val settingName = "entity-spawn-event"
 
@@ -58,9 +55,6 @@ class EntitySpawnListener : Listener{
 
     fun load(){
         this.mobProcessDelay = LevelledMobs.instance.helperSettings.getInt("mob-process-delay", 0)
-        this.mobCheckDistance = LevelledMobs.instance.helperSettings.getInt(
-            "async-task-max-blocks-from-player", 320
-        )
 
         val priority = LevelledMobs.instance.mainCompanion.getEventPriority(settingName, EventPriority.MONITOR)
         if (lastPriority != null){
@@ -157,7 +151,7 @@ class EntitySpawnListener : Listener{
         event: EntitySpawnEvent,
         delay: Int
     ) {
-        val scheduler = SchedulerWrapper {
+        val scheduler = SchedulerWrapper(lmEntity.livingEntity) {
             preProcessmob(lmEntity, event, delay)
             lmEntity.free()
         }
@@ -171,7 +165,7 @@ class EntitySpawnListener : Listener{
         event: Event,
         delay: Int
     ) {
-        val scheduler = SchedulerWrapper {
+        val scheduler = SchedulerWrapper(lmEntity.livingEntity) {
             LevelledMobs.instance.mobsQueueManager.addToQueue(QueueItem(lmEntity, event))
             lmEntity.free()
         }
@@ -249,15 +243,13 @@ class EntitySpawnListener : Listener{
     ) {
         val world = location.world ?: return
 
-        val scheduler = SchedulerWrapper {
-            try {
-                repeat(count) {
-                    world.spawnParticle(particle, location, 20, 0.0, 0.0, 0.0, 0.1)
-                    Thread.sleep(50)
-                }
-            } catch (_: InterruptedException) { }
+        repeat(count) { index ->
+            val scheduler = SchedulerWrapper {
+                world.spawnParticle(particle, location, 20, 0.0, 0.0, 0.0, 0.1)
+            }
+            scheduler.locationForRegionScheduler = location
+            scheduler.runDelayed((index + 1).toLong())
         }
-        scheduler.run()
     }
 
     fun processMob(
@@ -299,14 +291,9 @@ class EntitySpawnListener : Listener{
             if (event.spawnReason == SpawnReason.CUSTOM ||
                 event.spawnReason == SpawnReason.SPAWNER_EGG
             ) {
-                synchronized(LevelManager.summonedOrSpawnEggs_Lock) {
-                    if (main.levelManager.summonedOrSpawnEggs.containsKey(
-                            lmEntity.livingEntity
-                        )
-                    ) {
-                        // моб был порожден командой вызова и будет обработан напрямую
-                        return
-                    }
+                if (main.levelManager.summonedOrSpawnEggs.remove(lmEntity.livingEntity.uniqueId)) {
+                    // моб был порожден командой вызова и будет обработан напрямую
+                    return
                 }
             }
 
@@ -439,18 +426,16 @@ class EntitySpawnListener : Listener{
             private set
 
         fun updateMobForPlayerLevelling(lmEntity: LivingEntityWrapper) {
-            val onlinePlayerCount = lmEntity.world.players.size
-
             val wrapper = SchedulerWrapper(lmEntity.livingEntity){
                 updateMobForPlayerLevellingNonAsync(
                     lmEntity,
-                    lmEntity.main.levelManager.entitySpawnListener.mobCheckDistance,
-                    onlinePlayerCount
+                    lmEntity.main.levelManager.entitySpawnListener.mobCheckDistance
                 )
                 lmEntity.free()
             }
 
-            if (Bukkit.isPrimaryThread()) wrapper.runDirectlyInBukkit = true
+            if (Bukkit.isOwnedByCurrentRegion(lmEntity.livingEntity))
+                wrapper.runDirectlyInBukkit = true
 
             lmEntity.inUseCount.getAndIncrement()
             wrapper.run()
@@ -458,14 +443,10 @@ class EntitySpawnListener : Listener{
 
         private fun updateMobForPlayerLevellingNonAsync(
             lmEntity: LivingEntityWrapper,
-            checkDistance: Int,
-            onlinePlayerCount: Int
+            checkDistance: Int
         ){
             val main = LevelledMobs.instance
-            val playerList: MutableList<Player> = if (onlinePlayerCount <= 10) getPlayersOnServerNearMob(
-                lmEntity.livingEntity,
-                checkDistance
-            ) else getPlayersNearMob(lmEntity.livingEntity, checkDistance)
+            val playerList = getPlayersNearMob(lmEntity.livingEntity, checkDistance)
 
             var closestPlayer: Player? = null
             for (player in playerList) {
@@ -500,32 +481,19 @@ class EntitySpawnListener : Listener{
             }
         }
 
-        private fun getPlayersOnServerNearMob(
-            mob: LivingEntity,
-            checkDistance: Int
-        ): MutableList<Player> {
-            return Utils.filterPlayersList(
-                mob.world.players,
-                mob,
-                (checkDistance * 4).toDouble()
-            )
-        }
-
         private fun getPlayersNearMob(
             mob: LivingEntity,
             checkDistance: Int
         ): MutableList<Player> {
-            val radius = MiscUtils.retrieveLoadedChunkRadius(mob.location, checkDistance.toDouble())
-            var temp = mob.getNearbyEntities(radius, radius, radius
-            ).asSequence()
-                .filterIsInstance<Player>()
-                .filter { e: Entity -> (e as Player).gameMode != GameMode.SPECTATOR }
-                .map { e: Entity -> Pair(mob.location.distanceSquared(e.location), e as Player) }
+            var temp = mob.world.getNearbyPlayers(mob.location, checkDistance.toDouble())
+                .asSequence()
+                .filter { it.gameMode != GameMode.SPECTATOR }
+                .map { player -> Pair(mob.location.distanceSquared(player.location), player) }
                 .sortedBy { it.first }
                 .map { it.second }
 
             if (MainCompanion.instance.excludePlayersInCreative)
-                temp = temp.filter { e: Entity -> (e as Player).gameMode != GameMode.CREATIVE }
+                temp = temp.filter { it.gameMode != GameMode.CREATIVE }
 
             return temp.toMutableList()
         }

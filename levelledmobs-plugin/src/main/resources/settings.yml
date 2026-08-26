@@ -52,16 +52,20 @@ use-legacy-serializer: true
 # ||  ТОЛЬКО ДЛЯ ОПЫТНЫХ ПОЛЬЗОВАТЕЛЕЙ
 # ||  Период и радиус асинхронной задачи, которая проверяет уровни, теги и правила мобов.
 # ||  Параметры чувствительны к производительности; проверяйте изменения на тестовом сервере.
+# DEPRECATED: retained so existing configurations still load; event-driven updates ignore it.
 async-task-update-period: 3
+# DEPRECATED: retained so existing configurations still load; entity tracking supplies viewers.
 async-task-max-blocks-from-player: 320
 
 # ||  ТОЛЬКО ДЛЯ ОПЫТНЫХ ПОЛЬЗОВАТЕЛЕЙ
 # ||  Обработчик появления назначает сущностям уровни, пока число игроков не превышает лимит.
+# DEPRECATED: mobs are now processed on spawn at every player count.
 level-mobs-upon-spawn-max-players: 10
 
 # ||  ТОЛЬКО ДЛЯ ОПЫТНЫХ ПОЛЬЗОВАТЕЛЕЙ
 # ||  Обновлять пакеты тегов при уроне от любого источника, пока не превышен лимит игроков.
 # ||  После превышения лимита обновление вызывается только уроном от игрока.
+# DEPRECATED: event-driven nametag refreshes no longer depend on online player count.
 update-mobs-upon-nonplayer-damage-max-players: 5
 
 # ||  ТОЛЬКО ДЛЯ ОПЫТНЫХ ПОЛЬЗОВАТЕЛЕЙ

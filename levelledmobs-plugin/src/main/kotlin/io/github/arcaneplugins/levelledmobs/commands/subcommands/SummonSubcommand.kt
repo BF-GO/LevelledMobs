@@ -7,7 +7,6 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import com.mojang.brigadier.tree.LiteralCommandNode
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.enums.LevellableState
-import io.github.arcaneplugins.levelledmobs.managers.LevelManager
 import io.github.arcaneplugins.levelledmobs.managers.MobDataManager
 import io.github.arcaneplugins.levelledmobs.misc.LivingEntityPlaceholder
 import io.github.arcaneplugins.levelledmobs.misc.NamespacedKeys
@@ -472,9 +471,7 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
                 val lmEntity = LivingEntityWrapper.getInstance(entity)
                 lmEntity.summonedLevel = useLevel
                 lmEntity.isNewlySpawned = true
-                synchronized(LevelManager.summonedOrSpawnEggs_Lock) {
-                    main.levelManager.summonedOrSpawnEggs.put(lmEntity.livingEntity, null)
-                }
+                main.levelManager.summonedOrSpawnEggs.add(lmEntity.livingEntity.uniqueId)
                 if (!options.nbtData.isNullOrEmpty())
                     lmEntity.nbtData = mutableListOf(options.nbtData!!)
 

@@ -1,326 +1,402 @@
 package io.github.arcaneplugins.levelledmobs.managers
 
-import java.time.Instant
-import java.util.WeakHashMap
-import java.util.concurrent.LinkedBlockingQueue
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
-import io.github.arcaneplugins.levelledmobs.misc.NametagTimerChecker
+import io.github.arcaneplugins.levelledmobs.enums.NametagVisibilityEnum
 import io.github.arcaneplugins.levelledmobs.misc.QueueItem
 import io.github.arcaneplugins.levelledmobs.nametag.NametagSender
 import io.github.arcaneplugins.levelledmobs.nametag.NametagSenderHandler
 import io.github.arcaneplugins.levelledmobs.result.NametagResult
-import io.github.arcaneplugins.levelledmobs.enums.NametagVisibilityEnum
 import io.github.arcaneplugins.levelledmobs.util.LibsDisguisesUtils
-import io.github.arcaneplugins.levelledmobs.util.Log
 import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils
 import io.github.arcaneplugins.levelledmobs.util.Utils
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
-import io.github.arcaneplugins.levelledmobs.wrappers.SchedulerWrapper
-import org.bukkit.Bukkit
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask
+import java.lang.ref.WeakReference
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.atomic.AtomicReference
+import java.util.function.Consumer
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import org.bukkit.scheduler.BukkitTask
 
 /**
- * Ставит обновления тегов мобов в очередь, чтобы их можно было применить в фоновом потоке.
+ * Event-driven nametag dispatcher.
  *
- * @author stumper66
- * @since 3.0.0
+ * Viewers come from Paper's track/untrack events. Updates for the same mob are
+ * coalesced for one tick and executed on the mob's owning region.
  */
 class NametagQueueManager {
-    private var isRunning = false
-    private var doThread = false
+    private data class ViewerKey(val entityId: UUID, val playerId: UUID)
+
+    private class PendingNametag(
+        val item: QueueItem,
+        players: Collection<Player>
+    ) {
+        val players = ConcurrentHashMap<UUID, Player>()
+        val latestNametag = AtomicReference<NametagResult>(item.nametag!!)
+        val completed = AtomicBoolean()
+
+        init {
+            players.forEach { this.players[it.uniqueId] = it }
+        }
+    }
+
     private var nametagSender: NametagSender? = null
     private var hasLibsDisguisesInstalled = false
-    var disableNametagJava = false
-    var disableNametagBedrock = false
-    var queueTask: BukkitTask? = null
-    private val queue = LinkedBlockingQueue<QueueItem>()
-    val nametagSenderHandler = NametagSenderHandler()
-    private val queueLock = Any()
+    @Volatile private var acceptingWork = false
 
-    fun load(){
+    private val trackedViewers = TrackedViewerRegistry<Player>()
+    private val trackedEntities =
+        ConcurrentHashMap<UUID, WeakReference<LivingEntity>>()
+    private val pendingRefreshes = ConcurrentHashMap<UUID, PendingNametag>()
+    private val pendingSince = ConcurrentHashMap<UUID, Long>()
+    private val cooldownTasks = ConcurrentHashMap<ViewerKey, ScheduledTask>()
+    private val targetedViewers = ConcurrentHashMap<UUID, UUID>()
+
+    private val coalescedRefreshes = AtomicLong()
+    private val processedRefreshes = AtomicLong()
+    private val packetsSent = AtomicLong()
+    private val packetWindowStartedAt = AtomicLong(System.currentTimeMillis())
+    private val packetsInWindow = AtomicLong()
+    @Volatile private var previousPacketsPerSecond = 0.0
+
+    @Volatile var disableNametagJava = false
+    @Volatile var disableNametagBedrock = false
+    val nametagSenderHandler = NametagSenderHandler()
+
+    fun load() {
         hasLibsDisguisesInstalled = ExternalCompatibilityManager.hasLibsDisguisesInstalled
-        this.nametagSender = nametagSenderHandler.getCurrentUtil()
+        nametagSender = nametagSenderHandler.getCurrentUtil()
         onLoadOrReload()
     }
 
-    fun onLoadOrReload(){
-        this.disableNametagJava = LevelledMobs.instance.helperSettings.getBoolean(
+    fun onLoadOrReload() {
+        disableNametagJava = LevelledMobs.instance.helperSettings.getBoolean(
             "disable-nametag-java", false
         )
-        this.disableNametagBedrock = LevelledMobs.instance.helperSettings.getBoolean(
+        disableNametagBedrock = LevelledMobs.instance.helperSettings.getBoolean(
             "disable-nametag-bedrock", false
         )
     }
 
     val hasNametagSupport: Boolean
-        get() = this.nametagSender != null
+        get() = nametagSender != null
 
     fun start() {
-        // фолия будет работать напрямую
-        doThread = true
-        if (LevelledMobs.instance.ver.isRunningFolia) return
-
-        if (isRunning) return
-
-        isRunning = true
-
-        val scheduler = SchedulerWrapper {
-            var hadError = false
-            try {
-                mainThread()
-            } catch (e: Exception) {
-                if (e !is InterruptedException){
-                    hadError = true
-                    e.printStackTrace()
-                }
-            }
-            if (hadError)
-                Log.sevKey("console.queue.nametag-stopped-error")
-            else
-                Log.infKey("console.queue.nametag-stopped")
-
-            isRunning = false
-        }
-        scheduler.run()
-        this.queueTask = scheduler.bukkitTask
+        acceptingWork = true
     }
 
     fun stop() {
-        doThread = false
+        acceptingWork = false
+        pendingRefreshes.values.forEach(::complete)
+        pendingRefreshes.clear()
+        pendingSince.clear()
+        cooldownTasks.values.forEach(ScheduledTask::cancel)
+        cooldownTasks.clear()
+        trackedViewers.clear()
+        trackedEntities.clear()
+        targetedViewers.clear()
     }
 
-    fun taskChecker(){
-        val qt = queueTask ?: return
+    /** Kept for compatibility with the removed polling queue watchdog. */
+    fun taskChecker() = Unit
 
-        val queueSize = getNumberQueued()
+    fun getNumberQueued(): Int = pendingRefreshes.size
 
-        if (queueSize < 1000 && !qt.isCancelled || Bukkit.getScheduler().isCurrentlyRunning(qt.taskId)) return
-        val status = if (qt.isCancelled) LocalizedMessages.text("display.task.cancelled", colorize = false)
-        else if (queueSize < 1000) LocalizedMessages.text("display.task.not-running", colorize = false)
-        else LocalizedMessages.text("display.task.queue-size", mapOf("size" to queueSize.toString()), false)
+    fun getTrackedEntityCount(): Int = trackedViewers.entityCount()
 
-        Log.warKey("console.queue.nametag-restarting", mapOf("status" to status))
-        qt.cancel()
-        isRunning = false
-        start()
+    fun getCoalescedRefreshes(): Long = coalescedRefreshes.get()
+
+    fun getProcessedRefreshes(): Long = processedRefreshes.get()
+
+    fun getPacketsSent(): Long = packetsSent.get()
+
+    fun getPacketsPerSecond(): Double {
+        val now = System.currentTimeMillis()
+        rollPacketWindow(now)
+        val elapsed = (now - packetWindowStartedAt.get()).coerceAtLeast(1L)
+        return if (packetsInWindow.get() == 0L) previousPacketsPerSecond
+        else packetsInWindow.get() * 1000.0 / elapsed
+    }
+
+    fun getOldestPendingAgeMillis(): Long {
+        val oldest = pendingSince.values.minOrNull() ?: return 0L
+        return (System.currentTimeMillis() - oldest).coerceAtLeast(0L)
+    }
+
+    fun recordPacketSent() {
+        packetsSent.incrementAndGet()
+        packetsInWindow.incrementAndGet()
+        rollPacketWindow(System.currentTimeMillis())
+    }
+
+    private fun rollPacketWindow(now: Long) {
+        val startedAt = packetWindowStartedAt.get()
+        val elapsed = now - startedAt
+        if (elapsed < 1000L || !packetWindowStartedAt.compareAndSet(startedAt, now)) return
+
+        previousPacketsPerSecond = packetsInWindow.getAndSet(0L) * 1000.0 / elapsed
+    }
+
+    fun track(entity: LivingEntity, player: Player) {
+        trackedViewers.track(entity.uniqueId, player.uniqueId, player)
+        trackedEntities[entity.uniqueId] = WeakReference(entity)
+    }
+
+    fun untrack(entity: LivingEntity, player: Player) {
+        val entityId = entity.uniqueId
+        if (trackedViewers.untrack(entityId, player.uniqueId)) {
+            trackedEntities.remove(entityId)
+            targetedViewers.remove(entityId)
+        }
+        cooldownTasks.remove(ViewerKey(entityId, player.uniqueId))?.cancel()
+    }
+
+    fun clearPlayer(player: Player) {
+        val playerId = player.uniqueId
+        trackedViewers.removeViewer(playerId).forEach { entityId ->
+            trackedEntities.remove(entityId)
+            targetedViewers.remove(entityId)
+        }
+        cooldownTasks.entries.removeIf { (key, task) ->
+            if (key.playerId == playerId) {
+                task.cancel()
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    fun clearEntity(entity: LivingEntity) {
+        clearEntity(entity.uniqueId)
+    }
+
+    private fun clearEntity(entityId: UUID) {
+        trackedViewers.removeEntity(entityId)
+        trackedEntities.remove(entityId)
+        targetedViewers.remove(entityId)
+        cooldownTasks.entries.removeIf { (key, task) ->
+            if (key.entityId == entityId) {
+                task.cancel()
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    fun getTrackedPlayers(entityId: UUID): MutableList<Player> =
+        trackedViewers.values(entityId).toMutableList()
+
+    fun setTarget(entity: LivingEntity, player: Player?) {
+        if (player == null)
+            targetedViewers.remove(entity.uniqueId)
+        else
+            targetedViewers[entity.uniqueId] = player.uniqueId
+    }
+
+    fun refreshAllTrackedEntities() {
+        trackedEntities.forEach { (entityId, weakEntity) ->
+            val entity = weakEntity.get()
+            if (entity == null) {
+                trackedEntities.remove(entityId, weakEntity)
+                trackedViewers.removeEntity(entityId)
+                return@forEach
+            }
+
+            entity.scheduler.run(
+                LevelledMobs.instance,
+                Consumer {
+                    if (!entity.isValid) {
+                        clearEntity(entityId)
+                        return@Consumer
+                    }
+                    val wrapper = LivingEntityWrapper.getInstance(entity)
+                    LevelledMobs.instance.levelManager.updateNametag(wrapper)
+                    wrapper.free()
+                },
+                null
+            )
+        }
     }
 
     fun addToQueue(item: QueueItem) {
-        if (!doThread) return
+        if (!acceptingWork || nametagSender == null) return
         if (!item.lmEntity.shouldShowLMNametag) return
-        if (Bukkit.getOnlinePlayers().isEmpty()) return
-        if (item.lmEntity.nametagVisibilityEnum.contains(NametagVisibilityEnum.DISABLED))
-            return
+        if (item.lmEntity.nametagVisibilityEnum.contains(NametagVisibilityEnum.DISABLED)) return
 
-        item.lmEntity.inUseCount.getAndIncrement()
+        val requestedPlayers = item.players?.distinctBy(Player::getUniqueId).orEmpty()
+        if (requestedPlayers.isEmpty()) return
 
-        if (LevelledMobs.instance.ver.isRunningFolia){
-            // фолия бежит напрямую
-            preProcessItem(item)
-        }
-        else{
-            synchronized(queueLock){
-                queue.offer(item)
-            }
-        }
-    }
-
-    fun getNumberQueued(): Int{
-        val size: Int
-        synchronized(queueLock){
-            size = queue.size
-        }
-
-        return size
-    }
-
-    private fun mainThread() {
-        while (doThread) {
-            val item: QueueItem?
-
-            synchronized(queueLock){
-                item = queue.poll()
-            }
-            if (item == null) {
-                Thread.sleep(2L)
-                continue
-            }
-
-            val scheduler = SchedulerWrapper(
-                item.lmEntity.livingEntity
-            ) {
-                preProcessItem(item)
+        item.lmEntity.inUseCount.incrementAndGet()
+        var shouldSchedule = false
+        pendingRefreshes.compute(item.entityId) { _, current ->
+            if (current == null) {
+                shouldSchedule = true
+                pendingSince[item.entityId] = System.currentTimeMillis()
+                PendingNametag(item, requestedPlayers)
+            } else {
+                requestedPlayers.forEach { current.players[it.uniqueId] = it }
+                current.latestNametag.set(item.nametag!!)
+                coalescedRefreshes.incrementAndGet()
                 item.lmEntity.free()
+                current
             }
-
-            scheduler.runDirectlyInBukkit = true
-            scheduler.entity = item.lmEntity.livingEntity
-            item.lmEntity.inUseCount.getAndIncrement()
-            scheduler.run()
         }
 
-        isRunning = false
-    }
-
-    private fun preProcessItem(item: QueueItem) {
-        if (!item.lmEntity.isPopulated) {
-            item.lmEntity.free()
-            return
-        }
-
-        var lastEntityType: String? = null
-        try {
-            lastEntityType = item.lmEntity.nameIfBaby
-            processItem(item)
-        } catch (ex: Exception) {
-            val entityName = lastEntityType ?: LocalizedMessages.text("display.unknown-entity", colorize = false)
-
-            Log.sevKey("console.queue.nametag-processing-error", mapOf("entity" to entityName))
-            ex.printStackTrace()
-        } finally {
-            item.lmEntity.free()
-        }
-    }
-
-    private fun processItem(item: QueueItem) {
-        if (this.nametagSender == null) {
-            // это произойдет, если версия Minecraft не поддерживается напрямую NMS.
-            return
-        }
-
-        val nametagTimerResetTime = item.lmEntity.getNametagCooldownTime()
-
-        if (nametagTimerResetTime > 0L && !item.nametag!!.isNullOrEmpty) {
-            synchronized(NametagTimerChecker.nametagTimer_Lock) {
-                val nametagCooldownQueue: Map<Player, WeakHashMap<LivingEntity, Instant>> =
-                    LevelledMobs.instance.nametagTimerChecker.nametagCooldownQueue
-                if (item.lmEntity.playersNeedingNametagCooldownUpdate != null) {
-                    // запишите, какие игроки должны получить время восстановления для этого моба
-                    // public Map<Player, WeakHashMap<LivingEntity, Instant>> nametagCooldownQueue;
-                    for (player in item.lmEntity.playersNeedingNametagCooldownUpdate!!) {
-                        if (!nametagCooldownQueue.containsKey(player))
-                            continue
-
-                        nametagCooldownQueue[player]?.set(item.lmEntity.livingEntity, Instant.now())
-                        LevelledMobs.instance.nametagTimerChecker.cooldownTimes[item.lmEntity.livingEntity] =
-                            item.lmEntity.getNametagCooldownTime()
-                    }
-
-                    // если у кого-либо из игроков уже есть кулдаун этого моба, не удаляйте кулдаун
-                    for ((player, value) in nametagCooldownQueue) {
-                        if (item.lmEntity.playersNeedingNametagCooldownUpdate!!.contains(player))
-                            continue
-
-                        if (value.containsKey(item.lmEntity.livingEntity))
-                            item.lmEntity.playersNeedingNametagCooldownUpdate!!.add(player)
+        if (!shouldSchedule) return
+        val pending = pendingRefreshes[item.entityId] ?: return
+        item.lmEntity.livingEntity.scheduler.runDelayed(
+            LevelledMobs.instance,
+            Consumer {
+                if (pendingRefreshes.remove(item.entityId, pending)) {
+                    try {
+                        processItem(pending)
+                        processedRefreshes.incrementAndGet()
+                    } catch (ex: Exception) {
+                        val entityName = runCatching { item.lmEntity.nameIfBaby }
+                            .getOrDefault(LocalizedMessages.text("display.unknown-entity", colorize = false))
+                        io.github.arcaneplugins.levelledmobs.util.Log.sevKey(
+                            "console.queue.nametag-processing-error",
+                            mapOf("entity" to entityName)
+                        )
+                        ex.printStackTrace()
+                    } finally {
+                        complete(pending)
                     }
                 } else {
-                    // если есть какие-либо кулдауны, мы будем их использовать
-                    for ((key, value) in nametagCooldownQueue) {
-                        if (value.containsKey(item.lmEntity.livingEntity)) {
-                            if (item.lmEntity.playersNeedingNametagCooldownUpdate == null)
-                                item.lmEntity.playersNeedingNametagCooldownUpdate = HashSet()
-
-                            item.lmEntity.playersNeedingNametagCooldownUpdate!!.add(key)
-                        }
-                    }
+                    complete(pending)
                 }
-            }
-        }
-        else if (item.lmEntity.playersNeedingNametagCooldownUpdate != null)
-            item.lmEntity.playersNeedingNametagCooldownUpdate = null
+            },
+            Runnable { complete(pending) },
+            1L
+        )
+    }
+
+    private fun complete(pending: PendingNametag) {
+        if (!pending.completed.compareAndSet(false, true)) return
+        pendingRefreshes.remove(pending.item.entityId, pending)
+        pendingSince.remove(pending.item.entityId)
+        pending.item.lmEntity.free()
+    }
+
+    private fun processItem(pending: PendingNametag) {
+        val lmEntity = pending.item.lmEntity
+        if (!lmEntity.isPopulated) return
 
         val main = LevelledMobs.instance
-        synchronized(NametagTimerChecker.entityTarget_Lock) {
-            if (main.nametagTimerChecker.entityTargetMap.containsKey(
-                    item.lmEntity.livingEntity
-                )
-            ) {
-                if (item.lmEntity.playersNeedingNametagCooldownUpdate == null)
-                    item.lmEntity.playersNeedingNametagCooldownUpdate = mutableSetOf()
+        if (main.helperSettings.getBoolean("assert-entity-validity-with-nametag-packets") &&
+            !lmEntity.livingEntity.isValid
+        ) return
 
-                item.lmEntity.playersNeedingNametagCooldownUpdate!!.add(
-                    main.nametagTimerChecker.entityTargetMap[item.lmEntity.livingEntity]!!
-                )
+        val nametag = pending.latestNametag.get()
+        val forcedPlayers = lmEntity.playersNeedingNametagCooldownUpdate
+            ?.associateBy(Player::getUniqueId)
+            ?.toMutableMap()
+            ?: mutableMapOf()
+        lmEntity.playersNeedingNametagCooldownUpdate = null
+
+        if (lmEntity.nametagVisibilityEnum.contains(NametagVisibilityEnum.TRACKING)) {
+            val targetId = targetedViewers[lmEntity.livingEntity.uniqueId]
+            if (targetId != null) {
+                pending.players[targetId]?.let { forcedPlayers[targetId] = it }
+                trackedViewers.get(lmEntity.livingEntity.uniqueId, targetId)
+                    ?.let { forcedPlayers[targetId] = it }
             }
         }
 
-        if (!item.lmEntity.isPopulated)
-            return
+        val baseAlwaysVisible =
+            !nametag.isNullOrEmpty && lmEntity.livingEntity.isCustomNameVisible ||
+                lmEntity.nametagVisibilityEnum.contains(NametagVisibilityEnum.ALWAYS_ON)
+        val cooldownMillis = lmEntity.getNametagCooldownTime()
+        val entityId = lmEntity.livingEntity.uniqueId
 
-        if (main.helperSettings.getBoolean(
-                "assert-entity-validity-with-nametag-packets"
-            ) && !item.lmEntity.livingEntity.isValid
-        ) {
-            return
+        pending.players.values.forEach { player ->
+            if (!trackedViewers.contains(entityId, player.uniqueId)) return@forEach
+            if (shouldSkipPlayer(player)) return@forEach
+            val forceVisible = forcedPlayers.containsKey(player.uniqueId)
+            nametagSender!!.sendNametag(
+                lmEntity.livingEntity,
+                nametag,
+                player,
+                baseAlwaysVisible || forceVisible
+            )
+            if (forceVisible && cooldownMillis > 0L && !nametag.isNullOrEmpty)
+                scheduleCooldown(lmEntity.livingEntity, player, cooldownMillis)
         }
 
-        updateNametag(item.lmEntity, item.nametag!!, item.players!!)
-    }
+        forcedPlayers.values.forEach { player ->
+            if (!trackedViewers.contains(entityId, player.uniqueId) ||
+                pending.players.containsKey(player.uniqueId) || shouldSkipPlayer(player)
+            )
+                return@forEach
+            nametagSender!!.sendNametag(lmEntity.livingEntity, nametag, player, true)
+            if (cooldownMillis > 0L && !nametag.isNullOrEmpty)
+                scheduleCooldown(lmEntity.livingEntity, player, cooldownMillis)
+        }
 
-    @Suppress("DEPRECATION")
-    private fun updateNametag(
-        lmEntity: LivingEntityWrapper,
-        nametag: NametagResult,
-        players: MutableList<Player>
-    ) {
-        val loopCount = if (lmEntity.playersNeedingNametagCooldownUpdate == null) 1 else 2
-
-        for (i in 0 until loopCount) {
-            // снова зациклится для обновления с перезарядкой именного тега только для указанных игроков
-
-            val nametagVisibilityEnum = lmEntity.nametagVisibilityEnum
-            val doAlwaysVisible = i == 1 || !nametag.isNullOrEmpty && lmEntity.livingEntity.isCustomNameVisible ||
-                    nametagVisibilityEnum.contains(NametagVisibilityEnum.ALWAYS_ON)
-
-            if (i == 0) {
-                // эти игроки не всегда получают метки с именами, если для моба не настроено всегда включение
-                for (player in players) {
-                    if (lmEntity.playersNeedingNametagCooldownUpdate != null
-                        && lmEntity.playersNeedingNametagCooldownUpdate!!.contains(player)
-                    ) {
-                        continue
-                    }
-                    
-                    /** Отключить, если Java или Bedrock */
-                    if (disableNametagBedrock && isBedrock(player)) return
-                    if (disableNametagJava && !isBedrock(player)) return
-
-                    nametagSender!!.sendNametag(
-                        lmEntity.livingEntity, nametag, player,
-                        doAlwaysVisible
-                    )
-                }
-            } else {
-                // эти игроки всегда получают бейджики с именами
-                for (player in lmEntity.playersNeedingNametagCooldownUpdate!!) {
-
-                    /** Отключить, если Java или Bedrock */
-                    if (disableNametagBedrock && isBedrock(player)) return
-                    if (disableNametagJava && !isBedrock(player)) return
-
-
-                    nametagSender!!.sendNametag(lmEntity.livingEntity, nametag, player, true)
-                }
-            }
-
-            if (hasLibsDisguisesInstalled && LibsDisguisesUtils.isMobUsingLibsDisguises(lmEntity)) {
-                var useNametag: String? = null
-                if (nametag.nametag != null){
-                    useNametag = MessageUtils.colorizeAll(nametag.nametagNonNull
+        if (hasLibsDisguisesInstalled && LibsDisguisesUtils.isMobUsingLibsDisguises(lmEntity)) {
+            val useNametag = nametag.nametag?.let {
+                MessageUtils.colorizeAll(
+                    nametag.nametagNonNull
                         .replace("{DisplayName}", Utils.capitalize(lmEntity.typeName.replace("_", " ")))
-                        .replace("{CustomName}", lmEntity.livingEntity.customName ?: ""))
-                }
-
-                LibsDisguisesUtils.updateLibsDisguiseNametag(lmEntity, useNametag)
+                        .replace("{CustomName}", lmEntity.livingEntity.customName ?: "")
+                )
             }
+            LibsDisguisesUtils.updateLibsDisguiseNametag(lmEntity, useNametag)
         }
     }
 
-    private fun isBedrock(player: Player) : Boolean {
-        return player.uniqueId.mostSignificantBits == 0L
+    private fun scheduleCooldown(entity: LivingEntity, player: Player, cooldownMillis: Long) {
+        val key = ViewerKey(entity.uniqueId, player.uniqueId)
+        val ticks = NametagTiming.cooldownTicks(cooldownMillis)
+        val taskReference = AtomicReference<ScheduledTask?>()
+        val task = entity.scheduler.runDelayed(
+            LevelledMobs.instance,
+            Consumer { scheduledTask ->
+                if (cooldownTasks.remove(key, scheduledTask))
+                    expireCooldown(entity, player, cooldownMillis)
+            },
+            Runnable {
+                taskReference.get()?.let { cooldownTasks.remove(key, it) }
+            },
+            ticks
+        ) ?: return
+        taskReference.set(task)
+        cooldownTasks.put(key, task)?.cancel()
+    }
+
+    private fun expireCooldown(entity: LivingEntity, player: Player, cooldownMillis: Long) {
+        if (!trackedViewers.contains(entity.uniqueId, player.uniqueId) || !entity.isValid) return
+
+        if (targetedViewers[entity.uniqueId] == player.uniqueId) {
+            scheduleCooldown(entity, player, cooldownMillis)
+            return
+        }
+
+        val wrapper = LivingEntityWrapper.getInstance(entity)
+        if (!wrapper.isLevelled) {
+            wrapper.free()
+            return
+        }
+        val nametag = LevelledMobs.instance.levelManager.getNametag(
+            wrapper,
+            isDeathNametag = false,
+            preserveMobName = true
+        )
+        val alwaysVisible =
+            !nametag.isNullOrEmpty && entity.isCustomNameVisible ||
+                wrapper.nametagVisibilityEnum.contains(NametagVisibilityEnum.ALWAYS_ON)
+        nametagSender?.sendNametag(entity, nametag, player, alwaysVisible)
+        wrapper.free()
+    }
+
+    private fun shouldSkipPlayer(player: Player): Boolean {
+        val isBedrock = player.uniqueId.mostSignificantBits == 0L
+        return disableNametagBedrock && isBedrock || disableNametagJava && !isBedrock
     }
 }

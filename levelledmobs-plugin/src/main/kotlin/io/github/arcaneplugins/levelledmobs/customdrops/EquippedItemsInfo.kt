@@ -1,12 +1,9 @@
 package io.github.arcaneplugins.levelledmobs.customdrops
 
-import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.misc.NamespacedKeys
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
-import java.util.WeakHashMap
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
-import org.bukkit.entity.LivingEntity
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
@@ -25,16 +22,10 @@ class EquippedItemsInfo {
     var offhand: ItemStack? = null
 
     companion object{
-        // используется только на серверах-спиготах
-        private val customEquippedItems = WeakHashMap<LivingEntity, EquippedItemsInfo>()
-
         fun getEntityEquippedItems(
             lmEntity: LivingEntityWrapper
         ): EquippedItemsInfo? {
-            return if (LevelledMobs.instance.ver.isRunningPaper)
-                loadFromPDC(lmEntity)
-            else
-                customEquippedItems[lmEntity.livingEntity]
+            return loadFromPDC(lmEntity)
         }
 
         private fun loadFromPDC(
@@ -67,16 +58,7 @@ class EquippedItemsInfo {
     fun saveEquipment(
         lmEntity: LivingEntityWrapper
     ){
-        if (LevelledMobs.instance.ver.isRunningPaper)
-            saveEquipmentToPDC(lmEntity)
-        else
-            addEntityEquippedItems(lmEntity)
-    }
-
-    private fun addEntityEquippedItems(
-        lmEntity: LivingEntityWrapper
-    ){
-        customEquippedItems[lmEntity.livingEntity] = this
+        saveEquipmentToPDC(lmEntity)
     }
 
     private fun saveEquipmentToPDC(

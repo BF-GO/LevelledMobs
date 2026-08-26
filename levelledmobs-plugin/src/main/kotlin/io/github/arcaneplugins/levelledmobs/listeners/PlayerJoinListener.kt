@@ -4,190 +4,98 @@ import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.MainCompanion
 import io.github.arcaneplugins.levelledmobs.commands.CommandHandler
 import io.github.arcaneplugins.levelledmobs.misc.NamespacedKeys
-import io.github.arcaneplugins.levelledmobs.misc.PlayerQueueItem
-import io.github.arcaneplugins.levelledmobs.util.Log
 import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
+import io.github.arcaneplugins.levelledmobs.util.Log
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils
-import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
-import io.github.arcaneplugins.levelledmobs.wrappers.SchedulerWrapper
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.entity.Entity
-import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerChangedWorldEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.persistence.PersistentDataType
 
-/**
- * Прослушивает, когда игрок присоединяется, покидает или меняет миры, чтобы отправлять сообщения по мере необходимости, обновлять
- * бейджи или отслеживать игрока
- *
- * @author lokka30, stumper66
- * @since 2.4.0
- */
+/** Handles player lifecycle state which is independent of entity tracking. */
 class PlayerJoinListener : Listener {
-    val main = LevelledMobs.instance
+    private val main = LevelledMobs.instance
 
     @EventHandler(priority = EventPriority.MONITOR)
     fun onJoin(event: PlayerJoinEvent) {
         if (event.player.isOp && main.debugManager.playerThatEnabledDebug == null)
             main.debugManager.playerThatEnabledDebug = event.player
 
-        main.mainCompanion.checkSettingsWithMaxPlayerOptions()
+        main.maxPlayersRecorded = maxOf(main.maxPlayersRecorded, Bukkit.getOnlinePlayers().size)
         main.mainCompanion.addRecentlyJoinedPlayer(event.player)
         checkForNetherPortalCoords(event.player)
-        main.nametagTimerChecker.addPlayerToQueue(PlayerQueueItem(event.player, true))
         parseUpdateChecker(event.player)
 
-        if (!LevelledMobs.instance.ver.isRunningFolia)
-            updateNametagsInWorldAsync(event.player, event.player.world.entities)
-
         if (event.player.isOp)
-            processOpOnlyStuff(event)
+            processOpOnlyStuff(event.player)
     }
 
-    private fun processOpOnlyStuff(event: PlayerJoinEvent){
-        val notifyAdmins = LevelledMobs.instance.helperSettings.getBoolean(
-            "notify-admins-of-errors-upon-join", true)
+    private fun processOpOnlyStuff(player: Player) {
+        val notifyAdmins = main.helperSettings.getBoolean(
+            "notify-admins-of-errors-upon-join", true
+        )
+        if (notifyAdmins && MainCompanion.instance.errorMessages.isNotEmpty())
+            LocalizedMessages.send(player, "other.join-errors-reported")
 
-        if (notifyAdmins && MainCompanion.instance.errorMessages.isNotEmpty()) {
-            LocalizedMessages.send(event.player, "other.join-errors-reported")
-        }
-
-//        if (main.mainCompanion.hadRulesLoadError)
-//            event.player.sendMessage(FileLoader.getFileLoadErrorMessage())
-//
-//        if (NotifyManager.opHasMessage){
-//            event.player.sendMessage(NotifyManager.pendingMessage!!)
-//            NotifyManager.clearLastError()
-//        }
-//
-//        if (main.customDropsHandler.customDropsParser.hadParsingError){
-//            event.player.sendMessage(
-//                MessageUtils.colorizeAll(
-// "&b&lLevelledMobs:&r &6Произошла ошибка при анализе customdrops.yml&r\n" +
-// «Подробнее проверьте журнал консоли»
-//                ))
-//        }
-
-        if (CommandHandler.hadErrorLoading){
-            if (!main.ver.isRunningPaper){
-                LocalizedMessages.send(event.player, "other.command-framework-spigot")
-            }
-            else{
-                LocalizedMessages.send(event.player, "other.command-framework-error")
-            }
+        if (CommandHandler.hadErrorLoading) {
+            if (!main.ver.isRunningPaper)
+                LocalizedMessages.send(player, "other.command-framework-spigot")
+            else
+                LocalizedMessages.send(player, "other.command-framework-error")
         }
     }
 
     private fun checkForNetherPortalCoords(player: Player) {
-        val keys = mutableListOf(
+        val keys = listOf(
             NamespacedKeys.playerNetherCoords,
             NamespacedKeys.playerNetherCoordsIntoWorld
         )
         try {
-            for (i in keys.indices) {
-                val useKey = keys[i]
-                if (!player.persistentDataContainer.has(useKey, PersistentDataType.STRING))
-                    continue
-
+            for ((index, key) in keys.withIndex()) {
                 val netherCoords = player.persistentDataContainer
-                    .get(useKey, PersistentDataType.STRING)
-                if (netherCoords == null)
-                    continue
-
+                    .get(key, PersistentDataType.STRING) ?: continue
                 val coords = netherCoords.split(",")
-                if (coords.size != 4)
-                    continue
-
+                if (coords.size != 4) continue
                 val world = Bukkit.getWorld(coords[0]) ?: continue
                 val location = Location(
-                    world, coords[1].toInt().toDouble(),
-                    coords[2].toInt().toDouble(), coords[3].toInt().toDouble()
+                    world,
+                    coords[1].toDouble(),
+                    coords[2].toDouble(),
+                    coords[3].toDouble()
                 )
-
-                if (i == 0)
+                if (index == 0)
                     main.mainCompanion.setPlayerNetherPortalLocation(player, location)
                 else
                     main.mainCompanion.setPlayerWorldPortalLocation(player, location)
             }
-        } catch (e: Exception) {
-            Log.warKey("console.player.invalid-nether-coordinates", mapOf(
-                "player" to player.name,
-                "error" to (e.message ?: "-")
-            ))
+        } catch (ex: Exception) {
+            Log.warKey(
+                "console.player.invalid-nether-coordinates",
+                mapOf("player" to player.name, "error" to (ex.message ?: "-"))
+            )
         }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    private fun onPlayerQuitEvent(event: PlayerQuitEvent) {
-        main.mainCompanion.checkSettingsWithMaxPlayerOptions(true)
-
-        if (main.placeholderApiIntegration != null)
-            main.placeholderApiIntegration!!.playedLoggedOut(event.player)
-
+    fun onQuit(event: PlayerQuitEvent) {
+        main.placeholderApiIntegration?.playedLoggedOut(event.player)
         main.mainCompanion.spawnerCopyIds.remove(event.player.uniqueId)
         main.mainCompanion.spawnerInfoIds.remove(event.player.uniqueId)
-        main.nametagTimerChecker.addPlayerToQueue(PlayerQueueItem(event.player, false))
-
-        if (main.placeholderApiIntegration != null)
-            main.placeholderApiIntegration!!.removePlayer(event.player)
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    fun onChangeWorld(event: PlayerChangedWorldEvent) {
-        updateNametagsInWorldAsync(event.player, event.player.world.entities)
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    fun onTeleport(event: PlayerTeleportEvent) {
-        // на патрубке API .getTo имеет значение NULL, но не Paper
-        // обновлять теги только в случае телепортации в другой мир
-        @Suppress("SENSELESS_COMPARISON")
-        if (event.to != null && event.to.world != null && event.from.world != null && event.from.world != event.to.world)
-            updateNametagsInWorldAsync(event.player, event.to.world.entities)
-    }
-
-    private fun updateNametagsInWorldAsync(player: Player, entities: List<Entity>) {
-        val scheduler = SchedulerWrapper { updateNametagsInWorld(player, entities) }
-        scheduler.runDirectlyInFolia = true
-        scheduler.run()
-    }
-
-    private fun updateNametagsInWorld(player: Player, entities: List<Entity>) {
-        val currentPlayers = Bukkit.getOnlinePlayers().size
-        if (currentPlayers > main.maxPlayersRecorded)
-            main.maxPlayersRecorded = currentPlayers
-
-        for (entity in entities) {
-            if (entity !is LivingEntity) continue
-
-            // моб должен быть жив
-            if (!entity.isValid) continue
-
-            // мобу необходимо назначить уровень
-            if (!main.levelManager.isLevelled(entity)) continue
-
-            val lmEntity = LivingEntityWrapper.getInstance(entity)
-            val nametag = main.levelManager.getNametag(lmEntity, isDeathNametag = false, preserveMobName = false)
-            main.levelManager.updateNametag(lmEntity, nametag, mutableListOf(player))
-            lmEntity.free()
-        }
+        main.mainCompanion.clearPlayerState(event.player)
+        main.nametagQueueManager.clearPlayer(event.player)
+        main.placeholderApiIntegration?.removePlayer(event.player)
     }
 
     private fun parseUpdateChecker(player: Player) {
-        if (main.messagesCfg.getBoolean("other.update-notice.send-on-join", true)
-            && player.hasPermission("levelledmobs.receive-update-notifications")
+        if (main.messagesCfg.getBoolean("other.update-notice.send-on-join", true) &&
+            player.hasPermission("levelledmobs.receive-update-notifications")
         ) {
-            main.mainCompanion.updateResult.forEach{ msg ->
-                player.sendMessage(MessageUtils.colorizeAll(msg))
-            }
+            main.mainCompanion.updateResult.forEach { player.sendMessage(MessageUtils.colorizeAll(it)) }
         }
     }
 }

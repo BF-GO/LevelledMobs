@@ -6,6 +6,7 @@ import java.util.function.Consumer
 import io.github.arcaneplugins.levelledmobs.wrappers.SchedulerWrapper
 import java.io.FileNotFoundException
 import java.net.URI
+import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -50,9 +51,11 @@ class UpdateChecker(
             return
         }
 
-        val scanner = Scanner(inputStream)
-        if (scanner.hasNext()) {
-            consumer.accept(scanner.next())
+        val latestVersion = inputStream.use { stream ->
+            Scanner(stream).use { scanner -> if (scanner.hasNext()) scanner.next() else null }
+        }
+        Bukkit.getGlobalRegionScheduler().execute(plugin) {
+            consumer.accept(latestVersion)
         }
     }
 

@@ -103,7 +103,6 @@ class LivingEntityWrapper private constructor() : LivingEntityWrapperBase(), Liv
     companion object{
         private val cachedLM_Wrappers_Lock = Any()
         private val cache = Stack<LivingEntityWrapper>()
-        private const val LOCKMAXRETRYTIMES = 3
         private val flyingMobNames = mutableListOf(
             "ALLAY", "BAT", "BREEZE", "BEE", "BLAZE", "ENDER_DRAGON", "VEX", "WITHER",
             "PARROT", "PHANTOM", "GHAST", "HAPPY_GHAST"
@@ -271,31 +270,13 @@ class LivingEntityWrapper private constructor() : LivingEntityWrapperBase(), Liv
     }
 
     private fun getPDCLock(): Boolean {
-        try {
-            // попробуйте до 3 раз, чтобы получить блокировку
-            var retryCount = 0
-            while (true) {
-                if (pdcLock.tryLock(15, TimeUnit.MILLISECONDS))
-                    return true
+        if (pdcLock.tryLock()) return true
 
-                val callingFunction = Thread.currentThread().stackTrace[1]
-                retryCount++
-                if (retryCount > LOCKMAXRETRYTIMES) {
-                    DebugManager.log(DebugType.THREAD_LOCKS) {
-                        LocalizedMessages.text("command.levelledmobs.debug.runtime.d153", mapOf("value-1" to (callingFunction.fileName), "value-2" to (callingFunction.lineNumber)), false)
-                    }
-                    return false
-                }
-
-                val retryCountFinal = retryCount
-                DebugManager.log(DebugType.THREAD_LOCKS) {
-                    LocalizedMessages.text("command.levelledmobs.debug.runtime.d154", mapOf("value-1" to (retryCountFinal), "value-2" to (callingFunction.fileName), "value-3" to (callingFunction.lineNumber)), false)
-                }
-            }
-        } catch (e: InterruptedException) {
-            Log.warKey("console.concurrency.pdc-lock-interrupted", mapOf("error" to (e.message ?: "-")))
-            return false
+        val callingFunction = Thread.currentThread().stackTrace[1]
+        DebugManager.log(DebugType.THREAD_LOCKS) {
+            LocalizedMessages.text("command.levelledmobs.debug.runtime.d153", mapOf("value-1" to (callingFunction.fileName), "value-2" to (callingFunction.lineNumber)), false)
         }
+        return false
     }
 
     private fun releasePDCLock() {
@@ -356,12 +337,8 @@ class LivingEntityWrapper private constructor() : LivingEntityWrapperBase(), Liv
                             )
                     }
                     break
-                } catch (ignored: ConcurrentModificationException) {
-                    try {
-                        Thread.sleep(10)
-                    } catch (ignored2: InterruptedException) {
-                        break
-                    }
+                } catch (_: ConcurrentModificationException) {
+                    break
                 }
             }
         } finally {
@@ -530,13 +507,9 @@ class LivingEntityWrapper private constructor() : LivingEntityWrapperBase(), Liv
                         }
                         succeeded = true
                         break
-                    } catch (ignored: java.util.ConcurrentModificationException) {
+                    } catch (_: java.util.ConcurrentModificationException) {
                         hadError = true
-                        try {
-                            Thread.sleep(5)
-                        } catch (ignored2: InterruptedException) {
-                            return 0
-                        }
+                        break
                     } finally {
                         releasePDCLock()
                     }
@@ -780,11 +753,7 @@ class LivingEntityWrapper private constructor() : LivingEntityWrapperBase(), Liv
                             value
                         )
                     } catch (_: ConcurrentModificationException) {
-                        try {
-                            Thread.sleep(10)
-                        } catch (_: InterruptedException) {
-                            break
-                        }
+                        break
                     }
                 }
             } finally {

@@ -1,13 +1,13 @@
 package io.github.arcaneplugins.levelledmobs.listeners
 
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ThreadLocalRandom
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.commands.MessagesBase
 import io.github.arcaneplugins.levelledmobs.commands.subcommands.SpawnerBaseClass
 import io.github.arcaneplugins.levelledmobs.commands.subcommands.SpawnerBaseClass.CustomSpawnerInfo
 import io.github.arcaneplugins.levelledmobs.commands.subcommands.SpawnerSubcommand
-import io.github.arcaneplugins.levelledmobs.managers.LevelManager
 import io.github.arcaneplugins.levelledmobs.result.AdditionalLevelInformation
 import io.github.arcaneplugins.levelledmobs.misc.Cooldown
 import io.github.arcaneplugins.levelledmobs.misc.NamespacedKeys
@@ -40,7 +40,7 @@ import org.bukkit.persistence.PersistentDataType
  * @since 3.1.2
  */
 class PlayerInteractEventListener : MessagesBase(), Listener {
-    private val cooldownMap = mutableMapOf<UUID, Cooldown>()
+    private val cooldownMap = ConcurrentHashMap<UUID, Cooldown>()
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     fun onPlayerInteractEvent(event: PlayerInteractEvent) {
@@ -182,9 +182,7 @@ class PlayerInteractEventListener : MessagesBase(), Listener {
 
         val lmEntity = LivingEntityWrapper.getInstance(entity)
 
-        synchronized(LevelManager.summonedOrSpawnEggs_Lock) {
-            main.levelManager.summonedOrSpawnEggs.put(lmEntity.livingEntity, null)
-        }
+        main.levelManager.summonedOrSpawnEggs.add(lmEntity.livingEntity.uniqueId)
 
         var useLevel = minLevel
         if (minLevel != maxLevel) {

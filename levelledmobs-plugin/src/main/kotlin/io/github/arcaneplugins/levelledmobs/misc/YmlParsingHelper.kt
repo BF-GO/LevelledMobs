@@ -11,6 +11,7 @@ import org.bukkit.configuration.MemoryConfiguration
  * @since 3.1.0
  */
 class YmlParsingHelper(
+    @Volatile
     var cs: ConfigurationSection
 ) {
 

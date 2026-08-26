@@ -45,14 +45,35 @@ import org.bukkit.entity.Player
  */
 @Suppress("DEPRECATION")
 class RulesManager {
-    val rulesInEffect = mutableListOf<RuleInfo>()
-    val ruleNameMappings: MutableMap<String, RuleInfo> = TreeMap(String.CASE_INSENSITIVE_ORDER)
-    val biomeGroupMappings: MutableMap<String, MutableSet<String>> = TreeMap(String.CASE_INSENSITIVE_ORDER)
+    private data class RulesSnapshot(
+        val rulesInEffect: List<RuleInfo> = emptyList(),
+        val ruleNameMappings: Map<String, RuleInfo> = emptyMap(),
+        val customStrategyPlaceholders: Set<String> = emptySet(),
+        val customMobGroups: Map<String, Set<String>> = emptyMap(),
+        val biomeGroupMappings: Map<String, Set<String>> = emptyMap(),
+        val anyRuleHasChance: Boolean = false,
+        val hasAnyWGCondition: Boolean = false
+    )
+
+    @Volatile
+    private var rulesSnapshot = RulesSnapshot()
+
+    val rulesInEffect: List<RuleInfo>
+        get() = rulesSnapshot.rulesInEffect
+    val ruleNameMappings: Map<String, RuleInfo>
+        get() = rulesSnapshot.ruleNameMappings
+    val biomeGroupMappings: Map<String, Set<String>>
+        get() = rulesSnapshot.biomeGroupMappings
+    val customMobGroups: Map<String, Set<String>>
+        get() = rulesSnapshot.customMobGroups
     val rulesCooldown = mutableMapOf<String, MutableList<Instant>>()
-    val allCustomStrategyPlaceholders: MutableSet<String> = TreeSet(String.CASE_INSENSITIVE_ORDER)
-    var anyRuleHasChance = false
-    var hasAnyWGCondition = false
-    private var lastRulesCheck: Instant? = null
+    val allCustomStrategyPlaceholders: Set<String>
+        get() = rulesSnapshot.customStrategyPlaceholders
+    val anyRuleHasChance: Boolean
+        get() = rulesSnapshot.anyRuleHasChance
+    val hasAnyWGCondition: Boolean
+        get() = rulesSnapshot.hasAnyWGCondition
+    @Volatile private var lastRulesCheck: Instant? = null
     var currentRulesHash = ""
         private set
 
@@ -60,12 +81,45 @@ class RulesManager {
         instance = this
     }
 
+    internal fun publishRules(
+        rules: List<RuleInfo>,
+        mappings: Map<String, RuleInfo>,
+        placeholders: Set<String>,
+        customMobGroups: Map<String, Set<String>>,
+        biomeGroupMappings: Map<String, Set<String>>,
+        anyRuleHasChance: Boolean,
+        hasAnyWGCondition: Boolean
+    ) {
+        val publishedRules = java.util.Collections.unmodifiableList(ArrayList(rules))
+        val publishedMappings = java.util.Collections.unmodifiableMap(
+            TreeMap<String, RuleInfo>(String.CASE_INSENSITIVE_ORDER).apply { putAll(mappings) }
+        )
+        val publishedPlaceholders = java.util.Collections.unmodifiableSet(
+            TreeSet<String>(String.CASE_INSENSITIVE_ORDER).apply { addAll(placeholders) }
+        )
+        val publishedMobGroups = immutableGroupMappings(customMobGroups)
+        val publishedBiomeGroups = immutableGroupMappings(biomeGroupMappings)
+
+        synchronized(ruleLocker) {
+            rulesSnapshot = RulesSnapshot(
+                publishedRules,
+                publishedMappings,
+                publishedPlaceholders,
+                publishedMobGroups,
+                publishedBiomeGroups,
+                anyRuleHasChance,
+                hasAnyWGCondition
+            )
+            rulesCooldown.clear()
+        }
+    }
+
     fun getRuleIsWorldAllowedInAnyRule(world: World?): Boolean {
         if (world == null) return false
 
         var result = false
 
-        for (ruleInfo in LevelledMobs.instance.rulesParsingManager.getAllRules()) {
+        for (ruleInfo in rulesInEffect) {
             if (!ruleInfo.ruleIsEnabled) continue
 
             if (ruleInfo.conditionsWorlds != null && ruleInfo.conditionsWorlds!!.isIncludedInList(
@@ -1352,16 +1406,22 @@ class RulesManager {
 
     fun buildBiomeGroupMappings(
         customBiomeGroups: MutableMap<String, MutableSet<String>>?
-    ) {
-        biomeGroupMappings.clear()
+    ): Map<String, Set<String>> {
+        if (customBiomeGroups == null) return emptyMap()
 
-        if (customBiomeGroups == null) return
+        return immutableGroupMappings(customBiomeGroups)
+    }
 
-        for ((key, groupMembers) in customBiomeGroups) {
-            val newList = TreeSet(String.CASE_INSENSITIVE_ORDER)
-            newList.addAll(groupMembers)
-            biomeGroupMappings[key] = newList
+    private fun immutableGroupMappings(
+        source: Map<String, Set<String>>
+    ): Map<String, Set<String>> {
+        val publishedMappings = TreeMap<String, Set<String>>(String.CASE_INSENSITIVE_ORDER)
+        source.forEach { (key, groupMembers) ->
+            publishedMappings[key] = java.util.Collections.unmodifiableSet(
+                TreeSet<String>(String.CASE_INSENSITIVE_ORDER).apply { addAll(groupMembers) }
+            )
         }
+        return java.util.Collections.unmodifiableMap(publishedMappings)
     }
 
     fun clearTempDisabledRulesCounts() {

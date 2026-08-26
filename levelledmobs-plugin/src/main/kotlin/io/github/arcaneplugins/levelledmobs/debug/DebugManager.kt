@@ -98,7 +98,7 @@ class DebugManager {
         if (!this.isTimerEnabled) {
             this.isTimerEnabled = true
             val wrapper = SchedulerWrapper { this.timerLoop() }
-            this.timerTask = wrapper.runTaskTimerAsynchronously(20, 20)
+            this.timerTask = wrapper.runTaskTimerGlobal(20L, 20L)
         }
     }
 
@@ -510,7 +510,12 @@ class DebugManager {
             if ((outputType == OutputTypes.TO_CHAT || outputType == OutputTypes.TO_BOTH)
                 && playerThatEnabledDebug != null
             ) {
-                playerThatEnabledDebug!!.sendMessage(msg)
+                val player = playerThatEnabledDebug!!
+                player.scheduler.run(
+                    LevelledMobs.instance,
+                    { player.sendMessage(msg) },
+                    null
+                )
             }
         }
     }

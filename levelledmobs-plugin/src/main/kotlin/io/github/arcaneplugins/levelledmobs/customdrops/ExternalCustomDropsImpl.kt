@@ -1,6 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.customdrops
 
-import java.util.TreeMap
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentSkipListMap
 import org.bukkit.entity.EntityType
 
 /**
@@ -10,8 +11,9 @@ import org.bukkit.entity.EntityType
  * @since 3.7.0
  */
 class ExternalCustomDropsImpl : ExternalCustomDrops {
-    val customDropsitems = mutableMapOf<EntityType, CustomDropInstance>()
-    val customDropIDs: MutableMap<String, CustomDropInstance> = TreeMap(String.CASE_INSENSITIVE_ORDER)
+    val customDropsitems = ConcurrentHashMap<EntityType, CustomDropInstance>()
+    val customDropIDs: MutableMap<String, CustomDropInstance> =
+        ConcurrentSkipListMap(String.CASE_INSENSITIVE_ORDER)
 
     override fun addCustomDrop(customDropInstance: CustomDropInstance) {
         customDropsitems[customDropInstance.associatedMob!!] = customDropInstance

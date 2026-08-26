@@ -1,6 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.listeners
 
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.enums.AttributeNames
 import io.github.arcaneplugins.levelledmobs.misc.Cooldown
@@ -25,7 +26,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
  * @since 2.4.0
  */
 class EntityDamageDebugListener : Listener {
-    private val cooldownMap = mutableMapOf<UUID, Cooldown>()
+    private val cooldownMap = ConcurrentHashMap<UUID, Cooldown>()
 
     //Этот класс используется для отладки уровневых мобов. Он просто отображает их текущие атрибуты, текущее здоровье и текущий уровень.
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

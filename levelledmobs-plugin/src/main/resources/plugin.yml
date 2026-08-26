@@ -3,10 +3,10 @@ version: '${version}'
 description: '${description}'
 authors: [ 'PenalBuffalo', 'lokka30', 'UltimaOath' ]
 website: 'https://github.com/BF-GO/LevelledMobs/'
-folia-supported: false
+folia-supported: true
 
 main: 'io.github.arcaneplugins.levelledmobs.LevelledMobs'
-api-version: '1.19'
+api-version: '26.2'
 load: 'POSTWORLD'
 
 softdepend:

@@ -20,8 +20,9 @@ import io.github.arcaneplugins.levelledmobs.util.Utils
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import io.github.arcaneplugins.levelledmobs.wrappers.SchedulerWrapper
 import io.papermc.paper.datacomponent.DataComponentTypes
-import java.util.TreeMap
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentSkipListMap
 import java.util.concurrent.ThreadLocalRandom
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -44,24 +45,27 @@ import org.bukkit.persistence.PersistentDataType
  */
 class CustomDropsHandler {
     // обычные пользовательские дропы, определенные для типа моба
-    private val customDropsitems = mutableMapOf<EntityType, CustomDropInstance>()
+    private val customDropsitems = ConcurrentHashMap<EntityType, CustomDropInstance>()
     // обычные специальные дропы, определенные для типа моба, который является ребенком
-    val customDropsitemsBabies = mutableMapOf<EntityType, CustomDropInstance>()
+    val customDropsitemsBabies = ConcurrentHashMap<EntityType, CustomDropInstance>()
 
     // используется только для встроенных универсальных групп
-    private val customDropsitemsGroups = mutableMapOf<String, CustomDropInstance>()
+    private val customDropsitemsGroups = ConcurrentHashMap<String, CustomDropInstance>()
 
     // это сбросы, определенные таблицей сбросов
-    val customDropIDs: MutableMap<String, CustomDropInstance> = TreeMap(String.CASE_INSENSITIVE_ORDER)
+    val customDropIDs: MutableMap<String, CustomDropInstance> =
+        ConcurrentSkipListMap(String.CASE_INSENSITIVE_ORDER)
 
     // сопоставления groupIds для удаления экземпляра
-    private val groupIdToInstance: MutableMap<String, CustomDropInstance> = TreeMap(String.CASE_INSENSITIVE_ORDER)
+    private val groupIdToInstance: MutableMap<String, CustomDropInstance> =
+        ConcurrentSkipListMap(String.CASE_INSENSITIVE_ORDER)
 
     // получить экземпляр отбрасывания из его идентификатора группы
-    var customItemGroups = mutableMapOf<String, CustomDropInstance>()
+    var customItemGroups: MutableMap<String, CustomDropInstance> = ConcurrentHashMap()
 
     // сопоставление groupid и grouplimits
-    val groupLimitsMap: MutableMap<String, GroupLimits> = TreeMap(String.CASE_INSENSITIVE_ORDER)
+    val groupLimitsMap: MutableMap<String, GroupLimits> =
+        ConcurrentSkipListMap(String.CASE_INSENSITIVE_ORDER)
     val customDropsParser = CustomDropsParser(this)
     val externalCustomDrops: ExternalCustomDrops = ExternalCustomDropsImpl()
     var lmItemsParser: LMItemsParser? = null
@@ -1383,14 +1387,15 @@ class CustomDropsHandler {
             val commandFinal = command
             DebugManager.log(DebugType.CUSTOM_COMMANDS, info.lmEntity) { debugCommand + commandFinal }
 
-            if (customCommand.delay > 0) {
-                val commandToRun = command
-                val finalTimesToRun = timesToRun
-                val scheduler = SchedulerWrapper{ executeTheCommand(commandToRun, finalTimesToRun) }
-                scheduler.runDelayed(customCommand.delay.toLong())
+            val commandToRun = command
+            val finalTimesToRun = timesToRun
+            val scheduler = SchedulerWrapper {
+                executeTheCommand(commandToRun, finalTimesToRun)
             }
+            if (customCommand.delay > 0)
+                scheduler.runGlobalDelayed(customCommand.delay.toLong())
             else
-                executeTheCommand(command, timesToRun)
+                scheduler.runGlobal()
         }
     }
 

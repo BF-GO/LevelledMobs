@@ -7,10 +7,11 @@ import io.github.arcaneplugins.levelledmobs.nametag.ComponentUtils.getTranslatab
 import io.github.arcaneplugins.levelledmobs.nametag.KyoriNametags.generateComponent
 import io.github.arcaneplugins.levelledmobs.result.NametagResult
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils.colorizeAll
-import io.github.arcaneplugins.levelledmobs.wrappers.SchedulerWrapper
 import java.lang.reflect.InvocationTargetException
 import java.util.LinkedList
 import java.util.Optional
+import java.util.function.Consumer
+import org.bukkit.Bukkit
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
@@ -22,6 +23,7 @@ import org.bukkit.entity.Player
  */
 @Suppress("UNCHECKED_CAST")
 class NmsNametagSender : NametagSender {
+    @Volatile
     private var def = LevelledMobs.instance.definitions
     override fun sendNametag(
         livingEntity: LivingEntity,
@@ -29,34 +31,43 @@ class NmsNametagSender : NametagSender {
         player: Player,
         alwaysVisible: Boolean
     ) {
-        if (!player.isOnline || !player.isValid) return
-
-        if (LevelledMobs.instance.ver.isRunningFolia)
-            sendNametagNonAsync(livingEntity, nametag, player, alwaysVisible)
-        else{
-            val scheduler = SchedulerWrapper(livingEntity) {
-                sendNametagNonAsync(livingEntity, nametag, player, alwaysVisible)
-            }
-            scheduler.run()
+        val prepareAndSend = Runnable {
+            val packet = prepareNametagPacket(livingEntity, nametag, alwaysVisible) ?: return@Runnable
+            player.scheduler.run(
+                LevelledMobs.instance,
+                Consumer {
+                    if (player.isOnline && player.isValid)
+                        sendPreparedPacket(player, packet)
+                },
+                null
+            )
         }
+
+        if (Bukkit.isOwnedByCurrentRegion(livingEntity))
+            prepareAndSend.run()
+        else
+            livingEntity.scheduler.run(
+                LevelledMobs.instance,
+                Consumer { prepareAndSend.run() },
+                null
+            )
     }
 
     fun refresh() {
         this.def = LevelledMobs.instance.definitions
     }
 
-    private fun sendNametagNonAsync(
+    private fun prepareNametagPacket(
         livingEntity: LivingEntity,
         nametag: NametagResult,
-        player: Player,
         doAlwaysVisible: Boolean
-    ) {
+    ): Any? {
         try {
             // livingEntity.getHandle()
             val internalLivingEntity = def.methodGetHandle!!.invoke(livingEntity)
             // internalLivingEntity.getEntityData()
             val entityDataPreClone = def.methodGetEntityData!!.invoke(internalLivingEntity)
-            val entityData: Any = cloneEntityData(entityDataPreClone, internalLivingEntity) ?: return
+            val entityData: Any = cloneEntityData(entityDataPreClone, internalLivingEntity) ?: return null
 
             //final Object entityData = entityDataPreClone;
             val optionalComponent =
@@ -81,23 +92,27 @@ class NmsNametagSender : NametagSender {
 
             val livingEntityId = def.methodGetId!!.invoke(internalLivingEntity) as Int
 
-            val packet: Any
             // Список<DataWatcher.b<?>>
             // java.util.List getAllNonDefaultValues() -> c
             val getAllNonDefaultValues: List<*> = getNametagFields(entityData)
-            packet = def.ctorPacket!!
-                .newInstance(livingEntityId, getAllNonDefaultValues)
-
-            val serverPlayer = def.methodPlayergetHandle!!.invoke(player)
-            val connection = def.fieldConnection!![serverPlayer]
-
-            // serverPlayer.connection.send(packet);
-            def.methodSend!!.invoke(connection, packet)
+            return def.ctorPacket!!.newInstance(livingEntityId, getAllNonDefaultValues)
         } catch (e: IllegalAccessException) {
             e.printStackTrace()
         } catch (e: InvocationTargetException) {
             e.printStackTrace()
         } catch (e: InstantiationException) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    private fun sendPreparedPacket(player: Player, packet: Any) {
+        try {
+            val serverPlayer = def.methodPlayergetHandle!!.invoke(player)
+            val connection = def.fieldConnection!![serverPlayer]
+            def.methodSend!!.invoke(connection, packet)
+            LevelledMobs.instance.nametagQueueManager.recordPacketSent()
+        } catch (e: ReflectiveOperationException) {
             e.printStackTrace()
         }
     }

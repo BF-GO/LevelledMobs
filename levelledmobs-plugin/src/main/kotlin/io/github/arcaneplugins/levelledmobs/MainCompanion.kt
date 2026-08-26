@@ -14,10 +14,12 @@ import io.github.arcaneplugins.levelledmobs.listeners.EntityRegainHealthListener
 import io.github.arcaneplugins.levelledmobs.listeners.EntitySpawnListener
 import io.github.arcaneplugins.levelledmobs.listeners.EntityTameListener
 import io.github.arcaneplugins.levelledmobs.listeners.EntityTargetListener
+import io.github.arcaneplugins.levelledmobs.listeners.EntityTrackingListener
 import io.github.arcaneplugins.levelledmobs.listeners.PlayerJoinListener
 import io.github.arcaneplugins.levelledmobs.listeners.PlayerPortalEventListener
 import io.github.arcaneplugins.levelledmobs.listeners.ServerLoadEvent
 import io.github.arcaneplugins.levelledmobs.managers.ExternalCompatibilityManager
+import io.github.arcaneplugins.levelledmobs.managers.EventDrivenProcessingPolicy
 import io.github.arcaneplugins.levelledmobs.managers.PlaceholderApiIntegration
 import io.github.arcaneplugins.levelledmobs.misc.FileLoader
 import io.github.arcaneplugins.levelledmobs.misc.FileLoader.loadFile
@@ -38,7 +40,7 @@ import java.io.InvalidObjectException
 import java.time.Duration
 import java.time.Instant
 import java.util.UUID
-import java.util.WeakHashMap
+import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Consumer
 import org.bstats.bukkit.Metrics
 import org.bstats.charts.SimpleBarChart
@@ -57,7 +59,7 @@ import org.bukkit.event.EventPriority
  * @since 2.4.0
  */
 class MainCompanion{
-    private val recentlyJoinedPlayers = WeakHashMap<Player, Instant>()
+    private val recentlyJoinedPlayers = ConcurrentHashMap<UUID, Instant>()
     val hostileMobsGroup = mutableSetOf<EntityType>()
     val aquaticMobsGroup = mutableSetOf<EntityType>()
     val passiveMobsGroup = mutableSetOf<EntityType>()
@@ -72,16 +74,15 @@ class MainCompanion{
     var showCustomDrops = false
     private val entityDeathInChunkCounter = mutableMapOf<Long, MutableMap<EntityType, ChunkKillInfo>>()
     private val chunkKillNoticationTracker = mutableMapOf<Long, MutableMap<UUID, Instant>>()
-    private val playerNetherPortals = mutableMapOf<Player, Location>()
-    private val playerWorldPortals = mutableMapOf<Player, Location>()
-    val spawnerCopyIds = mutableListOf<UUID>()
-    val spawnerInfoIds = mutableListOf<UUID>()
+    private val playerNetherPortals = ConcurrentHashMap<UUID, Location>()
+    private val playerWorldPortals = ConcurrentHashMap<UUID, Location>()
+    val spawnerCopyIds = ConcurrentHashMap.newKeySet<UUID>()
+    val spawnerInfoIds = ConcurrentHashMap.newKeySet<UUID>()
     var excludePlayersInCreative = false
     private val pluginManager = Bukkit.getPluginManager()
     private val metricsInfo = MetricsInfo()
     val externalCompatibilityManager = ExternalCompatibilityManager()
     private var hashMapCleanUp: SchedulerResult? = null
-    private val playerLogonTimesLock = Any()
     private val playerNetherPortalsLock = Any()
     private val entityDeathInChunkCounterLock = Any()
     private val entityDeathInChunkNotifierLock = Any()
@@ -176,24 +177,29 @@ class MainCompanion{
         if (addedDebugs && !main.debugManager.isEnabled) {
             val useSender = if (this.reloadSender != null) this.reloadSender else Bukkit.getConsoleSender()
             main.debugManager.enableDebug(useSender!!, usetimer = false, bypassFilters = false)
-            useSender.sendMessage(main.debugManager.getDebugStatus())
+            val status = main.debugManager.getDebugStatus()
+            if (useSender is Player && !Bukkit.isOwnedByCurrentRegion(useSender))
+                useSender.scheduler.run(main, { useSender.sendMessage(status) }, null)
+            else
+                useSender.sendMessage(status)
         }
 
         this.showCustomDrops = main.debugManager.isDebugTypeEnabled(DebugType.CUSTOM_DROPS)
     }
 
-    fun checkSettingsWithMaxPlayerOptions(playerJustLeft: Boolean = false){
-        val levelMobsUponSpawnMaxPlayers = LevelledMobs.instance.helperSettings.getInt(
-            "level-mobs-upon-spawn-max-players", 10
-        )
-        val updateMobsUponNonplayerDamageMaxPlayers = LevelledMobs.instance.helperSettings.getInt(
-            "update-mobs-upon-nonplayer-damage-max-players", 5
-        )
-        var currentPlayerCount = Bukkit.getOnlinePlayers().size
-        if (playerJustLeft) currentPlayerCount--
+    fun checkSettingsWithMaxPlayerOptions(){
+        // Read legacy keys so existing files remain valid, but never use them as runtime gates.
+        val settings = LevelledMobs.instance.helperSettings
+        settings.getInt("async-task-update-period", 3)
+        settings.getInt("async-task-max-blocks-from-player", 320)
+        settings.getInt("level-mobs-upon-spawn-max-players", 10)
+        settings.getInt("update-mobs-upon-nonplayer-damage-max-players", 5)
 
-        EntitySpawnListener.instance.processMobSpawns = currentPlayerCount <= levelMobsUponSpawnMaxPlayers
-        EntityDamageListener.instance.updateMobsOnNonPlayerdamage = currentPlayerCount <= updateMobsUponNonplayerDamageMaxPlayers
+        val onlinePlayers = Bukkit.getOnlinePlayers().size
+        EntitySpawnListener.instance.processMobSpawns =
+            EventDrivenProcessingPolicy.processSpawns(onlinePlayers)
+        EntityDamageListener.instance.updateMobsOnNonPlayerdamage =
+            EventDrivenProcessingPolicy.processNonPlayerDamage(onlinePlayers)
     }
 
     fun registerListeners() {
@@ -212,6 +218,7 @@ class MainCompanion{
         main.entityTransformListener.load()
         pluginManager.registerEvents(EntityNametagListener(), main)
         pluginManager.registerEvents(EntityTargetListener(), main)
+        pluginManager.registerEvents(EntityTrackingListener(), main)
         pluginManager.registerEvents(PlayerJoinListener(), main)
         pluginManager.registerEvents(EntityTameListener(), main)
         main.playerDeathListener.load()
@@ -518,9 +525,10 @@ class MainCompanion{
                                         "levelledmobs.receive-update-notifications"
                                     )
                                 ) {
-                                    for (msg in updateResult) {
-                                        onlinePlayer.sendMessage(MessageUtils.colorizeAll(msg))
-                                    }
+                                    onlinePlayer.scheduler.run(main, {
+                                        for (msg in updateResult)
+                                            onlinePlayer.sendMessage(MessageUtils.colorizeAll(msg))
+                                    }, null)
                                     //updateResult.forEach(onlinePlayer::sendMessage); // компилятор не принял этот вариант :(
                                 }
                             }
@@ -539,8 +547,8 @@ class MainCompanion{
         main.mobsQueueManager.stop()
         main.nametagQueueManager.stop()
         hashMapCleanUp?.cancelTask()
-        if (!main.ver.isRunningFolia)
-            Bukkit.getScheduler().cancelTasks(main)
+        Bukkit.getAsyncScheduler().cancelTasks(main)
+        Bukkit.getGlobalRegionScheduler().cancelTasks(main)
     }
 
     private fun buildUniversalGroups() {
@@ -590,26 +598,22 @@ class MainCompanion{
     }
 
     fun addRecentlyJoinedPlayer(player: Player?) {
-        synchronized(playerLogonTimesLock) {
-            recentlyJoinedPlayers.put(player, Instant.now())
-        }
+        if (player != null)
+            recentlyJoinedPlayers[player.uniqueId] = Instant.now()
     }
 
     fun getRecentlyJoinedPlayerLogonTime(player: Player?): Instant? {
-        synchronized(playerLogonTimesLock) {
-            return recentlyJoinedPlayers[player]
-        }
+        return player?.let { recentlyJoinedPlayers[it.uniqueId] }
     }
 
     fun removeRecentlyJoinedPlayer(player: Player?) {
-        synchronized(playerLogonTimesLock) {
-            recentlyJoinedPlayers.remove(player)
-        }
+        if (player != null)
+            recentlyJoinedPlayers.remove(player.uniqueId)
     }
 
     fun getPlayerNetherPortalLocation(player: Player): Location? {
         synchronized(playerNetherPortalsLock) {
-            return playerNetherPortals[player]
+            return playerNetherPortals[player.uniqueId]
         }
     }
 
@@ -618,16 +622,13 @@ class MainCompanion{
         location: Location?
     ) {
         synchronized(playerNetherPortalsLock) {
-            playerNetherPortals.put(
-                player,
-                location!!
-            )
+            playerNetherPortals[player.uniqueId] = location!!
         }
     }
 
     fun getPlayerWorldPortalLocation(player: Player): Location? {
         synchronized(playerNetherPortalsLock) {
-            return playerWorldPortals[player]
+            return playerWorldPortals[player.uniqueId]
         }
     }
 
@@ -636,10 +637,14 @@ class MainCompanion{
         location: Location?
     ) {
         synchronized(playerNetherPortalsLock) {
-            playerWorldPortals.put(
-                player,
-                location!!
-            )
+            playerWorldPortals[player.uniqueId] = location!!
         }
+    }
+
+    fun clearPlayerState(player: Player) {
+        val playerId = player.uniqueId
+        recentlyJoinedPlayers.remove(playerId)
+        playerNetherPortals.remove(playerId)
+        playerWorldPortals.remove(playerId)
     }
 }

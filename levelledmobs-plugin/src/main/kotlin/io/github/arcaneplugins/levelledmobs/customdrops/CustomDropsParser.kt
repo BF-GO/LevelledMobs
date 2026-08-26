@@ -122,7 +122,7 @@ class CustomDropsParser(
     }
 
     private fun parseCustomDrops(config: ConfigurationSection) {
-        handler.customItemGroups = mutableMapOf()
+        handler.customItemGroups = java.util.concurrent.ConcurrentHashMap()
 
         processDefaults(YmlParsingHelper.objToCS(config, "defaults"))
 

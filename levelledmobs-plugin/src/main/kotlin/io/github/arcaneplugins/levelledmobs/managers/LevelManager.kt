@@ -42,16 +42,13 @@ import io.github.arcaneplugins.levelledmobs.util.Utils
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import io.github.arcaneplugins.levelledmobs.wrappers.SchedulerResult
 import io.github.arcaneplugins.levelledmobs.wrappers.SchedulerWrapper
-import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.time.Duration
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.Collections
-import java.util.WeakHashMap
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ThreadLocalRandom
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.function.Consumer
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
@@ -69,11 +66,9 @@ import org.bukkit.entity.Zombie
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeoutException
 import kotlin.math.ceil
 import kotlin.math.floor
-import kotlin.math.pow
 import kotlin.math.roundToInt
 
 
@@ -85,20 +80,13 @@ import kotlin.math.roundToInt
  */
 class LevelManager : LevelInterface2 {
     private var vehicleNoMultiplierItems = mutableListOf<Material>()
-    val summonedOrSpawnEggs = WeakHashMap<LivingEntity, Any>()
-    companion object{
-        val summonedOrSpawnEggs_Lock = Any()
-    }
+    val summonedOrSpawnEggs = ConcurrentHashMap.newKeySet<UUID>()
 
     private var hasMentionedNBTAPIMissing = false
     var doCheckMobHash = false
     private var lastLEWCacheClearing: Instant? = null
     val entitySpawnListener = EntitySpawnListener()
-    private var nametagAutoUpdateTask: SchedulerResult? = null
-    private var nametagTimerTask: SchedulerResult? = null
-    private val asyncRunningCount = AtomicInteger()
-    private val entitiesPerPlayer = mutableMapOf<Player, MutableList<Entity>>()
-    private val entitiesPerPlayerLock = Any()
+    private var cacheCleanupTask: SchedulerResult? = null
     private val attributeStringList = mutableMapOf<String, Attribute>()
     private val strategyPlaceholders = mutableMapOf<String, StrategyType>()
     /**
@@ -1053,12 +1041,16 @@ class LevelManager : LevelInterface2 {
     }
 
     fun updateNametag(lmEntity: LivingEntityWrapper) {
+        val players = LevelledMobs.instance.nametagQueueManager.getTrackedPlayers(
+            lmEntity.livingEntity.uniqueId
+        )
+        if (players.isEmpty()) return
         val nametag = getNametag(lmEntity, isDeathNametag = false, preserveMobName = true)
 
         val queueItem = QueueItem(
             lmEntity,
             nametag,
-            lmEntity.livingEntity.world.players
+            players
         )
 
         LevelledMobs.instance.nametagQueueManager.addToQueue(queueItem)
@@ -1072,27 +1064,21 @@ class LevelManager : LevelInterface2 {
         LevelledMobs.instance.nametagQueueManager.addToQueue(QueueItem(lmEntity, nametag, players))
     }
 
-    fun startNametagAutoUpdateTask() {
+    fun startEventDrivenNametagUpdates() {
         Log.infKey("console.lifecycle.starting-nametag-task")
 
         val main = LevelledMobs.instance
-        val period = main.helperSettings.getInt(
-            "async-task-update-period",6
-        ).toLong() // бегать каждые? секунды.
         this.doCheckMobHash = main.helperSettings.getBoolean("check-mob-hash", true)
+        val cachePeriod = main.helperSettings.getIntTimeUnitMS(
+            "lew-cache-clear-period", 180000L
+        ) ?: 180000L
+        cacheCleanupTask = SchedulerWrapper(::checkLEWCache)
+            .runTaskTimerAsynchronously(cachePeriod, cachePeriod)
+    }
 
-        val runnable = Runnable {
-            checkLEWCache()
-            enumerateNearbyEntities()
-        }
-
-        if (main.ver.isRunningFolia) {
-            val task = Consumer { _: ScheduledTask? -> runnable.run() }
-            nametagTimerTask =
-                SchedulerResult(Bukkit.getAsyncScheduler().runAtFixedRate(main, task, 0, period, TimeUnit.SECONDS))
-        }
-        else
-            nametagTimerTask = SchedulerResult(Bukkit.getScheduler().runTaskTimer(main, runnable, 0, 20 * period))
+    @Deprecated("Nametags are updated from entity tracking events")
+    fun startNametagAutoUpdateTask() {
+        startEventDrivenNametagUpdates()
     }
 
     private fun checkLEWCache() {
@@ -1116,76 +1102,13 @@ class LevelManager : LevelInterface2 {
         }
     }
 
-    private fun enumerateNearbyEntities() {
-        entitiesPerPlayer.clear()
-        asyncRunningCount.set(0)
-        var checkDistance = entitySpawnListener.mobCheckDistance.toDouble()
-
-        for (player in Bukkit.getOnlinePlayers()) {
-            if (LevelledMobs.instance.ver.isRunningFolia) {
-                asyncRunningCount.getAndIncrement()
-                val scheduler = SchedulerWrapper(player) {
-                    checkDistance = MiscUtils.retrieveLoadedChunkRadius(player.location, checkDistance)
-                    val entities = player.getNearbyEntities(
-                        checkDistance, checkDistance, checkDistance
-                    )
-                    synchronized(entitiesPerPlayerLock) {
-                        entitiesPerPlayer.put(player, entities)
-                    }
-
-                    asyncRunningCount.getAndDecrement()
-                    if (asyncRunningCount.get() == 0) runNametagCheckASync()
-                }
-                scheduler.run()
-            } else {
-                val entities = player.getNearbyEntities(
-                    checkDistance, checkDistance, checkDistance
-                )
-                entitiesPerPlayer[player] = entities
-                runNametagCheckASync()
-            }
-        }
-    }
-
-    fun startNametagTimer() {
-        val scheduler = SchedulerWrapper {  LevelledMobs.instance.nametagTimerChecker.checkNametags() }
-        scheduler.runTaskTimerAsynchronously(0, 1000)
-    }
-
-    private fun runNametagCheckASync() {
-        val entityToPlayer = ConcurrentHashMap<LivingEntityWrapper, MutableList<Player>>()
-
-        if (LevelledMobs.instance.ver.isRunningFolia) {
-            for (player in entitiesPerPlayer.keys) {
-                for (entity in entitiesPerPlayer[player]!!) {
-                    val task =
-                        Consumer { _: ScheduledTask? ->
-                            checkEntity(
-                                entity,
-                                player,
-                                entityToPlayer
-                            )
-                        }
-                    entity.scheduler.run(LevelledMobs.instance, task, null)
-                }
-            }
-        } else {
-            for (player in entitiesPerPlayer.keys) {
-                for (entity in entitiesPerPlayer[player]!!) {
-                    checkEntity(entity, player, entityToPlayer)
-                }
-            }
-        }
-
-        for ((lmEntity, value) in entityToPlayer) {
-            if (entityToPlayer.containsKey(lmEntity)) {
-                checkEntityForPlayerLevelling(lmEntity, value)
-            }
-
+    fun handleTrackedEntity(entity: Entity, player: Player) {
+        val entityToPlayer = mutableMapOf<LivingEntityWrapper, MutableList<Player>>()
+        checkEntity(entity, player, entityToPlayer)
+        for ((lmEntity, players) in entityToPlayer) {
+            checkEntityForPlayerLevelling(lmEntity, players)
             lmEntity.free()
         }
-
-        entitiesPerPlayer.clear()
     }
 
     private fun checkEntity(
@@ -1198,9 +1121,6 @@ class LevelManager : LevelInterface2 {
         // Моб должен быть живым существом, которое... живое.
         if (entity !is LivingEntity || entity is Player || !entity.isValid)
             return
-        // в основном это касается мобов-спаунеров и мобов-спаунеров яиц, поскольку перед обработкой у них есть задержка в 20 тиков.
-        if (entity.ticksLived < 30) return
-
         var wrapperHasReference = false
         val lmEntity = LivingEntityWrapper.getInstance(entity)
         lmEntity.associatedPlayer = player
@@ -1232,7 +1152,10 @@ class LevelManager : LevelInterface2 {
                 wrapperHasReference = true
             }
 
-            if (!lmEntity.isPopulated) return
+            if (!lmEntity.isPopulated) {
+                if (!wrapperHasReference) lmEntity.free()
+                return
+            }
 
             val nametagVisibilityEnums = lmEntity.nametagVisibilityEnum
             val nametagVisibleTime = lmEntity.getNametagCooldownTime()
@@ -1248,6 +1171,11 @@ class LevelManager : LevelInterface2 {
 
             checkLevelledEntity(lmEntity, player)
         } else {
+            // Custom/spawn-egg mobs are deliberately processed after their spawn delay.
+            if (entity.ticksLived < 30) {
+                lmEntity.free()
+                return
+            }
             val wasBabyMob: Boolean
             synchronized(lmEntity.livingEntity.persistentDataContainer) {
                 wasBabyMob = lmEntity.pdc
@@ -1343,9 +1271,6 @@ class LevelManager : LevelInterface2 {
     ) {
         if (!lmEntity.livingEntity.isValid) return
 
-        // возведите в квадрат расстояние, которое мы используем Location#distanceSquared. Это связано с тем, что он быстрее, чем Location#distance, поскольку не требуется sqrt, что обременяет CPU.
-        val maxDistance = 128.0.pow(2.0)
-        val location = player.location
         val main = LevelledMobs.instance
 
         @Suppress("DEPRECATION")
@@ -1362,9 +1287,8 @@ class LevelManager : LevelInterface2 {
         ) {
             // моб приручен с помощью уровня, но правила этого не позволяют, удалите уровень
             main.levelInterface.removeLevel(lmEntity)
-        } else if (lmEntity.livingEntity.isValid && location.world != null && location.world == lmEntity.world
-            && lmEntity.location.distanceSquared(location) <= maxDistance) {
-            //если вы находитесь на расстоянии, обновите именной бейдж.
+        } else if (lmEntity.livingEntity.isValid) {
+            // PlayerTrackEntityEvent already guarantees that this viewer tracks the mob.
             val nametag = main.levelManager.getNametag(lmEntity, isDeathNametag = false, preserveMobName = true)
             main.nametagQueueManager.addToQueue(
                 QueueItem(lmEntity, nametag, mutableListOf(player))
@@ -1382,11 +1306,9 @@ class LevelManager : LevelInterface2 {
         if (lmEntity.spawnReason.getInternalSpawnReason(lmEntity) == InternalSpawnReason.LM_SUMMON)
             return false
 
-        if (main.playerLevellingMinRelevelTime > 0L && main.playerLevellingEntities.containsKey(
-                mob
-            )
-        ) {
-            val lastCheck = main.playerLevellingEntities[mob]
+        val mobId = mob.uniqueId
+        if (main.playerLevellingMinRelevelTime > 0L && main.playerLevellingEntities.containsKey(mobId)) {
+            val lastCheck = main.playerLevellingEntities[mobId]
             val duration = Duration.between(lastCheck, Instant.now())
 
             if (duration.toMillis() < main.playerLevellingMinRelevelTime)
@@ -1395,7 +1317,7 @@ class LevelManager : LevelInterface2 {
 
         val playerId: String?
         if (main.playerLevellingMinRelevelTime > 0L)
-            main.playerLevellingEntities[mob] = Instant.now()
+            main.playerLevellingEntities[mobId] = Instant.now()
 
         synchronized(mob.persistentDataContainer) {
             if (!mob.persistentDataContainer
@@ -1437,17 +1359,11 @@ class LevelManager : LevelInterface2 {
 
     fun stopNametagAutoUpdateTask() {
         LevelledMobs.instance.nametagQueueManager.stop()
+        cacheCleanupTask?.cancelTask()
 
         if (!LevelledMobs.instance.nametagQueueManager.hasNametagSupport)
             return
 
-        if (nametagAutoUpdateTask != null && !nametagAutoUpdateTask!!.isCancelled()) {
-            Log.infKey("console.lifecycle.stopping-nametag-task")
-            nametagAutoUpdateTask!!.cancelTask()
-        }
-
-        if (nametagTimerTask != null && !nametagTimerTask!!.isCancelled())
-            nametagTimerTask!!.cancelTask()
     }
 
     private fun applyLevelledAttributes(
@@ -1589,7 +1505,7 @@ class LevelManager : LevelInterface2 {
         val customDropsRuleSet: CustomDropsRuleSet = LevelledMobs.instance.rulesManager.getRuleUseCustomDropsForMob(lmEntity)
         if (!customDropsRuleSet.useDrops) return
 
-        if (LevelledMobs.instance.ver.isRunningFolia){
+        if (Bukkit.isOwnedByCurrentRegion(lmEntity.livingEntity)){
             applyLevelledEquipmentNonAsync(lmEntity, customDropsRuleSet)
             return
         }
@@ -1807,8 +1723,8 @@ class LevelManager : LevelInterface2 {
         // этот поток работает асинхронно.  при добавлении каких-либо функций убедитесь, что их можно запустить таким образом
         val main = LevelledMobs.instance
 
-        if (!main.ver.isRunningFolia && Bukkit.isPrimaryThread()){
-            val scheduler = SchedulerWrapper{
+        if (!Bukkit.isOwnedByCurrentRegion(lmEntity.livingEntity)){
+            val scheduler = SchedulerWrapper(lmEntity.livingEntity) {
                 applyLevelToMob(lmEntity, level, isSummoned, bypassLimits, additionalLevelInformation)
                 lmEntity.free()
             }
@@ -2044,38 +1960,15 @@ class LevelManager : LevelInterface2 {
      * @return есть ли у моба уровень
      */
     override fun isLevelled(livingEntity: LivingEntity): Boolean {
-        var hadError = false
-        var succeeded = false
-        var isLevelled = false
-
-        @Suppress("UNUSED_PARAMETER")
-        for (i in 0..1) {
-            try {
-                synchronized(livingEntity.persistentDataContainer) {
-                    isLevelled = livingEntity.persistentDataContainer
-                        .has(NamespacedKeys.levelKey, PersistentDataType.INTEGER)
-                }
-                succeeded = true
-                break
-            } catch (_: ConcurrentModificationException) {
-                hadError = true
-                try {
-                    Thread.sleep(10)
-                } catch (_: InterruptedException) {
-                    return false
-                }
+        return try {
+            synchronized(livingEntity.persistentDataContainer) {
+                livingEntity.persistentDataContainer
+                    .has(NamespacedKeys.levelKey, PersistentDataType.INTEGER)
             }
+        } catch (_: ConcurrentModificationException) {
+            Log.warKey("console.concurrency.level-check-failed")
+            false
         }
-
-        if (hadError) {
-            if (succeeded) {
-                Log.warKey("console.concurrency.level-check-retry-succeeded")
-            } else {
-                Log.warKey("console.concurrency.level-check-failed")
-            }
-        }
-
-        return isLevelled
     }
 
     /**

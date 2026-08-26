@@ -18,7 +18,7 @@ import io.github.arcaneplugins.levelledmobs.managers.MobsQueueManager
 import io.github.arcaneplugins.levelledmobs.managers.NametagQueueManager
 import io.github.arcaneplugins.levelledmobs.managers.NotifyManager
 import io.github.arcaneplugins.levelledmobs.managers.PlaceholderApiIntegration
-import io.github.arcaneplugins.levelledmobs.misc.NametagTimerChecker
+import io.github.arcaneplugins.levelledmobs.misc.FileLoader
 import io.github.arcaneplugins.levelledmobs.misc.YmlParsingHelper
 import io.github.arcaneplugins.levelledmobs.nametag.Definitions
 import io.github.arcaneplugins.levelledmobs.nametag.NmsMappings
@@ -33,16 +33,14 @@ import io.github.arcaneplugins.levelledmobs.util.MessageUtils
 import io.github.arcaneplugins.levelledmobs.util.QuickTimer
 import io.github.arcaneplugins.levelledmobs.util.Utils
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
-import io.github.arcaneplugins.levelledmobs.wrappers.SchedulerWrapper
 import java.time.Instant
 import java.util.Random
 import java.util.Stack
-import java.util.WeakHashMap
-import java.util.function.Consumer
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
-import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.java.JavaPlugin
@@ -72,7 +70,6 @@ class LevelledMobs : JavaPlugin() {
     val rulesManager = RulesManager()
     val mobsQueueManager = MobsQueueManager()
     val nametagQueueManager = NametagQueueManager()
-    val nametagTimerChecker = NametagTimerChecker()
     val attributeSyncObject = Any()
     val random = Random()
     var placeholderApiIntegration: PlaceholderApiIntegration? = null
@@ -86,15 +83,17 @@ class LevelledMobs : JavaPlugin() {
     val ver = ServerVersionInfo()
 
     // Конфигурация
+    @Volatile
     var messagesCfg = YamlConfiguration()
         internal set
     val configUtils = ConfigUtils()
 
     // Разное
-    val customMobGroups = mutableMapOf<String, MutableSet<String>>()
+    val customMobGroups: Map<String, Set<String>>
+        get() = rulesManager.customMobGroups
     var entityDamageDebugListener = EntityDamageDebugListener()
     private var loadTime = 0L
-    val playerLevellingEntities = WeakHashMap<LivingEntity, Instant>()
+    val playerLevellingEntities = ConcurrentHashMap<UUID, Instant>()
     var cacheCheck: Stack<LivingEntityWrapper>? = null
 
     companion object {
@@ -138,16 +137,7 @@ class LevelledMobs : JavaPlugin() {
 
         Log.infKey("console.lifecycle.misc-procedures")
         if (nametagQueueManager.hasNametagSupport) {
-            levelManager.startNametagAutoUpdateTask()
-            levelManager.startNametagTimer()
-
-            if (!ver.isRunningFolia){
-                val scheduler = SchedulerWrapper {
-                    nametagQueueManager.taskChecker()
-                    mobsQueueManager.taskChecker()
-                }
-                scheduler.runTaskTimerAsynchronously(50000, 5000)
-            }
+            levelManager.startEventDrivenNametagUpdates()
         }
 
         prepareToLoadCustomDrops()
@@ -177,7 +167,14 @@ class LevelledMobs : JavaPlugin() {
         }
     }
 
-    fun reloadLM(sender: CommandSender) {
+    fun reloadLM(sender: CommandSender, onComplete: Runnable? = null) {
+        Bukkit.getGlobalRegionScheduler().execute(this) {
+            reloadLMOnGlobal(sender)
+            onComplete?.run()
+        }
+    }
+
+    private fun reloadLMOnGlobal(sender: CommandSender) {
         NotifyManager.clearLastError()
         mainCompanion.errorMessages.clear()
         customDropsHandler.customDropsParser.invalidExternalItems.clear()
@@ -189,9 +186,7 @@ class LevelledMobs : JavaPlugin() {
             configUtils.prefix
         )
         reloadStartedMsg = Utils.colorizeAllInList(reloadStartedMsg)
-        reloadStartedMsg.forEach(Consumer { s: String ->
-            sender.sendMessage(s)
-        })
+        sendReloadMessages(sender, reloadStartedMsg)
 
         mainCompanion.reloadSender = sender
         mainCompanion.loadFiles()
@@ -221,10 +216,6 @@ class LevelledMobs : JavaPlugin() {
             HandlerList.unregisterAll(chunkLoadListener)
         }
 
-        if (customDropsHandler.customDropsParser.hadParsingError && sender is Player){
-            LocalizedMessages.send(sender, "other.customdrops-parse-error")
-        }
-
         rulesManager.clearTempDisabledRulesCounts()
         definitions.useTranslationComponents = helperSettings.getBoolean(
             "use-translation-components", true
@@ -236,13 +227,28 @@ class LevelledMobs : JavaPlugin() {
         )
         mainCompanion.checkSettingsWithMaxPlayerOptions()
         nametagQueueManager.nametagSenderHandler.refresh()
+        nametagQueueManager.refreshAllTrackedEntities()
 
-        reloadFinishedMsg.forEach(Consumer { s: String ->
-            sender.sendMessage(s)
-        })
+        sendReloadMessages(sender, reloadFinishedMsg)
 
-        if (mainCompanion.errorMessages.isNotEmpty() && sender is Player){
-            LocalizedMessages.send(sender, "other.errors-reported")
+        if (sender is Player) runForSender(sender) {
+            if (customDropsHandler.customDropsParser.hadParsingError)
+                LocalizedMessages.send(sender, "other.customdrops-parse-error")
+            if (mainCompanion.hadRulesLoadError)
+                sender.sendMessage(FileLoader.getFileLoadErrorMessage())
+            if (mainCompanion.errorMessages.isNotEmpty())
+                LocalizedMessages.send(sender, "other.errors-reported")
         }
+    }
+
+    private fun sendReloadMessages(sender: CommandSender, messages: List<String>) {
+        runForSender(sender) { messages.forEach(sender::sendMessage) }
+    }
+
+    private fun runForSender(sender: CommandSender, action: Runnable) {
+        if (sender is Player && !Bukkit.isOwnedByCurrentRegion(sender))
+            sender.scheduler.run(this, { action.run() }, null)
+        else
+            action.run()
     }
 }

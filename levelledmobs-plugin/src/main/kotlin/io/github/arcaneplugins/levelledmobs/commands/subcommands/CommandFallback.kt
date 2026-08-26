@@ -1,12 +1,10 @@
 package io.github.arcaneplugins.levelledmobs.commands.subcommands
 
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
-import io.github.arcaneplugins.levelledmobs.misc.FileLoader
 import io.github.arcaneplugins.levelledmobs.util.Log
 import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 
 class CommandFallback(
     commandName: String
@@ -33,9 +31,6 @@ class CommandFallback(
 
         if ("reload".equals(args[0], ignoreCase = true)){
             main.reloadLM(sender)
-
-            if (main.mainCompanion.hadRulesLoadError && sender is Player)
-                sender.sendMessage(FileLoader.getFileLoadErrorMessage())
         }
         else if ("show-errors".equals(args[0], ignoreCase = true))
             showErrors(sender, args)

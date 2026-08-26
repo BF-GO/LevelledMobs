@@ -1,6 +1,7 @@
 package io.github.arcaneplugins.levelledmobs.managers
 
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.github.arcaneplugins.levelledmobs.misc.LastMobKilledInfo
@@ -20,8 +21,8 @@ import org.bukkit.util.Vector
  */
 @Suppress("DEPRECATION")
 class PlaceholderApiIntegration : PlaceholderExpansion() {
-    private val mobsByPlayerTracking = mutableMapOf<UUID, LastMobKilledInfo>()
-    private val playerDeathInfo = mutableMapOf<UUID, LastMobKilledInfo>()
+    private val mobsByPlayerTracking = ConcurrentHashMap<UUID, LastMobKilledInfo>()
+    private val playerDeathInfo = ConcurrentHashMap<UUID, LastMobKilledInfo>()
 
     fun putPlayerOrMobDeath(
         player: Player,

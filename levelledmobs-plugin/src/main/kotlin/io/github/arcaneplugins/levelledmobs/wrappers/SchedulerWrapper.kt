@@ -1,38 +1,34 @@
 package io.github.arcaneplugins.levelledmobs.wrappers
 
+import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask
 import java.util.concurrent.TimeUnit
 import java.util.function.Consumer
-import io.github.arcaneplugins.levelledmobs.LevelledMobs
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Entity
-import org.bukkit.scheduler.BukkitTask
 
 /**
- * Этот класс используется, когда код необходимо выполнить в контексте определенного потока.
- * Это позволяет серверам Folia выполнять код в правильном планировщике, пока
- * обеспечение совместимости с серверами Paper/Spigot без необходимости использования
- * разные методы для каждого типа сервера
+ * Routes work through the schedulers shared by modern Paper and Folia.
  *
- * @author stumper66
- * @since 3.11.0
+ * Entity and location work always runs on its owning region. Work without an
+ * owner is treated as CPU/I/O work and uses the async scheduler. Callers may
+ * opt into direct execution only when they are already inside the correct
+ * event/scheduler context.
  */
 class SchedulerWrapper {
     var runnable: Runnable? = null
     var entity: Entity? = null
-    var bukkitTask: BukkitTask? = null
-        private set
 
-    constructor(runnable: Runnable){
+    constructor(runnable: Runnable) {
         this.runnable = runnable
     }
 
-    constructor(entity: Entity?){
+    constructor(entity: Entity?) {
         this.entity = entity
     }
 
-    constructor(entity: Entity?, runnable: Runnable){
+    constructor(entity: Entity?, runnable: Runnable) {
         this.entity = entity
         this.runnable = runnable
     }
@@ -40,99 +36,106 @@ class SchedulerWrapper {
     var locationForRegionScheduler: Location? = null
     var runDirectlyInFolia: Boolean = false
     var runDirectlyInBukkit: Boolean = false
-    val main = LevelledMobs.instance
+    private val main = LevelledMobs.instance
 
     fun runAsync() {
-        run(true)
+        if (entity != null || locationForRegionScheduler != null)
+            run()
+        else
+            Bukkit.getAsyncScheduler().runNow(main) { runnable!!.run() }
     }
 
-    fun run(doRunAsync: Boolean = false) {
-        if (main.ver.isRunningFolia) {
-            if (runDirectlyInFolia) {
-                runnable!!.run()
-                return
-            }
-
-            val task = Consumer { _: ScheduledTask -> runnable!!.run() }
-
-            if (entity != null)
-                entity!!.scheduler.run(main, task, null)
-            else {
-                if (locationForRegionScheduler != null)
-                    Bukkit.getRegionScheduler().run(main, locationForRegionScheduler!!, task)
-                else
-                    Bukkit.getAsyncScheduler().runNow(main, task)
-            }
-        } else {
-            if (runDirectlyInBukkit) {
-                runnable!!.run()
-                return
-            }
-
-            // если вы предоставили объект в конструкторе, предполагается, что необходимо использовать основной поток
-            // поскольку асинхронный доступ к объектам обычно приводит к ошибке
-            bukkitTask = if (entity != null && !doRunAsync)
-                Bukkit.getScheduler().runTask(main, runnable!!)
-            else
-                Bukkit.getScheduler().runTaskAsynchronously(main, runnable!!)
+    fun run(@Suppress("UNUSED_PARAMETER") doRunAsync: Boolean = false) {
+        if (willRunDirectly) {
+            runnable!!.run()
+            return
         }
+
+        val ownedEntity = entity
+        if (ownedEntity != null) {
+            ownedEntity.scheduler.run(main, Consumer { runnable!!.run() }, null)
+            return
+        }
+
+        val location = locationForRegionScheduler
+        if (location != null) {
+            Bukkit.getRegionScheduler().run(main, location) { runnable!!.run() }
+            return
+        }
+
+        Bukkit.getAsyncScheduler().runNow(main) { runnable!!.run() }
+    }
+
+    fun runGlobal(): SchedulerResult {
+        val task = Bukkit.getGlobalRegionScheduler().run(main) { runnable!!.run() }
+        return SchedulerResult(task)
+    }
+
+    fun runGlobalDelayed(delayInTicks: Long): SchedulerResult {
+        val task = Bukkit.getGlobalRegionScheduler().runDelayed(
+            main,
+            Consumer { runnable!!.run() },
+            delayInTicks.coerceAtLeast(1L)
+        )
+        return SchedulerResult(task)
+    }
+
+    fun runTaskTimerGlobal(initialDelayTicks: Long, repeatPeriodTicks: Long): SchedulerResult {
+        val task = Bukkit.getGlobalRegionScheduler().runAtFixedRate(
+            main,
+            Consumer { runnable!!.run() },
+            initialDelayTicks.coerceAtLeast(1L),
+            repeatPeriodTicks.coerceAtLeast(1L)
+        )
+        return SchedulerResult(task)
     }
 
     fun runTaskTimerAsynchronously(
         initialDelayMS: Long,
         repeatPeriodMS: Long
     ): SchedulerResult {
-        if (main.ver.isRunningFolia) {
-            val task = Consumer { _: ScheduledTask -> runnable!!.run() }
-            val scheduledTask = Bukkit.getAsyncScheduler().runAtFixedRate(
-                main, task, initialDelayMS, repeatPeriodMS, TimeUnit.MILLISECONDS
-            )
-
-            return SchedulerResult(scheduledTask)
-        } else {
-            // конвертировать миллисекунды в приблизительные тики
-            // 1 тик = ~ 50мс
-            val convertedDelay = initialDelayMS / 50L
-            val convertedPeriod = repeatPeriodMS / 50L
-            val bukkitTask = Bukkit.getScheduler().runTaskTimerAsynchronously(
-                main, runnable!!, convertedDelay, convertedPeriod
-            )
-
-            return SchedulerResult(bukkitTask)
-        }
+        val task = Bukkit.getAsyncScheduler().runAtFixedRate(
+            main,
+            Consumer { _: ScheduledTask -> runnable!!.run() },
+            initialDelayMS,
+            repeatPeriodMS,
+            TimeUnit.MILLISECONDS
+        )
+        return SchedulerResult(task)
     }
 
-    fun runDelayed(
-        delayInTicks: Long
-    ): SchedulerResult {
-        if (main.ver.isRunningFolia) {
-            val task = Consumer { _: ScheduledTask? -> runnable!!.run() }
-            val scheduledTask: ScheduledTask?
-            if (this.entity != null)
-                scheduledTask = entity!!.scheduler.runDelayed(main, task, null, delayInTicks)
-            else {
-                val milliseconds = delayInTicks * 50L
-                scheduledTask = Bukkit.getAsyncScheduler().runDelayed(
-                    main, task, milliseconds, TimeUnit.MILLISECONDS
-                )
-            }
-
-            return SchedulerResult(scheduledTask)
-        } else {
-            val bukkitTask = Bukkit.getScheduler().runTaskLater(
+    fun runDelayed(delayInTicks: Long): SchedulerResult {
+        val ownedEntity = entity
+        if (ownedEntity != null) {
+            val task = ownedEntity.scheduler.runDelayed(
                 main,
-                runnable!!, delayInTicks
+                Consumer { runnable!!.run() },
+                null,
+                delayInTicks.coerceAtLeast(1L)
             )
-
-            return SchedulerResult(bukkitTask)
+            return SchedulerResult(task)
         }
+
+        val location = locationForRegionScheduler
+        if (location != null) {
+            val task = Bukkit.getRegionScheduler().runDelayed(
+                main,
+                location,
+                Consumer { runnable!!.run() },
+                delayInTicks.coerceAtLeast(1L)
+            )
+            return SchedulerResult(task)
+        }
+
+        val task = Bukkit.getAsyncScheduler().runDelayed(
+            main,
+            Consumer { runnable!!.run() },
+            delayInTicks.coerceAtLeast(1L) * 50L,
+            TimeUnit.MILLISECONDS
+        )
+        return SchedulerResult(task)
     }
 
     val willRunDirectly: Boolean
-        get() {
-            return if (main.ver.isRunningFolia)
-                runDirectlyInFolia
-            else
-                runDirectlyInBukkit
-        }
+        get() = runDirectlyInFolia || runDirectlyInBukkit
 }

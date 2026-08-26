@@ -164,12 +164,9 @@ class ServerVersionInfo {
     val isRunningFolia: Boolean
         get() {
             if (this._isRunningFolia == null) {
-                try {
-                    Class.forName("io.papermc.paper.threadedregions.RegionizedServer")
-                    this._isRunningFolia = true
-                } catch (_: ClassNotFoundException) {
-                    this._isRunningFolia = false
-                }
+                val serverName = Bukkit.getServer().name.lowercase()
+                this._isRunningFolia =
+                    serverName.contains("folia") || serverName.contains("shreddedpaper")
             }
 
             return this._isRunningFolia!!

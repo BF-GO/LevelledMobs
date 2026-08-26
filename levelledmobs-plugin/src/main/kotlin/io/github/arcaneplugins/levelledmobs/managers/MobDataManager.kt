@@ -314,7 +314,7 @@ class MobDataManager {
     }
 
     fun getAllAttributeValues(lmEntity: LivingEntityWrapper, whichOnes: MutableList<Attribute>? = null){
-        if (LevelledMobs.instance.ver.isRunningFolia || Bukkit.isPrimaryThread()){
+        if (Bukkit.isOwnedByCurrentRegion(lmEntity.livingEntity)){
             populateAttributeCache(lmEntity, whichOnes)
             return
         }

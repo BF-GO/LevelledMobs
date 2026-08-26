@@ -25,7 +25,7 @@ idea {
 
 dependencies {
     //implementation("org.jetbrains.kotlin:kotlin-stdlib:2.3.20")
-    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT") {
+    compileOnly("io.papermc.paper:paper-api:26.2.build.+") {
         exclude(group = "com.google.guava", module = "guava")
         //exclude(group = "com.google.code.gson", module = "gson")
         exclude(group = "it.unimi.dsi", module = "fastutil")
@@ -36,6 +36,8 @@ dependencies {
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.1.0-SNAPSHOT") // https://maven.enginehub.org/repo/com/sk89q/worldguard/worldguard-bukkit/
     compileOnly("de.tr7zw:item-nbt-api-plugin:2.15.0") // https://mvnrepository.com/artifact/de.tr7zw/item-nbt-api-plugin
     compileOnly("io.github.stumper66:LM_Items:1.3.0") // https://mvnrepository.com/artifact/io.github.stumper66/LM_Items
+    testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 repositories {
@@ -55,9 +57,9 @@ repositories {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-    toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+    toolchain.languageVersion.set(JavaLanguageVersion.of(25))
     withSourcesJar()
     withJavadocJar()
 }
@@ -80,7 +82,7 @@ tasks {
 
     kotlin {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
+            jvmTarget.set(JvmTarget.JVM_25)
             apiVersion.set(KotlinVersion.KOTLIN_2_3)
         }
     }
@@ -104,6 +106,10 @@ tasks {
 
     build {
         dependsOn(shadowJar)
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }
 
