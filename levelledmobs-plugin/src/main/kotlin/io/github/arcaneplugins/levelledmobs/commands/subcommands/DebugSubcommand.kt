@@ -374,35 +374,19 @@ object DebugSubcommand : CommandBase("levelledmobs.command.debug") {
     }
 
     private fun viewQueues(sender: CommandSender){
-        val nametagQueueNum = LevelledMobs.instance.nametagQueueManager.getNumberQueued()
-        val nametagQueueTask = LevelledMobs.instance.nametagQueueManager.queueTask
-        val mobQueueNum = LevelledMobs.instance.mobsQueueManager.getNumberQueued()
-        val isNametagTaskRunning = if (nametagQueueTask != null) Bukkit.getScheduler().isCurrentlyRunning(nametagQueueTask.taskId) else false
-        val nametagtaskStatus = if (nametagQueueTask == null)
-            LocalizedMessages.text("command.levelledmobs.debug.task-null", colorize = false)
-        else LocalizedMessages.text(
-            "command.levelledmobs.debug.task-status",
-            mapOf(
-                "id" to nametagQueueTask.taskId,
-                "running" to isNametagTaskRunning,
-                "cancelled" to nametagQueueTask.isCancelled
-            ), colorize = false
-        )
-        val mobsTaskStatus = StringBuilder()
-        for (task in LevelledMobs.instance.mobsQueueManager.queueTasks.values){
-            val isRunning = Bukkit.getScheduler().isCurrentlyRunning(task.taskId)
-            mobsTaskStatus.append("\n   ")
-            mobsTaskStatus.append(
-                LocalizedMessages.text(
-                    "command.levelledmobs.debug.task-status",
-                    mapOf(
-                        "id" to task.taskId,
-                        "running" to isRunning,
-                        "cancelled" to task.isCancelled
-                    ), colorize = false
-                )
-            )
-        }
+        val main = LevelledMobs.instance
+        val nametagManager = main.nametagQueueManager
+        val mobsManager = main.mobsQueueManager
+        val nametagQueueNum = nametagManager.getNumberQueued()
+        val mobQueueNum = mobsManager.getNumberQueued()
+        val nametagtaskStatus =
+            "event-driven; tracked=${nametagManager.getTrackedEntityCount()}, " +
+                "coalesced=${nametagManager.getCoalescedRefreshes()}, " +
+                "packets/s=${"%.2f".format(nametagManager.getPacketsPerSecond())}, " +
+                "oldest=${nametagManager.getOldestPendingAgeMillis()}ms"
+        val mobsTaskStatus =
+            "event-driven; coalesced=${mobsManager.getCoalescedJobs()}, " +
+                "oldest=${mobsManager.getOldestPendingAgeMillis()}ms"
 
         LocalizedMessages.send(
             sender, "command.levelledmobs.debug.queue-status",
