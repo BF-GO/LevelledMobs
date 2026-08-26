@@ -29,17 +29,17 @@ presets:
     settings:
       attribute-modifier:
         merge: false
-        max-health: '0.25 * %level%'
-        attack-damage: '0.10 * %level%'
-        ranged-attack-damage: '0.10 * %level%'
-        creeper-blast-damage: '0.003 * %level%'
-        movement-speed: '0.00010 * %level%'
-        follow-range: '0.02 * %level%'
+        max-health: '0.1875 * %level%'
+        attack-damage: '0.075 * %level%'
+        ranged-attack-damage: '0.075 * %level%'
+        creeper-blast-damage: '0.00225 * %level%'
+        movement-speed: '0.000075 * %level%'
+        follow-range: '0.015 * %level%'
         item-drop: 0.0
         xp-drop: '0.004 * %level%'
-        armor-bonus: '0.010 * %level%'
-        armor-toughness: '0.006 * %level%'
-        knockback-resistance: '0.0004 * %level%'
+        armor-bonus: '0.0075 * %level%'
+        armor-toughness: '0.0045 * %level%'
+        knockback-resistance: '0.0003 * %level%'
 
   judgement-week-presentation:
     name: 'Судная неделя — имена и сообщения о смерти'
@@ -205,17 +205,17 @@ custom-rules:
       creeper-max-damage-radius: 6
       attribute-modifier:
         do-not-merge-any: true
-        max-health: '0.45 * %level%'
-        attack-damage: '0.16 * %level%'
-        ranged-attack-damage: '0.16 * %level%'
-        creeper-blast-damage: '0.004 * %level%'
-        movement-speed: '0.00015 * %level%'
-        follow-range: '0.03 * %level%'
+        max-health: '0.3375 * %level%'
+        attack-damage: '0.12 * %level%'
+        ranged-attack-damage: '0.12 * %level%'
+        creeper-blast-damage: '0.003 * %level%'
+        movement-speed: '0.0001125 * %level%'
+        follow-range: '0.0225 * %level%'
         item-drop: 0.0
         xp-drop: '0.004 * %level%'
-        armor-bonus: '0.015 * %level%'
-        armor-toughness: '0.009 * %level%'
-        knockback-resistance: '0.0006 * %level%'
+        armor-bonus: '0.01125 * %level%'
+        armor-toughness: '0.00675 * %level%'
+        knockback-resistance: '0.00045 * %level%'
 
   - custom-rule: 'Судная неделя — отдельная шкала боссов'
     is-enabled: true
@@ -270,10 +270,10 @@ custom-rules:
       mob-tamed-status: NOT_TAMED
     settings:
       attribute-modifier:
-        max-health: '0.275 * %level%'
-        attack-damage: '0.11 * %level%'
-        ranged-attack-damage: '0.11 * %level%'
-        creeper-blast-damage: '0.0033 * %level%'
+        max-health: '0.20625 * %level%'
+        attack-damage: '0.0825 * %level%'
+        ranged-attack-damage: '0.0825 * %level%'
+        creeper-blast-damage: '0.002475 * %level%'
 
   - custom-rule: 'Судная неделя — пещерное усиление'
     is-enabled: true
@@ -287,10 +287,10 @@ custom-rules:
       mob-tamed-status: NOT_TAMED
     settings:
       attribute-modifier:
-        max-health: '0.275 * %level%'
-        attack-damage: '0.11 * %level%'
-        ranged-attack-damage: '0.11 * %level%'
-        creeper-blast-damage: '0.0033 * %level%'
+        max-health: '0.20625 * %level%'
+        attack-damage: '0.0825 * %level%'
+        ranged-attack-damage: '0.0825 * %level%'
+        creeper-blast-damage: '0.002475 * %level%'
 
   - custom-rule: 'Судная неделя — усиление Нижнего мира'
     is-enabled: true
@@ -303,10 +303,10 @@ custom-rules:
       mob-tamed-status: NOT_TAMED
     settings:
       attribute-modifier:
-        max-health: '0.2875 * %level%'
-        attack-damage: '0.115 * %level%'
-        ranged-attack-damage: '0.115 * %level%'
-        creeper-blast-damage: '0.00345 * %level%'
+        max-health: '0.215625 * %level%'
+        attack-damage: '0.08625 * %level%'
+        ranged-attack-damage: '0.08625 * %level%'
+        creeper-blast-damage: '0.0025875 * %level%'
 
   - custom-rule: 'Судная неделя — усиление Края'
     is-enabled: true
@@ -319,10 +319,10 @@ custom-rules:
       mob-tamed-status: NOT_TAMED
     settings:
       attribute-modifier:
-        max-health: '0.30 * %level%'
-        attack-damage: '0.12 * %level%'
-        ranged-attack-damage: '0.12 * %level%'
-        creeper-blast-damage: '0.0036 * %level%'
+        max-health: '0.225 * %level%'
+        attack-damage: '0.09 * %level%'
+        ranged-attack-damage: '0.09 * %level%'
+        creeper-blast-damage: '0.0027 * %level%'
 
   # Правило обнуляет профиль у мобов, которыми управляют внешние плагины.
   - custom-rule: 'Внешние плагины — без событийного уровня'
