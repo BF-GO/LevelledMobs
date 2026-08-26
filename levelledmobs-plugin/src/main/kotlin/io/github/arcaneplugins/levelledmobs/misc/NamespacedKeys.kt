@@ -58,4 +58,10 @@ object NamespacedKeys {
     val equipment3 = NamespacedKey(LevelledMobs.instance, "equipment3")
     val equipment4 = NamespacedKey(LevelledMobs.instance, "equipment4")
     val equipment5 = NamespacedKey(LevelledMobs.instance, "equipment5")
+    val mobArchetype = NamespacedKey(LevelledMobs.instance, "mob_archetype")
+    val mobArchetypeChecked = NamespacedKey(LevelledMobs.instance, "mob_archetype_checked")
+    val mobArchetypeCooldown = NamespacedKey(LevelledMobs.instance, "mob_archetype_cooldown")
+    val mobArchetypeRageUsed = NamespacedKey(LevelledMobs.instance, "mob_archetype_rage_used")
+    val mobArchetypeRageUntil = NamespacedKey(LevelledMobs.instance, "mob_archetype_rage_until")
+    val mobArchetypeBossPhaseUsed = NamespacedKey(LevelledMobs.instance, "mob_archetype_boss_phase_used")
 }

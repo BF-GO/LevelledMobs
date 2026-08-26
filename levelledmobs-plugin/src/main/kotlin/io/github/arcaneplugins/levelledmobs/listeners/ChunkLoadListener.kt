@@ -50,6 +50,7 @@ class ChunkLoadListener : Listener {
                 lmEntity.isRulesForceAll = true
                 lmEntity.wasPreviouslyLevelled = lmEntity.isLevelled
             } else if (lmEntity.isLevelled) {
+                LevelledMobs.instance.mobArchetypeManager.ensureAssignedAndApplied(lmEntity)
                 lmEntity.free()
                 return@run
             }

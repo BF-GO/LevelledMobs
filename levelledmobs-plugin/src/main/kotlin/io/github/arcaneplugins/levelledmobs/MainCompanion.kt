@@ -127,6 +127,7 @@ class MainCompanion{
         this.hadRulesLoadError = rulesFile == null
         main.rulesParsingManager.parseRulesMain(rulesFile)
         main.customDropsHandler.load()
+        main.mobArchetypeManager.load()
 
         parseDebugsEnabled()
 
@@ -213,6 +214,7 @@ class MainCompanion{
 
         main.levelManager.entitySpawnListener.load()
         main.entityDamageListener.load()
+        main.mobArchetypeManager.loadListener()
         main.entityDeathListener.load()
         pluginManager.registerEvents(EntityRegainHealthListener(), main)
         main.entityTransformListener.load()
@@ -244,6 +246,7 @@ class MainCompanion{
         main.entityDeathListener.load()
         main.playerDeathListener.load()
         EntityDamageListener.instance.load()
+        main.mobArchetypeManager.loadListener()
     }
 
     fun getEventPriority(

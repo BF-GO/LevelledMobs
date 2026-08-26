@@ -154,6 +154,56 @@ event-priorities:
   entity-transform-event: 'monitor'
   player-death-event: 'normal'
 
+# ||  Классы и активные способности мобов «Судной недели» уровня 300+.
+judgement-week-archetypes:
+  enabled: true
+  artifact-chance-multiplier: 1.5
+  chances:
+    300-449: 0.10
+    450-599: 0.15
+    600-749: 0.25
+    750-899: 0.40
+    900-998: 0.60
+    '999': 1.0
+  classes:
+    berserker:
+      display: '&c[Берсерк]'
+      passive: { outgoing-damage: 1.25, movement-speed: 1.15 }
+      ability: { health-threshold: 0.40, duration: 8s, damage-multiplier: 1.25, movement-speed: 1.20 }
+    bastion:
+      display: '&7[Бастион]'
+      passive: { max-health: 1.35, armor-bonus: 6.0, armor-toughness: 3.0, knockback-resistance: 0.35, movement-speed: 0.90 }
+      ability: { cooldown: 8s, incoming-damage: 0.50 }
+    vampire:
+      display: '&4[Вампир]'
+      passive: { outgoing-damage: 1.10, movement-speed: 1.10 }
+      ability: { cooldown: 2s, healing-fraction: 0.30, healing-cap: 8.0 }
+    plague:
+      display: '&2[Чумной]'
+      passive: { max-health: 1.20, follow-range: 1.30 }
+      ability: { cooldown: 7s, poison-level: 2, poison-duration: 4s, weakness-level: 1, weakness-duration: 3s }
+    thunderer:
+      display: '&b[Громовержец]'
+      passive: { outgoing-damage: 1.15, attack-knockback: 0.35 }
+      ability: { cooldown: 8s, bonus-damage: 4.0 }
+  bosses:
+    dragon-tempest:
+      display: '&5[Повелитель Бури]'
+      passive: { outgoing-damage: 1.15, flying-speed: 1.15 }
+      ability: { cooldown: 12s, radius: 8.0, horizontal-force: 1.20, vertical-force: 0.35 }
+    wither-necromancer:
+      display: '&8[Некромант]'
+      passive: { max-health: 1.15, outgoing-damage: 1.10 }
+      ability: { cooldown: 2s, healing-fraction: 0.20, healing-cap: 10.0, health-threshold: 0.50, phase-radius: 10.0, wither-level: 2, wither-duration: 5s }
+    warden-resonance:
+      display: '&1[Абсолютный Резонанс]'
+      passive: { max-health: 1.15, knockback-resistance: 0.40 }
+      ability: { cooldown: 10s, bonus-damage: 6.0, darkness-level: 1, darkness-duration: 4s }
+    elder-abyss:
+      display: '&3[Владыка Глубин]'
+      passive: { max-health: 1.20, armor-bonus: 6.0 }
+      ability: { cooldown: 8s, slowness-level: 3, slowness-duration: 5s, fatigue-level: 2, fatigue-duration: 8s }
+
 #
 #   ---------------  -  ------------------------------
 # Раздел 02 |  Настройки разработчика / Не редактировать дальше этого момента

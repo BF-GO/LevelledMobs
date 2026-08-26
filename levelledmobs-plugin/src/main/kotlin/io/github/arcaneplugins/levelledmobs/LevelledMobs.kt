@@ -1,5 +1,6 @@
 package io.github.arcaneplugins.levelledmobs
 
+import io.github.arcaneplugins.levelledmobs.archetypes.MobArchetypeManager
 import io.github.arcaneplugins.levelledmobs.commands.CommandHandler
 import io.github.arcaneplugins.levelledmobs.customdrops.CustomDropsHandler
 import io.github.arcaneplugins.levelledmobs.debug.DebugManager
@@ -58,6 +59,7 @@ class LevelledMobs : JavaPlugin() {
     val levelManager = LevelManager()
     val mobDataManager = MobDataManager()
     val customDropsHandler = CustomDropsHandler()
+    val mobArchetypeManager = MobArchetypeManager()
     val chunkLoadListener = ChunkLoadListener()
     val blockPlaceListener = BlockPlaceListener()
     val playerInteractEventListener = PlayerInteractEventListener()
@@ -192,6 +194,7 @@ class LevelledMobs : JavaPlugin() {
         mainCompanion.loadFiles()
         mainCompanion.checkListenersWithVariablePriorities()
         chunkLoadListener.load()
+        mobArchetypeManager.reapplyLoadedEntities()
         nametagQueueManager.onLoadOrReload()
         RandomLevellingStrategy.clearCache()
 

@@ -44,8 +44,8 @@ presets:
   judgement-week-presentation:
     name: 'Судная неделя — имена и сообщения о смерти'
     settings:
-      nametag: '&8[&fУр. %mob-lvl%&8] %tiered%%displayname% &8— &c%entity-health-rounded%❤'
-      creature-death-nametag: '%tiered%Ур. %mob-lvl% &f%displayname%'
+      nametag: '%mob-archetype%&8[&fУр. %mob-lvl%&8] %tiered%%displayname% &8— &c%entity-health-rounded%❤'
+      creature-death-nametag: '%mob-archetype%%tiered%Ур. %mob-lvl% &f%displayname%'
       nametag-placeholder-levelled: ''
       nametag-placeholder-unlevelled: ''
       nametag-visible-time: 5s

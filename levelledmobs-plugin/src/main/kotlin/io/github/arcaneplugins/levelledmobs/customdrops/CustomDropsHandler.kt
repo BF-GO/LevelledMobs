@@ -614,8 +614,11 @@ class CustomDropsHandler {
             return
         }
 
-        val dropChance =
+        var dropChance =
             if (dropBase.chance != null) dropBase.chance!!.getSlidingChance("chance-formula", info.lmEntity!!) else 0.0f
+        dropChance = main.mobArchetypeManager.getArtifactChance(
+            info.lmEntity!!.livingEntity, dropBase.groupId, dropChance
+        )
         if ((!info.equippedOnly || runOnSpawn) && dropChance < 1.0f) {
             chanceRole =
                 if (dropChance > 0.0f) ThreadLocalRandom.current().nextInt(0, 100001).toFloat() * 0.00001f else 0.0f

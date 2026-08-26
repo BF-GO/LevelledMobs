@@ -928,6 +928,9 @@ class LevelManager : LevelInterface2 {
                 Utils.capitalize(lmEntity.typeName.replace("_", " "))
         }
         text.replace("%mob-lvl%", lmEntity.getMobLevel)
+        text.replaceIfExists("%mob-archetype%") {
+            LevelledMobs.instance.mobArchetypeManager.getDisplay(lmEntity.livingEntity)
+        }
         text.replace(
             "%entity-name%",
             Utils.capitalize(lmEntity.typeName.replace("_", " "))
@@ -1877,6 +1880,7 @@ class LevelManager : LevelInterface2 {
         doSkipLMNametag: Boolean
     ) {
         applyAttribs(lmEntity, nbtDatas)
+        LevelledMobs.instance.mobArchetypeManager.ensureAssignedAndApplied(lmEntity)
 
         if (!doSkipLMNametag)
             LevelledMobs.instance.levelManager.updateNametagWithDelay(lmEntity)
@@ -2001,6 +2005,7 @@ class LevelManager : LevelInterface2 {
         assert(lmEntity.isLevelled)
         // удалить значение PDC
         val main = LevelledMobs.instance
+        main.mobArchetypeManager.clear(lmEntity.livingEntity)
         synchronized(lmEntity.livingEntity.persistentDataContainer) {
             if (lmEntity.pdc.has(NamespacedKeys.levelKey, PersistentDataType.INTEGER))
                 lmEntity.pdc.remove(NamespacedKeys.levelKey)
