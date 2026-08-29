@@ -190,7 +190,7 @@ class CustomDropsRewardsTest {
                 ArmorPiece("NETHERITE_BOOTS", "feet", "Следы на месте преступления",
                     mapOf("protection" to 8, "thorns" to 4, "unbreaking" to 8, "mending" to 1), trimPattern = "spire", trimMaterial = "redstone")
             )),
-            ArmorSet("doom_plot_armor", 900, 998, 0.005, listOf(
+            ArmorSet("doom_plot_armor", 900, 998, 0.02, listOf(
                 ArmorPiece("NETHERITE_HELMET", "head", "Корона без лицензии",
                     mapOf("protection" to 10, "thorns" to 5, "unbreaking" to 10, "mending" to 1), trimPattern = "silence", trimMaterial = "redstone"),
                 ArmorPiece("NETHERITE_CHESTPLATE", "chest", "Бронежилет главного злодея",

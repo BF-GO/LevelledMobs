@@ -1119,7 +1119,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.005
+        selection-chance: 0.02
       name: '&cКорона без лицензии'
       enchantments:
         protection: 10
@@ -1150,7 +1150,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.005
+        selection-chance: 0.02
       name: '&cБронежилет главного злодея'
       enchantments:
         protection: 10
@@ -1181,7 +1181,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.005
+        selection-chance: 0.02
       name: '&cПоножи сюжетной важности'
       enchantments:
         protection: 10
@@ -1212,7 +1212,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.005
+        selection-chance: 0.02
       name: '&cБотинки финальных титров'
       enchantments:
         protection: 10
