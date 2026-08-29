@@ -164,7 +164,7 @@ all_levellable_mobs:
       name: '&6&lКвитанция за Конец Света'
       lore:
         - '&7Оплачено нервами. Возврат не предусмотрен.'
-  # Комплект «Дожить до утра»: один общий бросок 20%, затем равный выбор части.
+  # Комплект «Дожить до утра»: один общий бросок 30%, затем равный выбор части.
   - IRON_HELMET:
       chance: 1.0
       amount: 1
@@ -183,7 +183,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.20
+        selection-chance: 0.30
       name: '&7Каска тревожного жильца'
       lore:
         - '&7Сверху капает уже не так страшно.'
@@ -211,7 +211,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.20
+        selection-chance: 0.30
       name: '&7Жилет разумной осторожности'
       lore:
         - '&7Разум продаётся отдельно.'
@@ -239,7 +239,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.20
+        selection-chance: 0.30
       name: '&7Штаны быстрого старта'
       lore:
         - '&7Главное направление — от опасности.'
@@ -267,7 +267,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.20
+        selection-chance: 0.30
       name: '&7Ботинки раннего рассвета'
       lore:
         - '&7Рассвет не ускоряют. Но попытка хорошая.'
@@ -376,7 +376,7 @@ all_levellable_mobs:
       name: '&6&lСломанная Кнопка «Отмена»'
       lore:
         - '&7Нажимали всем сервером. Не помогло.'
-  # «Дресс-код налётчика»: один общий бросок 15%, затем равный выбор части.
+  # «Дресс-код налётчика»: один общий бросок 25%, затем равный выбор части.
   - DIAMOND_HELMET:
       chance: 1.0
       amount: 1
@@ -395,7 +395,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.15
+        selection-chance: 0.25
       name: '&6Каска уверенного лица'
       enchantments:
         protection: 4
@@ -424,7 +424,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.15
+        selection-chance: 0.25
       name: '&6Жилет законного беспредела'
       enchantments:
         protection: 4
@@ -453,7 +453,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.15
+        selection-chance: 0.25
       name: '&6Поножи быстрого обыска'
       enchantments:
         protection: 4
@@ -482,7 +482,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.15
+        selection-chance: 0.25
       name: '&6Ботинки чистого отхода'
       enchantments:
         protection: 4
@@ -563,7 +563,7 @@ all_levellable_mobs:
         cap-total: -1
         cap-equipped: 0
         retries: 0
-  # Комплект «Особый случай»: один общий бросок 12%, затем равный выбор части.
+  # Комплект «Особый случай»: один общий бросок 20%, затем равный выбор части.
   - DIAMOND_HELMET:
       chance: 1.0
       amount: 1
@@ -582,7 +582,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.12
+        selection-chance: 0.20
       name: '&aШлем служебной необходимости'
       enchantments:
         protection: 6
@@ -612,7 +612,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.12
+        selection-chance: 0.20
       custommodeldata: 991303
       name: '&4&lКитель Отдела Ликвидации'
       lore:
@@ -645,7 +645,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.12
+        selection-chance: 0.20
       name: '&aПоножи особого отдела'
       enchantments:
         protection: 6
@@ -675,7 +675,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.12
+        selection-chance: 0.20
       name: '&aБерцы убедительного шага'
       enchantments:
         protection: 6
@@ -841,7 +841,7 @@ all_levellable_mobs:
       name: '&6&lПоследний Нерв Админа'
       lore:
         - '&7Хрупкий. Просьба не писать «а когда вайп?».'
-  # «Облачение бессмертного оптимиста»: один общий бросок 9%.
+  # «Облачение бессмертного оптимиста»: один общий бросок 15%.
   - NETHERITE_HELMET:
       chance: 1.0
       amount: 1
@@ -860,7 +860,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.09
+        selection-chance: 0.15
       name: '&dВенец плохих предчувствий'
       enchantments:
         protection: 8
@@ -891,7 +891,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.09
+        selection-chance: 0.15
       name: '&dПанцирь отрицания урона'
       enchantments:
         protection: 8
@@ -922,7 +922,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.09
+        selection-chance: 0.15
       name: '&dПоножи дурного знамения'
       enchantments:
         protection: 8
@@ -953,7 +953,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.09
+        selection-chance: 0.15
       name: '&dСледы на месте преступления'
       enchantments:
         protection: 8
@@ -1100,7 +1100,7 @@ all_levellable_mobs:
       name: '&6&lСправка «Выжил Случайно»'
       lore:
         - '&7Выдана отделом невероятных совпадений.'
-  # «Костюм бессюжетной брони»: один общий бросок 7% до уровня 998.
+  # «Костюм бессюжетной брони»: один общий бросок 12% до уровня 998.
   - NETHERITE_HELMET:
       chance: 1.0
       amount: 1
@@ -1119,7 +1119,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.07
+        selection-chance: 0.12
       name: '&cКорона без лицензии'
       enchantments:
         protection: 10
@@ -1150,7 +1150,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.07
+        selection-chance: 0.12
       name: '&cБронежилет главного злодея'
       enchantments:
         protection: 10
@@ -1181,7 +1181,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.07
+        selection-chance: 0.12
       name: '&cПоножи сюжетной важности'
       enchantments:
         protection: 10
@@ -1212,7 +1212,7 @@ all_levellable_mobs:
         cap-equipped: 0
         retries: 0
         selection-mode: random-single
-        selection-chance: 0.07
+        selection-chance: 0.12
       name: '&cБотинки финальных титров'
       enchantments:
         protection: 10
@@ -1828,7 +1828,7 @@ WARDEN:
         cap-equipped: 0
         retries: 0
   - NETHERITE_LEGGINGS:
-      chance: 0.05
+      chance: 0.08
       amount: 1
       minLevel: 300
       maxLevel: 400
