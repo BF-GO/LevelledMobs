@@ -20,6 +20,7 @@ import io.github.arcaneplugins.levelledmobs.util.Utils
 import io.github.arcaneplugins.levelledmobs.wrappers.LivingEntityWrapper
 import io.github.arcaneplugins.levelledmobs.wrappers.SchedulerWrapper
 import io.papermc.paper.datacomponent.DataComponentTypes
+import java.util.TreeMap
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentSkipListMap
@@ -454,6 +455,7 @@ class CustomDropsHandler {
     ) {
         val dropLimitsReached = mutableListOf<UUID>()
         val defaultLimits = groupLimitsMap.getOrDefault("default", null)
+        val randomSingleSelections = selectRandomSingleDrops(info, defaultLimits)
 
         for (items in info.prioritizedDrops!!.values) {
             // циклически перебирать каждый выпадающий список, связанный с любыми идентификаторами групп
@@ -476,6 +478,12 @@ class CustomDropsHandler {
                     } else {
                         info.dropInstance = null
                         info.groupLimits = null
+                    }
+
+                    if (info.groupLimits?.isRandomSingle == true &&
+                        randomSingleSelections[drop.groupId] != drop.uid
+                    ) {
+                        continue
                     }
 
                     if (info.groupLimits != null) {
@@ -509,6 +517,39 @@ class CustomDropsHandler {
                 i++
             }
         } // следующая группа
+    }
+
+    private fun selectRandomSingleDrops(
+        info: CustomDropProcessingInfo,
+        defaultLimits: GroupLimits?
+    ): Map<String, UUID> {
+        val candidatesByGroup = TreeMap<String, MutableList<CustomDropBase>>(
+            String.CASE_INSENSITIVE_ORDER
+        )
+
+        for (items in info.prioritizedDrops!!.values) {
+            for (drop in items) {
+                if (!drop.hasGroupId) continue
+
+                val limits = groupLimitsMap.getOrDefault(drop.groupId, defaultLimits)
+                if (limits?.isRandomSingle != true) continue
+
+                candidatesByGroup.computeIfAbsent(drop.groupId!!) { mutableListOf() }.add(drop)
+            }
+        }
+
+        val selections = TreeMap<String, UUID>(String.CASE_INSENSITIVE_ORDER)
+        for ((groupId, candidates) in candidatesByGroup) {
+            val limits = groupLimitsMap.getOrDefault(groupId, defaultLimits) ?: continue
+            val selectedIndex = RandomSingleGroupSelector.selectIndex(
+                candidates.size,
+                limits.selectionChance
+            ) ?: continue
+
+            selections[groupId] = candidates[selectedIndex].uid
+        }
+
+        return selections
     }
 
     private fun getDropsFromCustomDropItem(

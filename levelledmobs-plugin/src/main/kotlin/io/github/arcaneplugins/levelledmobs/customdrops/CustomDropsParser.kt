@@ -19,6 +19,8 @@ import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MessageUtils.colorizeAll
 import io.github.arcaneplugins.levelledmobs.util.MiscUtils
 import io.github.arcaneplugins.levelledmobs.util.Utils
+import io.papermc.paper.registry.RegistryAccess
+import io.papermc.paper.registry.RegistryKey
 import java.util.SortedMap
 import java.util.TreeMap
 import org.bukkit.Material
@@ -31,7 +33,10 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.EntityType
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.inventory.ItemFlag
+import org.bukkit.inventory.meta.ArmorMeta
 import org.bukkit.inventory.meta.EnchantmentStorageMeta
+import org.bukkit.inventory.meta.trim.ArmorTrim
+import org.bukkit.persistence.PersistentDataType
 
 /**
  * Анализирует все данные из customdrops.yml и помещает их в соответствующие классы Java.
@@ -591,6 +596,8 @@ class CustomDropsParser(
             }
         }
 
+        parsePersistentData(ymlHelper.objToCS("persistent-data"), item)
+        parseArmorTrim(ymlHelper.objToCS("armor-trim"), item)
         applyMetaAttributes(item)
     }
 
@@ -609,8 +616,103 @@ class CustomDropsParser(
         limits.capSelect = ymlHelper.getInt( "cap-select")
         limits.retries = ymlHelper.getInt( "retries")
 
+        val selectionModeValue = ymlHelper.getString("selection-mode")
+        val selectionMode = GroupSelectionMode.fromConfig(selectionModeValue)
+        if (selectionMode == null) {
+            hadError("console.customdrops.invalid-group-selection-mode", mapOf(
+                "mode" to (selectionModeValue ?: "null"),
+                "group" to (base.groupId ?: "default")
+            ))
+        } else {
+            limits.selectionMode = selectionMode
+        }
+
+        if (limits.isRandomSingle) {
+            val selectionChance = ymlHelper.getDouble2("selection-chance", 1.0) ?: 1.0
+            if (selectionChance < 0.0 || selectionChance > 1.0) {
+                hadError("console.customdrops.invalid-group-selection-chance", mapOf(
+                    "chance" to selectionChance.toString(),
+                    "group" to (base.groupId ?: "default")
+                ))
+                limits.selectionChance = selectionChance.coerceIn(0.0, 1.0)
+            } else {
+                limits.selectionChance = selectionChance
+            }
+        }
+
         if (!limits.isEmpty || base.isDefaultDrop)
             handler.groupLimitsMap[base.groupId!!] = limits
+    }
+
+    private fun parsePersistentData(
+        cs: ConfigurationSection?,
+        item: CustomDropItem
+    ) {
+        if (cs == null) return
+
+        val meta = item.itemStack?.itemMeta ?: return
+        var madeChanges = false
+
+        for (rawKey in cs.getKeys(false)) {
+            val value = cs[rawKey]?.toString() ?: continue
+            val key = if (rawKey.contains(':')) NamespacedKey.fromString(rawKey) else null
+            if (key == null) {
+                hadError("console.customdrops.invalid-persistent-data-key", mapOf(
+                    "key" to rawKey,
+                    "item" to item.material.name
+                ))
+                continue
+            }
+
+            meta.persistentDataContainer.set(key, PersistentDataType.STRING, value)
+            madeChanges = true
+        }
+
+        if (madeChanges) item.itemStack!!.setItemMeta(meta)
+    }
+
+    private fun parseArmorTrim(
+        cs: ConfigurationSection?,
+        item: CustomDropItem
+    ) {
+        if (cs == null) return
+
+        val meta = item.itemStack?.itemMeta as? ArmorMeta
+        val patternName = YmlParsingHelper.getString(cs, "pattern")
+        val materialName = YmlParsingHelper.getString(cs, "material")
+        if (meta == null || patternName.isNullOrBlank() || materialName.isNullOrBlank()) {
+            hadError("console.customdrops.invalid-armor-trim", mapOf(
+                "item" to item.material.name,
+                "pattern" to (patternName ?: "null"),
+                "material" to (materialName ?: "null")
+            ))
+            return
+        }
+
+        val patternKey = registryKey(patternName)
+        val materialKey = registryKey(materialName)
+        val registryAccess = RegistryAccess.registryAccess()
+        val pattern = patternKey?.let { registryAccess.getRegistry(RegistryKey.TRIM_PATTERN)[it] }
+        val trimMaterial = materialKey?.let {
+            registryAccess.getRegistry(RegistryKey.TRIM_MATERIAL)[it]
+        }
+        if (pattern == null || trimMaterial == null) {
+            hadError("console.customdrops.invalid-armor-trim", mapOf(
+                "item" to item.material.name,
+                "pattern" to patternName,
+                "material" to materialName
+            ))
+            return
+        }
+
+        meta.trim = ArmorTrim(trimMaterial, pattern)
+        item.itemStack!!.setItemMeta(meta)
+    }
+
+    private fun registryKey(value: String): NamespacedKey? {
+        val normalized = value.trim().lowercase()
+        return if (normalized.contains(':')) NamespacedKey.fromString(normalized)
+        else NamespacedKey.minecraft(normalized)
     }
 
     private fun parseCustomCommand(

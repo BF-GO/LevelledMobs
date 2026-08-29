@@ -987,6 +987,10 @@ console:
     invalid-enchantment-chance: 'Для зачарования %enchantment% указан некорректный шанс %chance%.'
     invalid-item-flag: 'Некорректный флаг предмета %flag%; предмет %item%, моб или группа %target%.'
     invalid-material: 'В customdrops.yml для %target% указан некорректный материал %material%.'
+    invalid-group-selection-mode: 'Для группы %group% указан некорректный режим выбора %mode%.'
+    invalid-group-selection-chance: 'Для группы %group% указан шанс общего выбора вне диапазона 0–1: %chance%.'
+    invalid-persistent-data-key: 'Для предмета %item% указан некорректный namespaced-ключ PDC: %key%.'
+    invalid-armor-trim: 'Для предмета %item% указана некорректная отделка брони: шаблон %pattern%, материал %material%.'
   migration:
     success: '&fЗагрузчик файлов: &8(миграция) &7файл &b%file%&7 успешно перенесён.'
     failed: '&fЗагрузчик файлов: &8(миграция) &7не удалось перенести &b%file%&7. Трассировка стека:'

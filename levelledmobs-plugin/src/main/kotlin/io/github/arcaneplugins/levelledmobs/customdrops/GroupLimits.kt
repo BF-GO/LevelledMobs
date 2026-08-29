@@ -13,12 +13,18 @@ class GroupLimits {
     var capPerItem = 0
     var capSelect = 0
     var retries = 0
+    var selectionMode = GroupSelectionMode.SEQUENTIAL
+    var selectionChance = 1.0
 
     val isEmpty: Boolean
         get() {
             return capTotal <= 0 && capEquipped <= 0 && capPerItem <= 0 &&
-                    capSelect <= 0 && retries <= 0
+                    capSelect <= 0 && retries <= 0 &&
+                    selectionMode == GroupSelectionMode.SEQUENTIAL
     }
+
+    val isRandomSingle: Boolean
+        get() = selectionMode == GroupSelectionMode.RANDOM_SINGLE
 
     val hasCapTotal: Boolean
         get() = this.capTotal > 0
@@ -49,6 +55,8 @@ class GroupLimits {
     }
 
     override fun toString(): String {
-        return "capTotal: $capTotal, capEquip: $capEquipped, capPerItem: $capPerItem, capSelect: $capSelect, retries: $retries"
+        return "capTotal: $capTotal, capEquip: $capEquipped, capPerItem: $capPerItem, " +
+                "capSelect: $capSelect, retries: $retries, selectionMode: $selectionMode, " +
+                "selectionChance: $selectionChance"
     }
 }
