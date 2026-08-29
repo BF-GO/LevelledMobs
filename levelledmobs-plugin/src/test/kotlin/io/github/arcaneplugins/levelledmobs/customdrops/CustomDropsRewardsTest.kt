@@ -149,7 +149,7 @@ class CustomDropsRewardsTest {
     @Test
     fun `collectible armor sets use one exact group roll and four uniform slots`() {
         val armorSets = listOf(
-            ArmorSet("basic_survivor", 300, 449, 0.05, listOf(
+            ArmorSet("basic_survivor", 300, 449, 0.20, listOf(
                 ArmorPiece("IRON_HELMET", "head", "Каска тревожного жильца",
                     mapOf("protection" to 2, "unbreaking" to 2), "Сверху капает уже не так страшно."),
                 ArmorPiece("IRON_CHESTPLATE", "chest", "Жилет разумной осторожности",
@@ -159,7 +159,7 @@ class CustomDropsRewardsTest {
                 ArmorPiece("IRON_BOOTS", "feet", "Ботинки раннего рассвета",
                     mapOf("protection" to 2, "unbreaking" to 2), "Рассвет не ускоряют. Но попытка хорошая.")
             )),
-            ArmorSet("lucky_raider", 450, 599, 0.03, listOf(
+            ArmorSet("lucky_raider", 450, 599, 0.15, listOf(
                 ArmorPiece("DIAMOND_HELMET", "head", "Каска уверенного лица",
                     mapOf("protection" to 4, "unbreaking" to 4), trimPattern = "sentry", trimMaterial = "quartz"),
                 ArmorPiece("DIAMOND_CHESTPLATE", "chest", "Жилет законного беспредела",
@@ -169,7 +169,7 @@ class CustomDropsRewardsTest {
                 ArmorPiece("DIAMOND_BOOTS", "feet", "Ботинки чистого отхода",
                     mapOf("protection" to 4, "unbreaking" to 4), trimPattern = "shaper", trimMaterial = "gold")
             )),
-            ArmorSet("titan_special", 600, 749, 0.02, listOf(
+            ArmorSet("titan_special", 600, 749, 0.12, listOf(
                 ArmorPiece("DIAMOND_HELMET", "head", "Шлем служебной необходимости",
                     mapOf("protection" to 6, "unbreaking" to 6, "mending" to 1), trimPattern = "sentry", trimMaterial = "emerald"),
                 ArmorPiece("DIAMOND_CHESTPLATE", "chest", "Китель Отдела Ликвидации",
@@ -180,7 +180,7 @@ class CustomDropsRewardsTest {
                 ArmorPiece("DIAMOND_BOOTS", "feet", "Берцы убедительного шага",
                     mapOf("protection" to 6, "unbreaking" to 6, "mending" to 1), trimPattern = "shaper", trimMaterial = "emerald")
             )),
-            ArmorSet("cursed_optimist", 750, 899, 0.01, listOf(
+            ArmorSet("cursed_optimist", 750, 899, 0.09, listOf(
                 ArmorPiece("NETHERITE_HELMET", "head", "Венец плохих предчувствий",
                     mapOf("protection" to 8, "thorns" to 4, "unbreaking" to 8, "mending" to 1), trimPattern = "silence", trimMaterial = "amethyst"),
                 ArmorPiece("NETHERITE_CHESTPLATE", "chest", "Панцирь отрицания урона",
@@ -190,7 +190,7 @@ class CustomDropsRewardsTest {
                 ArmorPiece("NETHERITE_BOOTS", "feet", "Следы на месте преступления",
                     mapOf("protection" to 8, "thorns" to 4, "unbreaking" to 8, "mending" to 1), trimPattern = "spire", trimMaterial = "redstone")
             )),
-            ArmorSet("doom_plot_armor", 900, 998, 0.03, listOf(
+            ArmorSet("doom_plot_armor", 900, 998, 0.07, listOf(
                 ArmorPiece("NETHERITE_HELMET", "head", "Корона без лицензии",
                     mapOf("protection" to 10, "thorns" to 5, "unbreaking" to 10, "mending" to 1), trimPattern = "silence", trimMaterial = "redstone"),
                 ArmorPiece("NETHERITE_CHESTPLATE", "chest", "Бронежилет главного злодея",
@@ -251,7 +251,7 @@ class CustomDropsRewardsTest {
     @Test
     fun `warden leggings and level 999 uniform are new set pieces only`() {
         val wardenLeggings = findDrop("WARDEN", "NETHERITE_LEGGINGS", 300, 400)
-        assertEquals(0.01, number(wardenLeggings.values, "chance").toDouble())
+        assertEquals(0.05, number(wardenLeggings.values, "chance").toDouble())
         assertEquals("jw_armor_set_cursed_warden", wardenLeggings.values["groupid"])
         assertEquals(991403, number(wardenLeggings.values, "custommodeldata").toInt())
         assertSetMarker(wardenLeggings, "cursed_optimist", "legs")
