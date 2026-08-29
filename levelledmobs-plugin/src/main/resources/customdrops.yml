@@ -49,6 +49,8 @@ defaults:
     cap-total: -1
     cap-equipped: -1
     retries: 0
+    selection-mode: sequential
+    selection-chance: 1.0
   # Следующие параметры относятся только к пользовательским командам:
   run-on-spawn: false
   run-on-death: true
@@ -162,6 +164,119 @@ all_levellable_mobs:
       name: '&6&lКвитанция за Конец Света'
       lore:
         - '&7Оплачено нервами. Возврат не предусмотрен.'
+  # Комплект «Дожить до утра»: один общий бросок 5%, затем равный выбор части.
+  - IRON_HELMET:
+      chance: 1.0
+      amount: 1
+      minLevel: 300
+      maxLevel: 449
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_basic_survivor
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.05
+      name: '&7Каска тревожного жильца'
+      lore:
+        - '&7Сверху капает уже не так страшно.'
+      enchantments:
+        protection: 2
+        unbreaking: 2
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': basic_survivor
+        'crazyenvoys:crazyenvoys_armor_set_piece': head
+  - IRON_CHESTPLATE:
+      chance: 1.0
+      amount: 1
+      minLevel: 300
+      maxLevel: 449
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_basic_survivor
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.05
+      name: '&7Жилет разумной осторожности'
+      lore:
+        - '&7Разум продаётся отдельно.'
+      enchantments:
+        protection: 2
+        unbreaking: 2
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': basic_survivor
+        'crazyenvoys:crazyenvoys_armor_set_piece': chest
+  - IRON_LEGGINGS:
+      chance: 1.0
+      amount: 1
+      minLevel: 300
+      maxLevel: 449
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_basic_survivor
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.05
+      name: '&7Штаны быстрого старта'
+      lore:
+        - '&7Главное направление — от опасности.'
+      enchantments:
+        protection: 2
+        unbreaking: 2
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': basic_survivor
+        'crazyenvoys:crazyenvoys_armor_set_piece': legs
+  - IRON_BOOTS:
+      chance: 1.0
+      amount: 1
+      minLevel: 300
+      maxLevel: 449
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_basic_survivor
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.05
+      name: '&7Ботинки раннего рассвета'
+      lore:
+        - '&7Рассвет не ускоряют. Но попытка хорошая.'
+      enchantments:
+        protection: 2
+        unbreaking: 2
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': basic_survivor
+        'crazyenvoys:crazyenvoys_armor_set_piece': feet
 
   # Уровни 450–599.
   - GOLD_INGOT:
@@ -261,6 +376,123 @@ all_levellable_mobs:
       name: '&6&lСломанная Кнопка «Отмена»'
       lore:
         - '&7Нажимали всем сервером. Не помогло.'
+  # «Дресс-код налётчика»: один общий бросок 3%, затем равный выбор части.
+  - DIAMOND_HELMET:
+      chance: 1.0
+      amount: 1
+      minLevel: 450
+      maxLevel: 599
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_lucky_raider
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.03
+      name: '&6Каска уверенного лица'
+      enchantments:
+        protection: 4
+        unbreaking: 4
+      armor-trim:
+        pattern: sentry
+        material: quartz
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': lucky_raider
+        'crazyenvoys:crazyenvoys_armor_set_piece': head
+  - DIAMOND_CHESTPLATE:
+      chance: 1.0
+      amount: 1
+      minLevel: 450
+      maxLevel: 599
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_lucky_raider
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.03
+      name: '&6Жилет законного беспредела'
+      enchantments:
+        protection: 4
+        unbreaking: 4
+      armor-trim:
+        pattern: dune
+        material: redstone
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': lucky_raider
+        'crazyenvoys:crazyenvoys_armor_set_piece': chest
+  - DIAMOND_LEGGINGS:
+      chance: 1.0
+      amount: 1
+      minLevel: 450
+      maxLevel: 599
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_lucky_raider
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.03
+      name: '&6Поножи быстрого обыска'
+      enchantments:
+        protection: 4
+        unbreaking: 4
+      armor-trim:
+        pattern: host
+        material: copper
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': lucky_raider
+        'crazyenvoys:crazyenvoys_armor_set_piece': legs
+  - DIAMOND_BOOTS:
+      chance: 1.0
+      amount: 1
+      minLevel: 450
+      maxLevel: 599
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_lucky_raider
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.03
+      name: '&6Ботинки чистого отхода'
+      enchantments:
+        protection: 4
+        unbreaking: 4
+      armor-trim:
+        pattern: shaper
+        material: gold
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': lucky_raider
+        'crazyenvoys:crazyenvoys_armor_set_piece': feet
 
   # Уровни 600–749.
   - DIAMOND:
@@ -331,8 +563,9 @@ all_levellable_mobs:
         cap-total: -1
         cap-equipped: 0
         retries: 0
-  - DIAMOND_CHESTPLATE:
-      chance: 0.05
+  # Комплект «Особый случай»: один общий бросок 2%, затем равный выбор части.
+  - DIAMOND_HELMET:
+      chance: 1.0
       amount: 1
       minLevel: 600
       maxLevel: 749
@@ -341,13 +574,45 @@ all_levellable_mobs:
       nospawner: true
       nomultiplier: true
       use-chunk-kill-max: true
-      groupid: jw_artifact_600_749
+      groupid: jw_armor_set_titan_special
       group-limits:
         cap-select: 1
         cap-per-item: 1
         cap-total: -1
         cap-equipped: 0
         retries: 0
+        selection-mode: random-single
+        selection-chance: 0.02
+      name: '&aШлем служебной необходимости'
+      enchantments:
+        protection: 6
+        unbreaking: 6
+        mending: 1
+      armor-trim:
+        pattern: sentry
+        material: emerald
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': titan_special
+        'crazyenvoys:crazyenvoys_armor_set_piece': head
+  - DIAMOND_CHESTPLATE:
+      chance: 1.0
+      amount: 1
+      minLevel: 600
+      maxLevel: 749
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_titan_special
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.02
       custommodeldata: 991303
       name: '&4&lКитель Отдела Ликвидации'
       lore:
@@ -356,6 +621,72 @@ all_levellable_mobs:
         protection: 5
         thorns: 4
         unbreaking: 4
+      armor-trim:
+        pattern: dune
+        material: emerald
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': titan_special
+        'crazyenvoys:crazyenvoys_armor_set_piece': chest
+  - DIAMOND_LEGGINGS:
+      chance: 1.0
+      amount: 1
+      minLevel: 600
+      maxLevel: 749
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_titan_special
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.02
+      name: '&aПоножи особого отдела'
+      enchantments:
+        protection: 6
+        unbreaking: 6
+        mending: 1
+      armor-trim:
+        pattern: host
+        material: emerald
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': titan_special
+        'crazyenvoys:crazyenvoys_armor_set_piece': legs
+  - DIAMOND_BOOTS:
+      chance: 1.0
+      amount: 1
+      minLevel: 600
+      maxLevel: 749
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_titan_special
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.02
+      name: '&aБерцы убедительного шага'
+      enchantments:
+        protection: 6
+        unbreaking: 6
+        mending: 1
+      armor-trim:
+        pattern: shaper
+        material: emerald
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': titan_special
+        'crazyenvoys:crazyenvoys_armor_set_piece': feet
   - PAPER:
       chance: 0.05
       amount: 1
@@ -510,6 +841,131 @@ all_levellable_mobs:
       name: '&6&lПоследний Нерв Админа'
       lore:
         - '&7Хрупкий. Просьба не писать «а когда вайп?».'
+  # «Облачение бессмертного оптимиста»: один общий бросок 1%.
+  - NETHERITE_HELMET:
+      chance: 1.0
+      amount: 1
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_cursed_optimist
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.01
+      name: '&dВенец плохих предчувствий'
+      enchantments:
+        protection: 8
+        thorns: 4
+        unbreaking: 8
+        mending: 1
+      armor-trim:
+        pattern: silence
+        material: amethyst
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': cursed_optimist
+        'crazyenvoys:crazyenvoys_armor_set_piece': head
+  - NETHERITE_CHESTPLATE:
+      chance: 1.0
+      amount: 1
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_cursed_optimist
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.01
+      name: '&dПанцирь отрицания урона'
+      enchantments:
+        protection: 8
+        thorns: 4
+        unbreaking: 8
+        mending: 1
+      armor-trim:
+        pattern: rib
+        material: redstone
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': cursed_optimist
+        'crazyenvoys:crazyenvoys_armor_set_piece': chest
+  - NETHERITE_LEGGINGS:
+      chance: 1.0
+      amount: 1
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_cursed_optimist
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.01
+      name: '&dПоножи дурного знамения'
+      enchantments:
+        protection: 8
+        thorns: 4
+        unbreaking: 8
+        mending: 1
+      armor-trim:
+        pattern: eye
+        material: amethyst
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': cursed_optimist
+        'crazyenvoys:crazyenvoys_armor_set_piece': legs
+  - NETHERITE_BOOTS:
+      chance: 1.0
+      amount: 1
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_cursed_optimist
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.01
+      name: '&dСледы на месте преступления'
+      enchantments:
+        protection: 8
+        thorns: 4
+        unbreaking: 8
+        mending: 1
+      armor-trim:
+        pattern: spire
+        material: redstone
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': cursed_optimist
+        'crazyenvoys:crazyenvoys_armor_set_piece': feet
 
   # Уровни 900–998.
   - DIAMOND:
@@ -644,6 +1100,131 @@ all_levellable_mobs:
       name: '&6&lСправка «Выжил Случайно»'
       lore:
         - '&7Выдана отделом невероятных совпадений.'
+  # «Костюм бессюжетной брони»: один общий бросок 0,5% до уровня 998.
+  - NETHERITE_HELMET:
+      chance: 1.0
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_doom_plot_armor
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.005
+      name: '&cКорона без лицензии'
+      enchantments:
+        protection: 10
+        thorns: 5
+        unbreaking: 10
+        mending: 1
+      armor-trim:
+        pattern: silence
+        material: redstone
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': doom_plot_armor
+        'crazyenvoys:crazyenvoys_armor_set_piece': head
+  - NETHERITE_CHESTPLATE:
+      chance: 1.0
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_doom_plot_armor
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.005
+      name: '&cБронежилет главного злодея'
+      enchantments:
+        protection: 10
+        thorns: 5
+        unbreaking: 10
+        mending: 1
+      armor-trim:
+        pattern: rib
+        material: amethyst
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': doom_plot_armor
+        'crazyenvoys:crazyenvoys_armor_set_piece': chest
+  - NETHERITE_LEGGINGS:
+      chance: 1.0
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_doom_plot_armor
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.005
+      name: '&cПоножи сюжетной важности'
+      enchantments:
+        protection: 10
+        thorns: 5
+        unbreaking: 10
+        mending: 1
+      armor-trim:
+        pattern: eye
+        material: redstone
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': doom_plot_armor
+        'crazyenvoys:crazyenvoys_armor_set_piece': legs
+  - NETHERITE_BOOTS:
+      chance: 1.0
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_armor_set_doom_plot_armor
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.005
+      name: '&cБотинки финальных титров'
+      enchantments:
+        protection: 10
+        thorns: 5
+        unbreaking: 10
+        mending: 1
+      armor-trim:
+        pattern: spire
+        material: amethyst
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': doom_plot_armor
+        'crazyenvoys:crazyenvoys_armor_set_piece': feet
 
   # Уровень 999: гарантированный джекпот, артефакт и отдельный трофей.
   - DIAMOND:
@@ -756,6 +1337,12 @@ all_levellable_mobs:
         protection: 7
         thorns: 5
         unbreaking: 6
+      armor-trim:
+        pattern: rib
+        material: amethyst
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': doom_plot_armor
+        'crazyenvoys:crazyenvoys_armor_set_piece': chest
   - PAPER:
       chance: 1.0
       amount: 1
@@ -1241,7 +1828,7 @@ WARDEN:
         cap-equipped: 0
         retries: 0
   - NETHERITE_LEGGINGS:
-      chance: 0.10
+      chance: 0.01
       amount: 1
       minLevel: 300
       maxLevel: 400
@@ -1250,7 +1837,7 @@ WARDEN:
       nospawner: true
       nomultiplier: true
       use-chunk-kill-max: true
-      groupid: jw_boss_warden_artifact
+      groupid: jw_armor_set_cursed_warden
       group-limits:
         cap-select: 1
         cap-per-item: 1
@@ -1265,6 +1852,12 @@ WARDEN:
         protection: 6
         swift_sneak: 4
         unbreaking: 5
+      armor-trim:
+        pattern: eye
+        material: amethyst
+      persistent-data:
+        'crazyenvoys:crazyenvoys_armor_set_id': cursed_optimist
+        'crazyenvoys:crazyenvoys_armor_set_piece': legs
 
 WITCH:
   -
