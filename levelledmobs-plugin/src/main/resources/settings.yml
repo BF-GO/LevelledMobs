@@ -247,6 +247,13 @@ judgement-week-trinkets:
       movement-speed: 0.05
     common-sense-anchor:
       knockback-resistance: 0.15
+    major-vitality:
+      max-health: 8.0
+    absolute-bulwark:
+      armor: 5.0
+      armor-toughness: 2.0
+    damage-license:
+      attack-damage: 0.15
   anti-elytra:
     cooldown: 15s
     grounding-duration: 6s

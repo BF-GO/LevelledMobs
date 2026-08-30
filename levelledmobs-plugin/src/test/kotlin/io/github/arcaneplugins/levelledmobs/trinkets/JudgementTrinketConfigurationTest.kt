@@ -21,6 +21,10 @@ class JudgementTrinketConfigurationTest {
         assertEquals(2.0, number(map(effects, "armor-badge"), "armor"))
         assertEquals(0.05, number(map(effects, "emergency-sock"), "movement-speed"))
         assertEquals(0.15, number(map(effects, "common-sense-anchor"), "knockback-resistance"))
+        assertEquals(8.0, number(map(effects, "major-vitality"), "max-health"))
+        assertEquals(5.0, number(map(effects, "absolute-bulwark"), "armor"))
+        assertEquals(2.0, number(map(effects, "absolute-bulwark"), "armor-toughness"))
+        assertEquals(0.15, number(map(effects, "damage-license"), "attack-damage"))
 
         val antiElytra = map(root, "anti-elytra")
         assertEquals("15s", antiElytra["cooldown"])

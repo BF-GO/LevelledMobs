@@ -2854,14 +2854,14 @@ all_levellable_mobs:
   - AMETHYST_SHARD:
       chance: 0.04
       amount: 1
-      minLevel: 300
-      maxLevel: 449
+      minLevel: 200
+      maxLevel: 299
       equipped: 0
       player-caused: true
       nospawner: true
       nomultiplier: true
       use-chunk-kill-max: true
-      groupid: jw_trinket_vitality_300_449
+      groupid: jw_trinket_vitality_200_299
       group-limits:
         cap-select: 1
         cap-per-item: 1
@@ -2878,14 +2878,14 @@ all_levellable_mobs:
   - IRON_NUGGET:
       chance: 0.03
       amount: 1
-      minLevel: 450
-      maxLevel: 599
+      minLevel: 300
+      maxLevel: 449
       equipped: 0
       player-caused: true
       nospawner: true
       nomultiplier: true
       use-chunk-kill-max: true
-      groupid: jw_trinket_armor_450_599
+      groupid: jw_trinket_armor_300_449
       group-limits:
         cap-select: 1
         cap-per-item: 1
@@ -2902,14 +2902,14 @@ all_levellable_mobs:
   - RABBIT_FOOT:
       chance: 0.02
       amount: 1
-      minLevel: 600
-      maxLevel: 749
+      minLevel: 450
+      maxLevel: 599
       equipped: 0
       player-caused: true
       nospawner: true
       nomultiplier: true
       use-chunk-kill-max: true
-      groupid: jw_trinket_speed_600_749
+      groupid: jw_trinket_speed_450_599
       group-limits:
         cap-select: 1
         cap-per-item: 1
@@ -2926,14 +2926,14 @@ all_levellable_mobs:
   - OBSIDIAN:
       chance: 0.015
       amount: 1
-      minLevel: 750
-      maxLevel: 998
+      minLevel: 600
+      maxLevel: 749
       equipped: 0
       player-caused: true
       nospawner: true
       nomultiplier: true
       use-chunk-kill-max: true
-      groupid: jw_trinket_anchor_750_998
+      groupid: jw_trinket_anchor_600_749
       group-limits:
         cap-select: 1
         cap-per-item: 1
@@ -2947,6 +2947,80 @@ all_levellable_mobs:
         - '&8Тяжёлый аргумент. В кармане ощущается ещё убедительнее.'
       persistent-data:
         'levelledmobs:judgement_trinket_id': common_sense_anchor
+  # Редкие талисманы сильнее базовых и выпадают отдельными независимыми проверками.
+  # Они сочетаются с младшими талисманами, но каждый занимает ещё один слот хотбара.
+  - NETHER_STAR:
+      chance: 0.01
+      amount: 1
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_trinket_major_vitality_750_899
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      custommodeldata: 993201
+      name: '&c&lОрден «Ещё не всё»'
+      lore:
+        - '&7Даёт +4 сердца, пока лежит в одном из девяти слотов хотбара.'
+        - '&8Выдан посмертно, но адресат проявил служебное упрямство.'
+      persistent-data:
+        'levelledmobs:judgement_trinket_id': major_vitality
+  - HEAVY_CORE:
+      chance: 0.005
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_trinket_absolute_bulwark_900_998
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      custommodeldata: 993202
+      name: '&8&lСправка о непробиваемости формы №900'
+      lore:
+        - '&7Даёт +5 брони и +2 прочности брони, пока лежит в хотбаре.'
+        - '&8Печать настоящая. Подпись пережила подписанта.'
+      persistent-data:
+        'levelledmobs:judgement_trinket_id': absolute_bulwark
+  - NETHERITE_UPGRADE_SMITHING_TEMPLATE:
+      chance: 0.10
+      amount: 1
+      minLevel: 999
+      maxLevel: 999
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_trinket_damage_license_999
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      custommodeldata: 993203
+      name: '&4&lЛицензия на причинение окончательного добра'
+      lore:
+        - '&7Даёт +15% урона в ближнем бою, пока лежит в хотбаре.'
+        - '&8Разрешение действительно до первой гуманизации владельца.'
+      persistent-data:
+        'levelledmobs:judgement_trinket_id': damage_license
   # Контрпредмет для элитр не увеличивает урон: он временно закрывает небо,
   # подсвечивает цель и гарантирует ей безопасное медленное падение.
   - CROSSBOW:

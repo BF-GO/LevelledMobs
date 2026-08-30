@@ -18,24 +18,27 @@ class JudgementTrinketLogicTest {
             "vitality_necklace",
             "VITALITY_NECKLACE",
             "armor_badge",
+            "major_vitality",
+            "major_vitality",
             null,
             "ordinary_item"
         ))
         assertEquals(setOf(
             JudgementTrinket.VITALITY_NECKLACE,
-            JudgementTrinket.ARMOR_BADGE
+            JudgementTrinket.ARMOR_BADGE,
+            JudgementTrinket.MAJOR_VITALITY
         ), active)
     }
 
     @Test
     fun `signatures are stable regardless of hotbar order`() {
         val first = linkedMapOf(
-            JudgementTrinket.EMERGENCY_SOCK to 0.05,
-            JudgementTrinket.VITALITY_NECKLACE to 4.0
+            "speed" to 0.05,
+            "vitality" to 4.0
         )
         val second = linkedMapOf(
-            JudgementTrinket.VITALITY_NECKLACE to 4.0,
-            JudgementTrinket.EMERGENCY_SOCK to 0.05
+            "vitality" to 4.0,
+            "speed" to 0.05
         )
         assertEquals(JudgementTrinketLogic.signature(first), JudgementTrinketLogic.signature(second))
     }

@@ -211,20 +211,32 @@ class CustomDropsRewardsTest {
     fun `hotbar trinkets and anti elytra crossbow have exact protected drops`() {
         val expected = listOf(
             TaggedReward(
-                "AMETHYST_SHARD", "jw_trinket_vitality_300_449", 300, 449,
+                "AMETHYST_SHARD", "jw_trinket_vitality_200_299", 200, 299,
                 0.04, 993101, "levelledmobs:judgement_trinket_id", "vitality_necklace"
             ),
             TaggedReward(
-                "IRON_NUGGET", "jw_trinket_armor_450_599", 450, 599,
+                "IRON_NUGGET", "jw_trinket_armor_300_449", 300, 449,
                 0.03, 993102, "levelledmobs:judgement_trinket_id", "armor_badge"
             ),
             TaggedReward(
-                "RABBIT_FOOT", "jw_trinket_speed_600_749", 600, 749,
+                "RABBIT_FOOT", "jw_trinket_speed_450_599", 450, 599,
                 0.02, 993103, "levelledmobs:judgement_trinket_id", "emergency_sock"
             ),
             TaggedReward(
-                "OBSIDIAN", "jw_trinket_anchor_750_998", 750, 998,
+                "OBSIDIAN", "jw_trinket_anchor_600_749", 600, 749,
                 0.015, 993104, "levelledmobs:judgement_trinket_id", "common_sense_anchor"
+            ),
+            TaggedReward(
+                "NETHER_STAR", "jw_trinket_major_vitality_750_899", 750, 899,
+                0.01, 993201, "levelledmobs:judgement_trinket_id", "major_vitality"
+            ),
+            TaggedReward(
+                "HEAVY_CORE", "jw_trinket_absolute_bulwark_900_998", 900, 998,
+                0.005, 993202, "levelledmobs:judgement_trinket_id", "absolute_bulwark"
+            ),
+            TaggedReward(
+                "NETHERITE_UPGRADE_SMITHING_TEMPLATE", "jw_trinket_damage_license_999", 999, 999,
+                0.10, 993203, "levelledmobs:judgement_trinket_id", "damage_license"
             ),
             TaggedReward(
                 "CROSSBOW", "jw_anti_elytra_900_998", 900, 998,

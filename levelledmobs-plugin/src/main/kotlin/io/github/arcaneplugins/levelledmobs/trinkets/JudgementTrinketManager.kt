@@ -52,6 +52,18 @@ class JudgementTrinketManager : Listener {
                 "effects.common-sense-anchor.knockback-resistance",
                 0.15
             ),
+            majorVitalityHealth = number(root, "effects.major-vitality.max-health", 8.0),
+            absoluteBulwarkArmor = number(root, "effects.absolute-bulwark.armor", 5.0),
+            absoluteBulwarkToughness = number(
+                root,
+                "effects.absolute-bulwark.armor-toughness",
+                2.0
+            ),
+            damageLicenseMultiplier = number(
+                root,
+                "effects.damage-license.attack-damage",
+                0.15
+            ),
             antiElytraCooldown = timeMillis(root, "anti-elytra.cooldown", 15_000L),
             groundingDuration = timeMillis(root, "anti-elytra.grounding-duration", 6_000L),
             rocketLockDuration = timeMillis(root, "anti-elytra.rocket-lock-duration", 6_000L),
@@ -191,9 +203,12 @@ class JudgementTrinketManager : Listener {
                 trinketValue(player.inventory.getItem(slot))
             })
         } else emptySet()
-        val desired = active.associateWith { effectValue(it, current) }
-        val signature = JudgementTrinketLogic.signature(desired)
-        val expectedModifierKeys = active.mapTo(mutableSetOf()) { modifierName(it) }
+        val desired = active.flatMap { effectsFor(it, current) }
+            .associateBy(TrinketEffect::suffix)
+        val signature = JudgementTrinketLogic.signature(
+            desired.mapValues { it.value.amount }
+        )
+        val expectedModifierKeys = desired.keys.mapTo(mutableSetOf(), ::modifierName)
         val actualModifierKeys = currentModifierKeys(player)
         val storedSignature = player.persistentDataContainer.get(
             NamespacedKeys.judgementTrinketsActive,
@@ -203,7 +218,7 @@ class JudgementTrinketManager : Listener {
 
         val oldHealth = player.health
         removeTrinketModifiers(player)
-        active.forEach { trinket -> addModifier(player, trinket, desired.getValue(trinket)) }
+        desired.values.forEach { effect -> addModifier(player, effect) }
         if (signature.isEmpty()) {
             player.persistentDataContainer.remove(NamespacedKeys.judgementTrinketsActive)
         } else {
@@ -240,44 +255,69 @@ class JudgementTrinketManager : Listener {
             PersistentDataType.STRING
         ) == JudgementTrinketLogic.ANTI_ELYTRA_ITEM_ID
 
-    private fun effectValue(trinket: JudgementTrinket, current: RuntimeSettings): Double =
-        when (trinket) {
-            JudgementTrinket.VITALITY_NECKLACE -> current.vitalityHealth
-            JudgementTrinket.ARMOR_BADGE -> current.armorBonus
-            JudgementTrinket.EMERGENCY_SOCK -> current.speedMultiplier
-            JudgementTrinket.COMMON_SENSE_ANCHOR -> current.knockbackResistance
-        }
-
-    private fun attributeName(trinket: JudgementTrinket): AttributeNames = when (trinket) {
-        JudgementTrinket.VITALITY_NECKLACE -> AttributeNames.MAX_HEALTH
-        JudgementTrinket.ARMOR_BADGE -> AttributeNames.ARMOR
-        JudgementTrinket.EMERGENCY_SOCK -> AttributeNames.MOVEMENT_SPEED
-        JudgementTrinket.COMMON_SENSE_ANCHOR -> AttributeNames.KNOCKBACK_RESISTANCE
+    private fun effectsFor(
+        trinket: JudgementTrinket,
+        current: RuntimeSettings
+    ): List<TrinketEffect> = when (trinket) {
+        JudgementTrinket.VITALITY_NECKLACE -> listOf(TrinketEffect(
+            trinket.modifierSuffix,
+            AttributeNames.MAX_HEALTH,
+            current.vitalityHealth
+        ))
+        JudgementTrinket.ARMOR_BADGE -> listOf(TrinketEffect(
+            trinket.modifierSuffix,
+            AttributeNames.ARMOR,
+            current.armorBonus
+        ))
+        JudgementTrinket.EMERGENCY_SOCK -> listOf(TrinketEffect(
+            trinket.modifierSuffix,
+            AttributeNames.MOVEMENT_SPEED,
+            current.speedMultiplier,
+            AttributeModifier.Operation.MULTIPLY_SCALAR_1
+        ))
+        JudgementTrinket.COMMON_SENSE_ANCHOR -> listOf(TrinketEffect(
+            trinket.modifierSuffix,
+            AttributeNames.KNOCKBACK_RESISTANCE,
+            current.knockbackResistance
+        ))
+        JudgementTrinket.MAJOR_VITALITY -> listOf(TrinketEffect(
+            trinket.modifierSuffix,
+            AttributeNames.MAX_HEALTH,
+            current.majorVitalityHealth
+        ))
+        JudgementTrinket.ABSOLUTE_BULWARK -> listOf(
+            TrinketEffect("major_armor", AttributeNames.ARMOR, current.absoluteBulwarkArmor),
+            TrinketEffect(
+                "major_toughness",
+                AttributeNames.ARMOR_TOUGHNESS,
+                current.absoluteBulwarkToughness
+            )
+        )
+        JudgementTrinket.DAMAGE_LICENSE -> listOf(TrinketEffect(
+            trinket.modifierSuffix,
+            AttributeNames.ATTACK_DAMAGE,
+            current.damageLicenseMultiplier,
+            AttributeModifier.Operation.MULTIPLY_SCALAR_1
+        ))
     }
 
-    private fun operation(trinket: JudgementTrinket): AttributeModifier.Operation = when (trinket) {
-        JudgementTrinket.EMERGENCY_SOCK -> AttributeModifier.Operation.MULTIPLY_SCALAR_1
-        else -> AttributeModifier.Operation.ADD_NUMBER
-    }
+    private fun modifierName(suffix: String): String = "jw_trinket_$suffix"
 
-    private fun modifierName(trinket: JudgementTrinket): String =
-        "jw_trinket_${trinket.modifierSuffix}"
-
-    private fun addModifier(player: Player, trinket: JudgementTrinket, amount: Double) {
-        if (amount == 0.0) return
-        val attribute = Utils.getAttribute(attributeName(trinket)) ?: return
+    private fun addModifier(player: Player, effect: TrinketEffect) {
+        if (effect.amount == 0.0) return
+        val attribute = Utils.getAttribute(effect.attribute) ?: return
         val instance = player.getAttribute(attribute) ?: return
-        val keyName = modifierName(trinket)
+        val keyName = modifierName(effect.suffix)
         val key = NamespacedKey(main, keyName)
         @Suppress("DEPRECATION", "removal")
         val modifier = if (main.ver.useOldEnums) {
-            AttributeModifier(keyName, amount, operation(trinket))
+            AttributeModifier(keyName, effect.amount, effect.operation)
         } else {
             val anySlot = main.definitions.fieldEquipmentSlotAny!!.get(null)
             main.definitions.ctorAttributeModifier!!.newInstance(
                 key,
-                amount,
-                operation(trinket),
+                effect.amount,
+                effect.operation,
                 anySlot
             ) as AttributeModifier
         }
@@ -285,8 +325,8 @@ class JudgementTrinketManager : Listener {
     }
 
     private fun removeTrinketModifiers(player: Player) {
-        JudgementTrinket.entries.forEach { trinket ->
-            val attribute = Utils.getAttribute(attributeName(trinket)) ?: return@forEach
+        trinketAttributes.forEach { attributeName ->
+            val attribute = Utils.getAttribute(attributeName) ?: return@forEach
             val instance = player.getAttribute(attribute) ?: return@forEach
             instance.modifiers.filter { modifierKey(it).startsWith(TRINKET_MODIFIER_PREFIX) }
                 .forEach(instance::removeModifier)
@@ -295,8 +335,8 @@ class JudgementTrinketManager : Listener {
 
     private fun currentModifierKeys(player: Player): Set<String> {
         val result = mutableSetOf<String>()
-        JudgementTrinket.entries.forEach { trinket ->
-            val attribute = Utils.getAttribute(attributeName(trinket)) ?: return@forEach
+        trinketAttributes.forEach { attributeName ->
+            val attribute = Utils.getAttribute(attributeName) ?: return@forEach
             val instance = player.getAttribute(attribute) ?: return@forEach
             instance.modifiers.mapTo(result) { modifierKey(it) }
         }
@@ -348,6 +388,10 @@ class JudgementTrinketManager : Listener {
         val armorBonus: Double = 2.0,
         val speedMultiplier: Double = 0.05,
         val knockbackResistance: Double = 0.15,
+        val majorVitalityHealth: Double = 8.0,
+        val absoluteBulwarkArmor: Double = 5.0,
+        val absoluteBulwarkToughness: Double = 2.0,
+        val damageLicenseMultiplier: Double = 0.15,
         val antiElytraCooldown: Long = 15_000L,
         val groundingDuration: Long = 6_000L,
         val rocketLockDuration: Long = 6_000L,
@@ -357,5 +401,20 @@ class JudgementTrinketManager : Listener {
 
     companion object {
         private const val TRINKET_MODIFIER_PREFIX = "jw_trinket_"
+        private val trinketAttributes = setOf(
+            AttributeNames.MAX_HEALTH,
+            AttributeNames.ARMOR,
+            AttributeNames.ARMOR_TOUGHNESS,
+            AttributeNames.MOVEMENT_SPEED,
+            AttributeNames.KNOCKBACK_RESISTANCE,
+            AttributeNames.ATTACK_DAMAGE
+        )
     }
+
+    private data class TrinketEffect(
+        val suffix: String,
+        val attribute: AttributeNames,
+        val amount: Double,
+        val operation: AttributeModifier.Operation = AttributeModifier.Operation.ADD_NUMBER
+    )
 }

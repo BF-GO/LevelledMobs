@@ -7,7 +7,10 @@ enum class JudgementTrinket(
     VITALITY_NECKLACE("vitality_necklace", "vitality"),
     ARMOR_BADGE("armor_badge", "armor"),
     EMERGENCY_SOCK("emergency_sock", "speed"),
-    COMMON_SENSE_ANCHOR("common_sense_anchor", "knockback");
+    COMMON_SENSE_ANCHOR("common_sense_anchor", "knockback"),
+    MAJOR_VITALITY("major_vitality", "major_vitality"),
+    ABSOLUTE_BULWARK("absolute_bulwark", "absolute_bulwark"),
+    DAMAGE_LICENSE("damage_license", "damage");
 
     companion object {
         fun fromPersistentValue(value: String?): JudgementTrinket? =
@@ -19,9 +22,9 @@ object JudgementTrinketLogic {
     fun activeTrinkets(hotbarValues: Iterable<String?>): Set<JudgementTrinket> =
         hotbarValues.mapNotNull(JudgementTrinket::fromPersistentValue).toSet()
 
-    fun signature(values: Map<JudgementTrinket, Double>): String =
-        values.entries.sortedBy { it.key.ordinal }
-            .joinToString("|") { "${it.key.persistentId}:${it.value}" }
+    fun signature(values: Map<String, Double>): String =
+        values.entries.sortedBy { it.key }
+            .joinToString("|") { "${it.key}:${it.value}" }
 
     fun cooldownReady(lastActivation: Long, now: Long, cooldownMillis: Long): Boolean =
         cooldownMillis <= 0L || lastActivation <= 0L || now - lastActivation >= cooldownMillis
