@@ -66,6 +66,33 @@ class MobArchetypeConfigurationTest {
         assertTrue(config["creature-death-nametag"].toString().startsWith("%mob-archetype%"))
     }
 
+    @Test
+    fun `judgement week mob titles use distinct visible colors`() {
+        val presentation = map(map(rules, "presets"), "judgement-week-presentation")
+        val config = map(presentation, "settings")
+        val overrides = map(config, "entity-name-override")
+        val expectedRanges = setOf(
+            "1-49", "50-149", "150-299", "300-449", "450-599",
+            "600-749", "750-899", "900-998", "999"
+        )
+        assertEquals(expectedRanges, overrides.keys)
+
+        val allColors = mutableSetOf<String>()
+        val colorPattern = Regex("^&#[0-9A-Fa-f]{6}")
+        for (range in expectedRanges) {
+            val titles = list(map(overrides, range), "all_entities")
+            assertEquals(4, titles.size, "$range must retain four random titles")
+            val colors = titles.map { title ->
+                checkNotNull(colorPattern.find(title.toString())?.value) {
+                    "$range title does not start with an RGB color: $title"
+                }.uppercase()
+            }
+            assertEquals(4, colors.toSet().size, "$range contains repeated title colors")
+            assertTrue(colors.all(allColors::add), "$range reuses a color from another range")
+        }
+        assertEquals(36, allColors.size)
+    }
+
     private fun assertDefinition(
         group: Map<String, Any?>,
         id: String,
@@ -93,6 +120,10 @@ class MobArchetypeConfigurationTest {
     @Suppress("UNCHECKED_CAST")
     private fun map(parent: Map<String, Any?>, key: String): Map<String, Any?> =
         parent[key] as Map<String, Any?>
+
+    @Suppress("UNCHECKED_CAST")
+    private fun list(parent: Map<String, Any?>, key: String): List<Any?> =
+        parent[key] as List<Any?>
 
     private fun number(parent: Map<String, Any?>, key: String): Double =
         (parent[key] as Number).toDouble()
