@@ -115,6 +115,100 @@ class CustomDropsRewardsTest {
     }
 
     @Test
+    fun `sub level 300 armor is expendable and never counts as a collectible set`() {
+        val pools = listOf(
+            Triple("jw_scavenged_armor_1_99", Triple(1, 99, 0.20), setOf(
+                "LEATHER_HELMET", "LEATHER_CHESTPLATE", "LEATHER_LEGGINGS", "LEATHER_BOOTS"
+            )),
+            Triple("jw_scavenged_armor_100_199", Triple(100, 199, 0.16), setOf(
+                "CHAINMAIL_HELMET", "CHAINMAIL_CHESTPLATE", "CHAINMAIL_LEGGINGS", "CHAINMAIL_BOOTS"
+            )),
+            Triple("jw_scavenged_armor_200_299", Triple(200, 299, 0.12), setOf(
+                "IRON_HELMET", "IRON_CHESTPLATE", "IRON_LEGGINGS", "IRON_BOOTS"
+            ))
+        )
+
+        for ((groupId, rangeAndChance, materials) in pools) {
+            val (minLevel, maxLevel, selectionChance) = rangeAndChance
+            val entries = drops("all_levellable_mobs").filter { it.values["groupid"] == groupId }
+            assertEquals(materials, entries.map { it.material }.toSet())
+            assertEquals(4, entries.size)
+
+            for (drop in entries) {
+                assertEquals(minLevel, number(drop.values, "minLevel").toInt())
+                assertEquals(maxLevel, number(drop.values, "maxLevel").toInt())
+                assertEquals(1.0, number(drop.values, "chance").toDouble())
+                assertEquals("1", drop.values["amount"].toString())
+                assertFalse(drop.values.containsKey("persistent-data"))
+                assertFalse(drop.values["groupid"].toString().startsWith("jw_armor_set_"))
+                assertTrue(drop.values["name"].toString().isNotBlank())
+                assertFalse(list(drop.values, "lore").isEmpty())
+                assertFalse(enchantments(drop).isEmpty())
+                assertRandomSinglePool(drop, selectionChance)
+                assertProtected(drop)
+            }
+        }
+    }
+
+    @Test
+    fun `field gear has exact tier pools and one independent roll`() {
+        val pools = listOf(
+            Triple("jw_field_gear_1_99", Triple(1, 99, 0.18), setOf(
+                "STONE_SWORD", "STONE_AXE", "STONE_PICKAXE", "STONE_SHOVEL", "BOW"
+            )),
+            Triple("jw_field_gear_100_199", Triple(100, 199, 0.15), setOf(
+                "IRON_SWORD", "IRON_AXE", "IRON_PICKAXE", "IRON_SHOVEL", "CROSSBOW"
+            )),
+            Triple("jw_field_gear_200_299", Triple(200, 299, 0.12), setOf(
+                "DIAMOND_SWORD", "DIAMOND_AXE", "DIAMOND_PICKAXE", "DIAMOND_SHOVEL", "BOW"
+            )),
+            Triple("jw_field_gear_300_449", Triple(300, 449, 0.10), setOf(
+                "DIAMOND_SWORD", "DIAMOND_AXE", "DIAMOND_SHOVEL", "BOW", "CROSSBOW"
+            )),
+            Triple("jw_field_gear_450_599", Triple(450, 599, 0.08), setOf(
+                "DIAMOND_AXE", "DIAMOND_PICKAXE", "DIAMOND_SHOVEL", "BOW", "CROSSBOW"
+            )),
+            Triple("jw_field_gear_600_749", Triple(600, 749, 0.07), setOf(
+                "DIAMOND_SWORD", "DIAMOND_AXE", "DIAMOND_PICKAXE", "DIAMOND_SHOVEL", "BOW"
+            )),
+            Triple("jw_field_gear_750_899", Triple(750, 899, 0.06), setOf(
+                "NETHERITE_SWORD", "NETHERITE_PICKAXE", "NETHERITE_SHOVEL", "BOW", "CROSSBOW"
+            )),
+            Triple("jw_field_gear_900_998", Triple(900, 998, 0.04), setOf(
+                "NETHERITE_AXE", "NETHERITE_PICKAXE", "NETHERITE_SHOVEL", "BOW", "MACE"
+            ))
+        )
+
+        for ((groupId, rangeAndChance, materials) in pools) {
+            val (minLevel, maxLevel, selectionChance) = rangeAndChance
+            val entries = drops("all_levellable_mobs").filter { it.values["groupid"] == groupId }
+            assertEquals(materials, entries.map { it.material }.toSet())
+            assertEquals(5, entries.size)
+
+            for (drop in entries) {
+                assertEquals(minLevel, number(drop.values, "minLevel").toInt())
+                assertEquals(maxLevel, number(drop.values, "maxLevel").toInt())
+                assertEquals(1.0, number(drop.values, "chance").toDouble())
+                assertEquals("1", drop.values["amount"].toString())
+                assertFalse(drop.values.containsKey("persistent-data"))
+                assertFalse(drop.values["groupid"].toString().startsWith("jw_artifact_"))
+                assertTrue(drop.values["name"].toString().isNotBlank())
+                assertFalse(list(drop.values, "lore").isEmpty())
+                assertFalse(enchantments(drop).isEmpty())
+                assertRandomSinglePool(drop, selectionChance)
+                assertProtected(drop)
+            }
+        }
+
+        val mace = drops("all_levellable_mobs").single {
+            it.material == "MACE" && it.values["groupid"] == "jw_field_gear_900_998"
+        }
+        assertEquals(mapOf("density" to 2, "unbreaking" to 4), enchantments(mace))
+        assertFalse(enchantments(mace).containsKey("breach"))
+        assertFalse(enchantments(mace).containsKey("wind_burst"))
+    }
+
+    @Test
     fun `artifacts have exact chances models and unsafe enchantment levels`() {
         val artifacts = listOf(
             Artifact("all_levellable_mobs", "DIAMOND_PICKAXE", 300, 449, 0.03, 991301,
@@ -323,8 +417,11 @@ class CustomDropsRewardsTest {
                     "jw_armor_set_lucky_raider",
                     "jw_armor_set_titan_special",
                     "jw_armor_set_cursed_optimist",
-                    "jw_armor_set_doom_plot_armor"
-                )) 4 else 1
+                    "jw_armor_set_doom_plot_armor",
+                    "jw_scavenged_armor_1_99",
+                    "jw_scavenged_armor_100_199",
+                    "jw_scavenged_armor_200_299"
+                )) 4 else if (groupId.startsWith("jw_field_gear_")) 5 else 1
             assertEquals(expectedSize, entries.size, "Unexpected duplicate group $groupId")
         }
         assertTrue(trackedDrops.all { it.values["override"] != true })
@@ -374,6 +471,14 @@ class CustomDropsRewardsTest {
         val maxAmount = drop.values["amount"].toString().substringAfterLast('-').toInt()
         assertEquals(1, number(limits, "cap-select").toInt())
         assertTrue(number(limits, "cap-per-item").toInt() >= maxAmount)
+    }
+
+    private fun assertRandomSinglePool(drop: Drop, selectionChance: Double) {
+        val limits = map(drop.values, "group-limits")
+        assertEquals(1, number(limits, "cap-select").toInt())
+        assertEquals(1, number(limits, "cap-per-item").toInt())
+        assertEquals("random-single", limits["selection-mode"])
+        assertEquals(selectionChance, number(limits, "selection-chance").toDouble())
     }
 
     private fun assertSetMarker(drop: Drop, setId: String, slot: String) {

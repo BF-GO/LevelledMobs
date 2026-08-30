@@ -66,6 +66,1362 @@ all_mobs:
   -
 
 all_levellable_mobs:
+  # Независимая расходуемая броня для уровней ниже 300. Эти предметы намеренно не имеют
+  # меток CrazyEnvoys и поэтому не считаются частями коллекционных комплектов.
+  - LEATHER_HELMET:
+      chance: 1.0
+      amount: 1
+      minLevel: 1
+      maxLevel: 99
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_scavenged_armor_1_99
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.20
+      name: '&7Латаный капюшон'
+      lore:
+        - '&8Обычная броня без бонуса комплекта.'
+      enchantments:
+        protection: 1
+        unbreaking: 1
+  - LEATHER_CHESTPLATE:
+      chance: 1.0
+      amount: 1
+      minLevel: 1
+      maxLevel: 99
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_scavenged_armor_1_99
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.20
+      name: '&7Куртка с чужого плеча'
+      lore:
+        - '&8Обычная броня без бонуса комплекта.'
+      enchantments:
+        protection: 1
+        unbreaking: 1
+  - LEATHER_LEGGINGS:
+      chance: 1.0
+      amount: 1
+      minLevel: 1
+      maxLevel: 99
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_scavenged_armor_1_99
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.20
+      name: '&7Штаны запасного выжившего'
+      lore:
+        - '&8Обычная броня без бонуса комплекта.'
+      enchantments:
+        protection: 1
+        unbreaking: 1
+  - LEATHER_BOOTS:
+      chance: 1.0
+      amount: 1
+      minLevel: 1
+      maxLevel: 99
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_scavenged_armor_1_99
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.20
+      name: '&7Ботинки без гарантии'
+      lore:
+        - '&8Обычная броня без бонуса комплекта.'
+      enchantments:
+        protection: 1
+        unbreaking: 1
+  - CHAINMAIL_HELMET:
+      chance: 1.0
+      amount: 1
+      minLevel: 100
+      maxLevel: 199
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_scavenged_armor_100_199
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.16
+      name: '&fКольчужный шлем дозорного'
+      lore:
+        - '&8Собрано из трофеев. Сетового эффекта не имеет.'
+      enchantments:
+        protection: 2
+        unbreaking: 2
+  - CHAINMAIL_CHESTPLATE:
+      chance: 1.0
+      amount: 1
+      minLevel: 100
+      maxLevel: 199
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_scavenged_armor_100_199
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.16
+      name: '&fКольчуга второй свежести'
+      lore:
+        - '&8Собрано из трофеев. Сетового эффекта не имеет.'
+      enchantments:
+        protection: 2
+        unbreaking: 2
+  - CHAINMAIL_LEGGINGS:
+      chance: 1.0
+      amount: 1
+      minLevel: 100
+      maxLevel: 199
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_scavenged_armor_100_199
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.16
+      name: '&fПоножи ночной смены'
+      lore:
+        - '&8Собрано из трофеев. Сетового эффекта не имеет.'
+      enchantments:
+        protection: 2
+        unbreaking: 2
+  - CHAINMAIL_BOOTS:
+      chance: 1.0
+      amount: 1
+      minLevel: 100
+      maxLevel: 199
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_scavenged_armor_100_199
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.16
+      name: '&fСапоги беглого караульного'
+      lore:
+        - '&8Собрано из трофеев. Сетового эффекта не имеет.'
+      enchantments:
+        protection: 2
+        unbreaking: 2
+  - IRON_HELMET:
+      chance: 1.0
+      amount: 1
+      minLevel: 200
+      maxLevel: 299
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_scavenged_armor_200_299
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.12
+      name: '&aСписанный шлем гарнизона'
+      lore:
+        - '&8Списанное снаряжение без бонуса комплекта.'
+      enchantments:
+        protection: 3
+        unbreaking: 3
+  - IRON_CHESTPLATE:
+      chance: 1.0
+      amount: 1
+      minLevel: 200
+      maxLevel: 299
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_scavenged_armor_200_299
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.12
+      name: '&aКираса резервного состава'
+      lore:
+        - '&8Списанное снаряжение без бонуса комплекта.'
+      enchantments:
+        protection: 3
+        unbreaking: 3
+  - IRON_LEGGINGS:
+      chance: 1.0
+      amount: 1
+      minLevel: 200
+      maxLevel: 299
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_scavenged_armor_200_299
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.12
+      name: '&aПоножи последнего резерва'
+      lore:
+        - '&8Списанное снаряжение без бонуса комплекта.'
+      enchantments:
+        protection: 3
+        unbreaking: 3
+  - IRON_BOOTS:
+      chance: 1.0
+      amount: 1
+      minLevel: 200
+      maxLevel: 299
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_scavenged_armor_200_299
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.12
+      name: '&aСапоги срочной эвакуации'
+      lore:
+        - '&8Списанное снаряжение без бонуса комплекта.'
+      enchantments:
+        protection: 3
+        unbreaking: 3
+  # Один общий бросок полевого снаряжения на диапазон. При успехе выпадает ровно
+  # один меч, топор, дальнобойное оружие или инструмент. Молот 900-998 ограничен
+  # Density II и не получает Breach/Wind Burst.
+  - STONE_SWORD:
+      chance: 1.0
+      amount: 1
+      minLevel: 1
+      maxLevel: 99
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_1_99
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.18
+      name: '&7Сквознячный тесак'
+      lore:
+        - '&8Полевое снаряжение I категории.'
+      enchantments:
+        sharpness: 1
+        unbreaking: 1
+  - STONE_AXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 1
+      maxLevel: 99
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_1_99
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.18
+      name: '&7Топор на честном слове'
+      lore:
+        - '&8Полевое снаряжение I категории.'
+      enchantments:
+        sharpness: 1
+        efficiency: 1
+        unbreaking: 1
+  - STONE_PICKAXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 1
+      maxLevel: 99
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_1_99
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.18
+      name: '&7Кирка временного рабочего'
+      lore:
+        - '&8Полевое снаряжение I категории.'
+      enchantments:
+        efficiency: 1
+        unbreaking: 1
+  - STONE_SHOVEL:
+      chance: 1.0
+      amount: 1
+      minLevel: 1
+      maxLevel: 99
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_1_99
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.18
+      name: '&7Лопата последней надежды'
+      lore:
+        - '&8Полевое снаряжение I категории.'
+      enchantments:
+        efficiency: 1
+        unbreaking: 1
+  - BOW:
+      chance: 1.0
+      amount: 1
+      minLevel: 1
+      maxLevel: 99
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_1_99
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.18
+      name: '&7Лук из запасного шнурка'
+      lore:
+        - '&8Полевое снаряжение I категории.'
+      enchantments:
+        power: 1
+        unbreaking: 1
+  - IRON_SWORD:
+      chance: 1.0
+      amount: 1
+      minLevel: 100
+      maxLevel: 199
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_100_199
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.15
+      name: '&fКлинок дежурной смены'
+      lore:
+        - '&8Полевое снаряжение II категории.'
+      enchantments:
+        sharpness: 2
+        looting: 1
+        unbreaking: 2
+  - IRON_AXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 100
+      maxLevel: 199
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_100_199
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.15
+      name: '&fТопор хозяйственной обороны'
+      lore:
+        - '&8Полевое снаряжение II категории.'
+      enchantments:
+        sharpness: 2
+        efficiency: 2
+        unbreaking: 2
+  - IRON_PICKAXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 100
+      maxLevel: 199
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_100_199
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.15
+      name: '&fКирка сверхурочной добычи'
+      lore:
+        - '&8Полевое снаряжение II категории.'
+      enchantments:
+        efficiency: 2
+        fortune: 1
+        unbreaking: 2
+  - IRON_SHOVEL:
+      chance: 1.0
+      amount: 1
+      minLevel: 100
+      maxLevel: 199
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_100_199
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.15
+      name: '&fЛопата внеплановых работ'
+      lore:
+        - '&8Полевое снаряжение II категории.'
+      enchantments:
+        efficiency: 2
+        unbreaking: 2
+  - CROSSBOW:
+      chance: 1.0
+      amount: 1
+      minLevel: 100
+      maxLevel: 199
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_100_199
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.15
+      name: '&fАрбалет районной самообороны'
+      lore:
+        - '&8Полевое снаряжение II категории.'
+      enchantments:
+        quick_charge: 1
+        piercing: 2
+        unbreaking: 2
+  - DIAMOND_SWORD:
+      chance: 1.0
+      amount: 1
+      minLevel: 200
+      maxLevel: 299
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_200_299
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.12
+      name: '&bКлинок резервного фонда'
+      lore:
+        - '&8Полевое снаряжение III категории.'
+      enchantments:
+        sharpness: 3
+        looting: 2
+        unbreaking: 3
+  - DIAMOND_AXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 200
+      maxLevel: 299
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_200_299
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.12
+      name: '&bТопор ускоренного демонтажа'
+      lore:
+        - '&8Полевое снаряжение III категории.'
+      enchantments:
+        sharpness: 3
+        efficiency: 3
+        unbreaking: 3
+  - DIAMOND_PICKAXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 200
+      maxLevel: 299
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_200_299
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.12
+      name: '&bКирка стратегического запаса'
+      lore:
+        - '&8Полевое снаряжение III категории.'
+      enchantments:
+        efficiency: 3
+        fortune: 2
+        unbreaking: 3
+  - DIAMOND_SHOVEL:
+      chance: 1.0
+      amount: 1
+      minLevel: 200
+      maxLevel: 299
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_200_299
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.12
+      name: '&bЛопата глубокого согласования'
+      lore:
+        - '&8Полевое снаряжение III категории.'
+      enchantments:
+        efficiency: 3
+        silk_touch: 1
+        unbreaking: 3
+  - BOW:
+      chance: 1.0
+      amount: 1
+      minLevel: 200
+      maxLevel: 299
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_200_299
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.12
+      name: '&bЛук дальнего уведомления'
+      lore:
+        - '&8Полевое снаряжение III категории.'
+      enchantments:
+        power: 3
+        punch: 1
+        unbreaking: 3
+  - DIAMOND_SWORD:
+      chance: 1.0
+      amount: 1
+      minLevel: 300
+      maxLevel: 449
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_300_449
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.10
+      name: '&aМеч младшего ликвидатора'
+      lore:
+        - '&8Редкое полевое снаряжение. Не является артефактом.'
+      enchantments:
+        sharpness: 4
+        looting: 2
+        unbreaking: 3
+  - DIAMOND_AXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 300
+      maxLevel: 449
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_300_449
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.10
+      name: '&aТопор оперативного разбора'
+      lore:
+        - '&8Редкое полевое снаряжение. Не является артефактом.'
+      enchantments:
+        sharpness: 4
+        efficiency: 4
+        unbreaking: 3
+  - DIAMOND_SHOVEL:
+      chance: 1.0
+      amount: 1
+      minLevel: 300
+      maxLevel: 449
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_300_449
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.10
+      name: '&aЛопата срочного захоронения'
+      lore:
+        - '&8Редкое полевое снаряжение. Не является артефактом.'
+      enchantments:
+        efficiency: 4
+        fortune: 2
+        unbreaking: 3
+  - BOW:
+      chance: 1.0
+      amount: 1
+      minLevel: 300
+      maxLevel: 449
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_300_449
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.10
+      name: '&aЛук предупредительного залпа'
+      lore:
+        - '&8Редкое полевое снаряжение. Не является артефактом.'
+      enchantments:
+        power: 4
+        flame: 1
+        unbreaking: 3
+  - CROSSBOW:
+      chance: 1.0
+      amount: 1
+      minLevel: 300
+      maxLevel: 449
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_300_449
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.10
+      name: '&aАрбалет служебной проверки'
+      lore:
+        - '&8Редкое полевое снаряжение. Не является артефактом.'
+      enchantments:
+        quick_charge: 3
+        piercing: 4
+        unbreaking: 3
+  - DIAMOND_AXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 450
+      maxLevel: 599
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_450_599
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.08
+      name: '&eТопор старшего демонтажника'
+      lore:
+        - '&8Редкое ведомственное снаряжение. Не является артефактом.'
+      enchantments:
+        sharpness: 5
+        efficiency: 5
+        unbreaking: 4
+  - DIAMOND_PICKAXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 450
+      maxLevel: 599
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_450_599
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.08
+      name: '&eКирка внеочередного плана'
+      lore:
+        - '&8Редкое ведомственное снаряжение. Не является артефактом.'
+      enchantments:
+        efficiency: 5
+        fortune: 3
+        unbreaking: 4
+  - DIAMOND_SHOVEL:
+      chance: 1.0
+      amount: 1
+      minLevel: 450
+      maxLevel: 599
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_450_599
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.08
+      name: '&eЛопата закрытого протокола'
+      lore:
+        - '&8Редкое ведомственное снаряжение. Не является артефактом.'
+      enchantments:
+        efficiency: 5
+        fortune: 3
+        unbreaking: 4
+  - BOW:
+      chance: 1.0
+      amount: 1
+      minLevel: 450
+      maxLevel: 599
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_450_599
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.08
+      name: '&eЛук окончательного предупреждения'
+      lore:
+        - '&8Редкое ведомственное снаряжение. Не является артефактом.'
+      enchantments:
+        power: 5
+        punch: 2
+        flame: 1
+        unbreaking: 4
+  - CROSSBOW:
+      chance: 1.0
+      amount: 1
+      minLevel: 450
+      maxLevel: 599
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_450_599
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.08
+      name: '&eАрбалет без права обжалования'
+      lore:
+        - '&8Редкое ведомственное снаряжение. Не является артефактом.'
+      enchantments:
+        quick_charge: 3
+        multishot: 1
+        unbreaking: 4
+  - DIAMOND_SWORD:
+      chance: 1.0
+      amount: 1
+      minLevel: 600
+      maxLevel: 749
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_600_749
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.07
+      name: '&6Меч особого производства'
+      lore:
+        - '&8Редкое специальное снаряжение. Не является артефактом.'
+      enchantments:
+        sharpness: 5
+        looting: 3
+        fire_aspect: 2
+        unbreaking: 4
+  - DIAMOND_AXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 600
+      maxLevel: 749
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_600_749
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.07
+      name: '&6Топор служебной необходимости'
+      lore:
+        - '&8Редкое специальное снаряжение. Не является артефактом.'
+      enchantments:
+        sharpness: 5
+        efficiency: 5
+        unbreaking: 4
+  - DIAMOND_PICKAXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 600
+      maxLevel: 749
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_600_749
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.07
+      name: '&6Кирка закрытой разработки'
+      lore:
+        - '&8Редкое специальное снаряжение. Не является артефактом.'
+      enchantments:
+        efficiency: 5
+        fortune: 3
+        unbreaking: 4
+        mending: 1
+  - DIAMOND_SHOVEL:
+      chance: 1.0
+      amount: 1
+      minLevel: 600
+      maxLevel: 749
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_600_749
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.07
+      name: '&6Лопата секретного объекта'
+      lore:
+        - '&8Редкое специальное снаряжение. Не является артефактом.'
+      enchantments:
+        efficiency: 5
+        silk_touch: 1
+        unbreaking: 4
+        mending: 1
+  - BOW:
+      chance: 1.0
+      amount: 1
+      minLevel: 600
+      maxLevel: 749
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_600_749
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.07
+      name: '&6Лук особого распоряжения'
+      lore:
+        - '&8Редкое специальное снаряжение. Не является артефактом.'
+      enchantments:
+        power: 5
+        punch: 2
+        flame: 1
+        infinity: 1
+        unbreaking: 4
+  - NETHERITE_SWORD:
+      chance: 1.0
+      amount: 1
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_750_899
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.06
+      name: '&dМеч дурного предчувствия'
+      lore:
+        - '&8Редкое проклятое снаряжение. Не является артефактом.'
+      enchantments:
+        sharpness: 6
+        looting: 3
+        fire_aspect: 2
+        unbreaking: 4
+  - NETHERITE_PICKAXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_750_899
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.06
+      name: '&dКирка запретной глубины'
+      lore:
+        - '&8Редкое проклятое снаряжение. Не является артефактом.'
+      enchantments:
+        efficiency: 6
+        fortune: 3
+        unbreaking: 4
+        mending: 1
+  - NETHERITE_SHOVEL:
+      chance: 1.0
+      amount: 1
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_750_899
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.06
+      name: '&dЛопата безымянной могилы'
+      lore:
+        - '&8Редкое проклятое снаряжение. Не является артефактом.'
+      enchantments:
+        efficiency: 6
+        silk_touch: 1
+        unbreaking: 4
+        mending: 1
+  - BOW:
+      chance: 1.0
+      amount: 1
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_750_899
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.06
+      name: '&dЛук несчастливого свидетеля'
+      lore:
+        - '&8Редкое проклятое снаряжение. Не является артефактом.'
+      enchantments:
+        power: 6
+        punch: 2
+        flame: 1
+        infinity: 1
+        unbreaking: 4
+  - CROSSBOW:
+      chance: 1.0
+      amount: 1
+      minLevel: 750
+      maxLevel: 899
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_750_899
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.06
+      name: '&dАрбалет последней приметы'
+      lore:
+        - '&8Редкое проклятое снаряжение. Не является артефактом.'
+      enchantments:
+        quick_charge: 4
+        multishot: 1
+        unbreaking: 4
+  - NETHERITE_AXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_900_998
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.04
+      name: '&cТопор последнего протокола'
+      lore:
+        - '&8Редкое снаряжение конца света. Не является артефактом.'
+      enchantments:
+        sharpness: 6
+        efficiency: 6
+        unbreaking: 5
+        mending: 1
+  - NETHERITE_PICKAXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_900_998
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.04
+      name: '&cКирка края реальности'
+      lore:
+        - '&8Редкое снаряжение конца света. Не является артефактом.'
+      enchantments:
+        efficiency: 6
+        fortune: 4
+        unbreaking: 5
+        mending: 1
+  - NETHERITE_SHOVEL:
+      chance: 1.0
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_900_998
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.04
+      name: '&cЛопата финального котлована'
+      lore:
+        - '&8Редкое снаряжение конца света. Не является артефактом.'
+      enchantments:
+        efficiency: 6
+        silk_touch: 1
+        unbreaking: 5
+        mending: 1
+  - BOW:
+      chance: 1.0
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_900_998
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.04
+      name: '&cЛук последнего горизонта'
+      lore:
+        - '&8Редкое снаряжение конца света. Не является артефактом.'
+      enchantments:
+        power: 6
+        punch: 2
+        flame: 1
+        infinity: 1
+        unbreaking: 5
+  - MACE:
+      chance: 1.0
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_field_gear_900_998
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 0.04
+      name: '&4Молот аварийного согласования'
+      lore:
+        - '&8Редкое снаряжение конца света. Не является артефактом.'
+      enchantments:
+        density: 2
+        unbreaking: 4
+
   # Уровни 300–449: гарантированные независимые ресурсы, артефакт и отдельный трофей.
   - IRON_INGOT:
       chance: 1.0
