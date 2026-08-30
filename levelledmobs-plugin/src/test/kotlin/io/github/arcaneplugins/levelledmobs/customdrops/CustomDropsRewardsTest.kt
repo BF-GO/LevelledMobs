@@ -151,6 +151,52 @@ class CustomDropsRewardsTest {
     }
 
     @Test
+    fun `level 999 guarantees exactly one persistent pve relic`() {
+        val expected = mapOf(
+            "NETHERITE_SWORD" to Triple(992991, "verdict_sword", mapOf(
+                "sharpness" to 8, "looting" to 5, "fire_aspect" to 2,
+                "unbreaking" to 5, "mending" to 1
+            )),
+            "NETHERITE_AXE" to Triple(992992, "execution_axe", mapOf(
+                "sharpness" to 7, "efficiency" to 7, "unbreaking" to 5, "mending" to 1
+            )),
+            "BOW" to Triple(992993, "final_warning_bow", mapOf(
+                "power" to 7, "punch" to 2, "flame" to 1, "infinity" to 1, "unbreaking" to 5
+            )),
+            "MACE" to Triple(992994, "final_clause_mace", mapOf(
+                "density" to 3, "unbreaking" to 5, "mending" to 1
+            ))
+        )
+        val relics = drops("all_levellable_mobs").filter {
+            it.values["groupid"] == "jw_relic_999"
+        }
+        assertEquals(expected.keys, relics.map { it.material }.toSet())
+        assertEquals(4, relics.size)
+
+        for (drop in relics) {
+            val (model, relicId, expectedEnchantments) = expected.getValue(drop.material)
+            assertEquals(999, number(drop.values, "minLevel").toInt())
+            assertEquals(999, number(drop.values, "maxLevel").toInt())
+            assertEquals(1.0, number(drop.values, "chance").toDouble())
+            assertEquals("1", drop.values["amount"].toString())
+            assertEquals(model, number(drop.values, "custommodeldata").toInt())
+            assertEquals(expectedEnchantments, enchantments(drop))
+            assertEquals(
+                mapOf("levelledmobs:judgement_relic_id" to relicId),
+                map(drop.values, "persistent-data")
+            )
+            assertTrue(drop.values["name"].toString().isNotBlank())
+            assertEquals(2, list(drop.values, "lore").size)
+            assertRandomSinglePool(drop, 1.0)
+            assertProtected(drop)
+        }
+
+        val mace = relics.single { it.material == "MACE" }
+        assertFalse(enchantments(mace).containsKey("breach"))
+        assertFalse(enchantments(mace).containsKey("wind_burst"))
+    }
+
+    @Test
     fun `field gear has exact tier pools and one independent roll`() {
         val pools = listOf(
             Triple("jw_field_gear_1_99", Triple(1, 99, 0.18), setOf(
@@ -420,7 +466,8 @@ class CustomDropsRewardsTest {
                     "jw_armor_set_doom_plot_armor",
                     "jw_scavenged_armor_1_99",
                     "jw_scavenged_armor_100_199",
-                    "jw_scavenged_armor_200_299"
+                    "jw_scavenged_armor_200_299",
+                    "jw_relic_999"
                 )) 4 else if (groupId.startsWith("jw_field_gear_")) 5 else 1
             assertEquals(expectedSize, entries.size, "Unexpected duplicate group $groupId")
         }

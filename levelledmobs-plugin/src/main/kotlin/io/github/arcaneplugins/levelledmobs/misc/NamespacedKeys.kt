@@ -64,4 +64,12 @@ object NamespacedKeys {
     val mobArchetypeRageUsed = NamespacedKey(LevelledMobs.instance, "mob_archetype_rage_used")
     val mobArchetypeRageUntil = NamespacedKey(LevelledMobs.instance, "mob_archetype_rage_until")
     val mobArchetypeBossPhaseUsed = NamespacedKey(LevelledMobs.instance, "mob_archetype_boss_phase_used")
+    val judgementRelicId = NamespacedKey(LevelledMobs.instance, "judgement_relic_id")
+    val judgementRelicSwordCooldown = NamespacedKey(LevelledMobs.instance, "judgement_relic_sword_cooldown")
+    val judgementRelicAxeCooldown = NamespacedKey(LevelledMobs.instance, "judgement_relic_axe_cooldown")
+    val judgementRelicBowCooldown = NamespacedKey(LevelledMobs.instance, "judgement_relic_bow_cooldown")
+    val judgementRelicMaceCooldown = NamespacedKey(LevelledMobs.instance, "judgement_relic_mace_cooldown")
+    val judgementRelicBowProjectileOwner = NamespacedKey(LevelledMobs.instance, "judgement_relic_bow_projectile_owner")
+    val judgementRelicBowMarkOwner = NamespacedKey(LevelledMobs.instance, "judgement_relic_bow_mark_owner")
+    val judgementRelicBowMarkUntil = NamespacedKey(LevelledMobs.instance, "judgement_relic_bow_mark_until")
 }

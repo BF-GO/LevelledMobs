@@ -24,6 +24,7 @@ import io.github.arcaneplugins.levelledmobs.misc.YmlParsingHelper
 import io.github.arcaneplugins.levelledmobs.nametag.Definitions
 import io.github.arcaneplugins.levelledmobs.nametag.NmsMappings
 import io.github.arcaneplugins.levelledmobs.nametag.ServerVersionInfo
+import io.github.arcaneplugins.levelledmobs.relics.JudgementRelicManager
 import io.github.arcaneplugins.levelledmobs.rules.RulesManager
 import io.github.arcaneplugins.levelledmobs.rules.RulesParser
 import io.github.arcaneplugins.levelledmobs.rules.strategies.RandomLevellingStrategy
@@ -60,6 +61,7 @@ class LevelledMobs : JavaPlugin() {
     val mobDataManager = MobDataManager()
     val customDropsHandler = CustomDropsHandler()
     val mobArchetypeManager = MobArchetypeManager()
+    val judgementRelicManager = JudgementRelicManager()
     val chunkLoadListener = ChunkLoadListener()
     val blockPlaceListener = BlockPlaceListener()
     val playerInteractEventListener = PlayerInteractEventListener()

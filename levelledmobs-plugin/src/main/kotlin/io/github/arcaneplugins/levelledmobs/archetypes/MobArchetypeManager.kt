@@ -86,13 +86,15 @@ class MobArchetypeManager : Listener {
         var archetype = getArchetype(entity)
         val wasChecked = pdc.has(NamespacedKeys.mobArchetypeChecked, PersistentDataType.INTEGER)
         var newlyAssigned = false
-        val fixedBossArchetype = MobArchetypeLogic.bossForEntityType(entity.type.name)
+        val fixedArchetype = MobArchetypeLogic.bossForEntityType(entity.type.name)
+            ?: MobArchetypeLogic.fixedForLevel(level)
 
-        if (fixedBossArchetype != null && archetype != fixedBossArchetype) {
-            archetype = fixedBossArchetype
+        if (fixedArchetype != null && archetype != fixedArchetype) {
+            val replacesExistingArchetype = archetype != null
+            archetype = fixedArchetype
             pdc.set(NamespacedKeys.mobArchetypeChecked, PersistentDataType.INTEGER, 1)
             pdc.set(NamespacedKeys.mobArchetype, PersistentDataType.STRING, archetype.name)
-            newlyAssigned = true
+            newlyAssigned = !replacesExistingArchetype
         } else if (archetype == null && !wasChecked) {
             archetype = MobArchetypeLogic.selectRegular(
                 level,
@@ -642,6 +644,15 @@ class MobArchetypeManager : Listener {
             MobArchetype.THUNDERER to ArchetypeDefinition(
                 "&b[Громовержец]", ArchetypePassive(outgoingDamage = 1.15, attackKnockback = 0.35),
                 ArchetypeAbility(cooldownMillis = 8000L, bonusDamage = 4.0)
+            ),
+            MobArchetype.APOCALYPSE_HARBINGER to ArchetypeDefinition(
+                "&4&l[Предвестник Конца]", ArchetypePassive(
+                    outgoingDamage = 1.20,
+                    maxHealth = 1.25,
+                    movementSpeed = 1.10,
+                    knockbackResistance = 0.25
+                ),
+                ArchetypeAbility()
             ),
             MobArchetype.DRAGON_TEMPEST to ArchetypeDefinition(
                 "&5[Повелитель Бури]", ArchetypePassive(outgoingDamage = 1.15, flyingSpeed = 1.15),

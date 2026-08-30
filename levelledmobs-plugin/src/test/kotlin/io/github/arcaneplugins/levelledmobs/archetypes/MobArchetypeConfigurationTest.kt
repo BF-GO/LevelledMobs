@@ -27,8 +27,12 @@ class MobArchetypeConfigurationTest {
         val root = map(settings, "judgement-week-archetypes")
         val classes = map(root, "classes")
         val bosses = map(root, "bosses")
-        assertEquals(setOf("berserker", "bastion", "vampire", "plague", "thunderer"), classes.keys)
+        assertEquals(setOf(
+            "berserker", "bastion", "vampire", "plague", "thunderer", "apocalypse-harbinger"
+        ), classes.keys)
         assertEquals(setOf("dragon-tempest", "wither-necromancer", "warden-resonance", "elder-abyss"), bosses.keys)
+
+        assertDefinition(classes, "apocalypse-harbinger", "&4&l[Предвестник Конца]", "max-health", 1.25)
 
         assertDefinition(classes, "berserker", "&c[Берсерк]", "outgoing-damage", 1.25)
         assertDefinition(classes, "bastion", "&7[Бастион]", "max-health", 1.35)
@@ -55,6 +59,25 @@ class MobArchetypeConfigurationTest {
         assertAbility(bosses, "wither-necromancer", "phase-radius", 10.0)
         assertAbility(bosses, "warden-resonance", "bonus-damage", 6.0)
         assertAbility(bosses, "elder-abyss", "fatigue-duration", "8s")
+    }
+
+    @Test
+    fun `level 999 relic abilities and announcement are configured exactly`() {
+        val root = map(settings, "judgement-week-relics")
+        assertEquals(true, root["enabled"])
+        assertTrue(root["level-999-death-announcement"].toString().contains("%player%"))
+        val abilities = map(root, "abilities")
+
+        assertEquals("8s", map(abilities, "verdict-sword")["cooldown"])
+        assertEquals(4.0, number(map(abilities, "verdict-sword"), "bonus-damage"), 0.000001)
+        assertEquals("10s", map(abilities, "execution-axe")["cooldown"])
+        assertEquals(0.40, number(map(abilities, "execution-axe"), "damage-fraction"), 0.000001)
+        assertEquals(4.0, number(map(abilities, "execution-axe"), "radius"), 0.000001)
+        assertEquals("5s", map(abilities, "final-warning-bow")["mark-duration"])
+        assertEquals(6.0, number(map(abilities, "final-warning-bow"), "bonus-damage"), 0.000001)
+        assertEquals("12s", map(abilities, "final-clause-mace")["cooldown"])
+        assertEquals(1.5, number(map(abilities, "final-clause-mace"), "minimum-fall-distance"), 0.000001)
+        assertEquals(5.0, number(map(abilities, "final-clause-mace"), "radius"), 0.000001)
     }
 
     @Test

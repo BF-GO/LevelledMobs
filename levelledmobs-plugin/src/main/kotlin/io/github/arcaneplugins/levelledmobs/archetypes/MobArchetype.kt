@@ -9,13 +9,14 @@ enum class MobArchetype(
     VAMPIRE("vampire"),
     PLAGUE("plague"),
     THUNDERER("thunderer"),
+    APOCALYPSE_HARBINGER("apocalypse-harbinger"),
     DRAGON_TEMPEST("dragon-tempest", true),
     WITHER_NECROMANCER("wither-necromancer", true),
     WARDEN_RESONANCE("warden-resonance", true),
     ELDER_ABYSS("elder-abyss", true);
 
     companion object {
-        val regularEntries = entries.filterNot { it.isBoss }
+        val regularEntries = entries.filter { !it.isBoss && it != APOCALYPSE_HARBINGER }
 
         fun fromPersistentValue(value: String?): MobArchetype? =
             entries.firstOrNull { it.name.equals(value, ignoreCase = true) }
@@ -77,10 +78,14 @@ object MobArchetypeLogic {
         chanceRoll: Double,
         selectionRoll: Int
     ): MobArchetype? {
+        fixedForLevel(level)?.let { return it }
         if (level < 300 || chance <= 0.0 || chanceRoll >= chance.coerceAtMost(1.0)) return null
         val entries = MobArchetype.regularEntries
         return entries[Math.floorMod(selectionRoll, entries.size)]
     }
+
+    fun fixedForLevel(level: Int): MobArchetype? =
+        if (level == 999) MobArchetype.APOCALYPSE_HARBINGER else null
 
     fun bossForEntityType(entityType: String): MobArchetype? = when (entityType.uppercase()) {
         "ENDER_DRAGON" -> MobArchetype.DRAGON_TEMPEST

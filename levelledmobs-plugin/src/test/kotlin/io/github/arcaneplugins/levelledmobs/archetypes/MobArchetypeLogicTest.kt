@@ -30,7 +30,12 @@ class MobArchetypeLogicTest {
             MobArchetypeLogic.selectRegular(300, 1.0, 0.0, it)
         }.toSet()
         assertEquals(MobArchetype.regularEntries.toSet(), selected)
-        assertEquals(MobArchetype.BERSERKER, MobArchetypeLogic.selectRegular(999, 1.0, 0.999, 0))
+        assertEquals(
+            MobArchetype.APOCALYPSE_HARBINGER,
+            MobArchetypeLogic.selectRegular(999, 0.0, 0.999, 0)
+        )
+        assertNull(MobArchetypeLogic.fixedForLevel(998))
+        assertEquals(MobArchetype.APOCALYPSE_HARBINGER, MobArchetypeLogic.fixedForLevel(999))
     }
 
     @Test

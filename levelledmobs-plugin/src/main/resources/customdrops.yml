@@ -2721,6 +2721,134 @@ all_levellable_mobs:
       lore:
         - '&7Документально подтверждает: это было зря.'
 
+  # Финальный протокол: моб 999-го уровня гарантированно выдаёт ровно один
+  # из четырёх PvE-реликтов. Способности определяются защищённой PDC-меткой.
+  - NETHERITE_SWORD:
+      chance: 1.0
+      amount: 1
+      minLevel: 999
+      maxLevel: 999
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_relic_999
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 1.0
+      custommodeldata: 992991
+      name: '&4&lПриговор №999'
+      lore:
+        - '&7Раз в 8 секунд добавляет к удару по мобу 4 единицы урона.'
+        - '&8Способность действует только против мобов.'
+      enchantments:
+        sharpness: 8
+        looting: 5
+        fire_aspect: 2
+        unbreaking: 5
+        mending: 1
+      persistent-data:
+        'levelledmobs:judgement_relic_id': verdict_sword
+  - NETHERITE_AXE:
+      chance: 1.0
+      amount: 1
+      minLevel: 999
+      maxLevel: 999
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_relic_999
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 1.0
+      custommodeldata: 992992
+      name: '&6&lИсполнительный лист'
+      lore:
+        - '&7Раз в 10 секунд наносит соседним мобам 40% урона удара в радиусе 4 блоков.'
+        - '&8Способность действует только против мобов.'
+      enchantments:
+        sharpness: 7
+        efficiency: 7
+        unbreaking: 5
+        mending: 1
+      persistent-data:
+        'levelledmobs:judgement_relic_id': execution_axe
+  - BOW:
+      chance: 1.0
+      amount: 1
+      minLevel: 999
+      maxLevel: 999
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_relic_999
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 1.0
+      custommodeldata: 992993
+      name: '&5&lПоследнее предупреждение'
+      lore:
+        - '&7Раз в 10 секунд помечает моба на 5 секунд; следующий удар наносит ещё 6 урона.'
+        - '&8Способность действует только против мобов.'
+      enchantments:
+        power: 7
+        punch: 2
+        flame: 1
+        infinity: 1
+        unbreaking: 5
+      persistent-data:
+        'levelledmobs:judgement_relic_id': final_warning_bow
+  - MACE:
+      chance: 1.0
+      amount: 1
+      minLevel: 999
+      maxLevel: 999
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_relic_999
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+        selection-mode: random-single
+        selection-chance: 1.0
+      custommodeldata: 992994
+      name: '&c&lПоследний пункт протокола'
+      lore:
+        - '&7После падения от 1,5 блока создаёт волну отбрасывания раз в 12 секунд.'
+        - '&8Волна не наносит дополнительный урон и не действует в PvP.'
+      enchantments:
+        density: 3
+        unbreaking: 5
+        mending: 1
+      persistent-data:
+        'levelledmobs:judgement_relic_id': final_clause_mace
+
 all_hostile_mobs:
   -
 

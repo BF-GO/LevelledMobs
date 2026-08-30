@@ -186,6 +186,10 @@ judgement-week-archetypes:
       display: '&b[Громовержец]'
       passive: { outgoing-damage: 1.15, attack-knockback: 0.35 }
       ability: { cooldown: 8s, bonus-damage: 4.0 }
+    apocalypse-harbinger:
+      display: '&4&l[Предвестник Конца]'
+      passive: { max-health: 1.25, outgoing-damage: 1.20, movement-speed: 1.10, knockback-resistance: 0.25 }
+      ability: { }
   bosses:
     dragon-tempest:
       display: '&5[Повелитель Бури]'
@@ -209,4 +213,26 @@ judgement-week-archetypes:
 # Раздел 02 |  Настройки разработчика / Не редактировать дальше этого момента
 #   ---------------  -  ------------------------------
 #
+judgement-week-relics:
+  enabled: true
+  level-999-death-announcement: '&4&l[СУДНАЯ НЕДЕЛЯ] &f%player% &7уничтожил &4Предвестника Конца 999-го уровня&7!'
+  abilities:
+    verdict-sword:
+      cooldown: 8s
+      bonus-damage: 4.0
+    execution-axe:
+      cooldown: 10s
+      damage-fraction: 0.40
+      radius: 4.0
+    final-warning-bow:
+      cooldown: 10s
+      mark-duration: 5s
+      bonus-damage: 6.0
+    final-clause-mace:
+      cooldown: 12s
+      minimum-fall-distance: 1.5
+      radius: 5.0
+      horizontal-force: 1.10
+      vertical-force: 0.30
+
 file-version: 40
