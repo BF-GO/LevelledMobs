@@ -12,6 +12,7 @@ import io.github.arcaneplugins.levelledmobs.misc.LivingEntityPlaceholder
 import io.github.arcaneplugins.levelledmobs.misc.NamespacedKeys
 import io.github.arcaneplugins.levelledmobs.misc.RequestedLevel
 import io.github.arcaneplugins.levelledmobs.result.AdditionalLevelInformation
+import io.github.arcaneplugins.levelledmobs.summoning.JudgementSummonPolicy
 import io.github.arcaneplugins.levelledmobs.util.PaperUtils
 import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.SpigotUtils
@@ -328,6 +329,15 @@ object SummonSubcommand : CommandBase("levelledmobs.command.summon"){
         if (options.amount > maxAmount) {
             options.amount = maxAmount
             showMessage("command.levelledmobs.summon.amount-limited.max")
+        }
+
+        val commandMaximum = JudgementSummonPolicy.configuredMaximumLevel()
+        if (commandMaximum != null && JudgementSummonPolicy.limit(
+                options.requestedLevel!!,
+                commandMaximum
+            )
+        ) {
+            showMessage("command.levelledmobs.summon.level-limited.max")
         }
 
         val levels = main.levelManager.getMinAndMaxLevels(options.lmPlaceholder)

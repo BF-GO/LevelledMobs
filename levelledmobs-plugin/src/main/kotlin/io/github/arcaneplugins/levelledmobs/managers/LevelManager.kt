@@ -34,6 +34,7 @@ import io.github.arcaneplugins.levelledmobs.rules.CustomDropsRuleSet
 import io.github.arcaneplugins.levelledmobs.rules.RulesManager
 import io.github.arcaneplugins.levelledmobs.rules.strategies.RandomVarianceGenerator
 import io.github.arcaneplugins.levelledmobs.rules.strategies.StrategyType
+import io.github.arcaneplugins.levelledmobs.summoning.JudgementSummonPolicy
 import io.github.arcaneplugins.levelledmobs.util.Log
 import io.github.arcaneplugins.levelledmobs.util.LocalizedMessages
 import io.github.arcaneplugins.levelledmobs.util.MiscUtils
@@ -235,6 +236,14 @@ class LevelManager : LevelInterface2 {
 
             if (useMaxLevel == -1)
                 useMaxLevel = levels.maxAsInt
+        }
+
+        val isCommandSpawn = lmEntity.spawnReason.getMinecraftSpawnReason(lmEntity) ==
+                CreatureSpawnEvent.SpawnReason.COMMAND
+        val commandMaximum = JudgementSummonPolicy.configuredMaximumLevel(isCommandSpawn)
+        if (commandMaximum != null) {
+            useMinLevel = useMinLevel.coerceAtMost(commandMaximum)
+            useMaxLevel = useMaxLevel.coerceAtMost(commandMaximum)
         }
 
         val levellingStrategies = LevelledMobs.instance.rulesManager.getRuleLevellingStrategies(

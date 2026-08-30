@@ -154,6 +154,12 @@ event-priorities:
   entity-transform-event: 'monitor'
   player-death-event: 'normal'
 
+# false запрещает получать уровни 300+ через /summon и /levelledmobs summon.
+# Естественный спавн, боссы, спавнеры и яйца призыва этим ограничением не затрагиваются.
+judgement-week-summoning:
+  allow-high-level-summons: false
+  high-level-start: 300
+
 # ||  Классы и активные способности мобов «Судной недели» уровня 300+.
 judgement-week-archetypes:
   enabled: true
