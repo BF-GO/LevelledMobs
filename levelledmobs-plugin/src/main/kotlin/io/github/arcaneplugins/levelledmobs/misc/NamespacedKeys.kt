@@ -72,4 +72,10 @@ object NamespacedKeys {
     val judgementRelicBowProjectileOwner = NamespacedKey(LevelledMobs.instance, "judgement_relic_bow_projectile_owner")
     val judgementRelicBowMarkOwner = NamespacedKey(LevelledMobs.instance, "judgement_relic_bow_mark_owner")
     val judgementRelicBowMarkUntil = NamespacedKey(LevelledMobs.instance, "judgement_relic_bow_mark_until")
+    val judgementTrinketId = NamespacedKey(LevelledMobs.instance, "judgement_trinket_id")
+    val judgementTrinketsActive = NamespacedKey(LevelledMobs.instance, "judgement_trinkets_active")
+    val antiElytraItemId = NamespacedKey(LevelledMobs.instance, "anti_elytra_item_id")
+    val antiElytraCooldown = NamespacedKey(LevelledMobs.instance, "anti_elytra_cooldown")
+    val antiElytraProjectileOwner = NamespacedKey(LevelledMobs.instance, "anti_elytra_projectile_owner")
+    val antiElytraGroundedUntil = NamespacedKey(LevelledMobs.instance, "anti_elytra_grounded_until")
 }

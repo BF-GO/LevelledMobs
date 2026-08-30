@@ -25,6 +25,7 @@ import io.github.arcaneplugins.levelledmobs.nametag.Definitions
 import io.github.arcaneplugins.levelledmobs.nametag.NmsMappings
 import io.github.arcaneplugins.levelledmobs.nametag.ServerVersionInfo
 import io.github.arcaneplugins.levelledmobs.relics.JudgementRelicManager
+import io.github.arcaneplugins.levelledmobs.trinkets.JudgementTrinketManager
 import io.github.arcaneplugins.levelledmobs.rules.RulesManager
 import io.github.arcaneplugins.levelledmobs.rules.RulesParser
 import io.github.arcaneplugins.levelledmobs.rules.strategies.RandomLevellingStrategy
@@ -62,6 +63,7 @@ class LevelledMobs : JavaPlugin() {
     val customDropsHandler = CustomDropsHandler()
     val mobArchetypeManager = MobArchetypeManager()
     val judgementRelicManager = JudgementRelicManager()
+    val judgementTrinketManager = JudgementTrinketManager()
     val chunkLoadListener = ChunkLoadListener()
     val blockPlaceListener = BlockPlaceListener()
     val playerInteractEventListener = PlayerInteractEventListener()
@@ -159,6 +161,7 @@ class LevelledMobs : JavaPlugin() {
         disableTimer.start()
 
         levelManager.stopNametagAutoUpdateTask()
+        judgementTrinketManager.stop()
         mainCompanion.shutDownAsyncTasks()
 
         Log.infKey("console.lifecycle.shutdown-complete", mapOf("time" to disableTimer.timer.toString()))

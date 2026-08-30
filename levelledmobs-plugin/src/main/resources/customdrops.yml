@@ -2849,6 +2849,137 @@ all_levellable_mobs:
       persistent-data:
         'levelledmobs:judgement_relic_id': final_clause_mace
 
+  # Талисманы работают из любого слота хотбара. Одинаковые экземпляры не
+  # складываются, а разные можно сочетать ценой свободных быстрых слотов.
+  - AMETHYST_SHARD:
+      chance: 0.04
+      amount: 1
+      minLevel: 300
+      maxLevel: 449
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_trinket_vitality_300_449
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      custommodeldata: 993101
+      name: '&d&lОжерелье внештатного кардиолога'
+      lore:
+        - '&7Даёт +2 сердца, пока лежит в одном из девяти слотов хотбара.'
+        - '&8Одинаковые ожерелья не складываются. Сердце в комплект не входит.'
+      persistent-data:
+        'levelledmobs:judgement_trinket_id': vitality_necklace
+  - IRON_NUGGET:
+      chance: 0.03
+      amount: 1
+      minLevel: 450
+      maxLevel: 599
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_trinket_armor_450_599
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      custommodeldata: 993102
+      name: '&f&lЗначок «Меня почти не пробило»'
+      lore:
+        - '&7Даёт +2 брони, пока лежит в хотбаре.'
+        - '&8Отдел контроля качества просил не проверять его повторно.'
+      persistent-data:
+        'levelledmobs:judgement_trinket_id': armor_badge
+  - RABBIT_FOOT:
+      chance: 0.02
+      amount: 1
+      minLevel: 600
+      maxLevel: 749
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_trinket_speed_600_749
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      custommodeldata: 993103
+      name: '&a&lНосок аварийного ускорения'
+      lore:
+        - '&7Даёт +5% скорости передвижения, пока лежит в хотбаре.'
+        - '&8Почему носок один — вопрос к предыдущему владельцу.'
+      persistent-data:
+        'levelledmobs:judgement_trinket_id': emergency_sock
+  - OBSIDIAN:
+      chance: 0.015
+      amount: 1
+      minLevel: 750
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_trinket_anchor_750_998
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      custommodeldata: 993104
+      name: '&8&lКарманный якорь здравого смысла'
+      lore:
+        - '&7Даёт +0,15 сопротивления отбрасыванию, пока лежит в хотбаре.'
+        - '&8Тяжёлый аргумент. В кармане ощущается ещё убедительнее.'
+      persistent-data:
+        'levelledmobs:judgement_trinket_id': common_sense_anchor
+  # Контрпредмет для элитр не увеличивает урон: он временно закрывает небо,
+  # подсвечивает цель и гарантирует ей безопасное медленное падение.
+  - CROSSBOW:
+      chance: 0.01
+      amount: 1
+      minLevel: 900
+      maxLevel: 998
+      equipped: 0
+      player-caused: true
+      nospawner: true
+      nomultiplier: true
+      use-chunk-kill-max: true
+      groupid: jw_anti_elytra_900_998
+      group-limits:
+        cap-select: 1
+        cap-per-item: 1
+        cap-total: -1
+        cap-equipped: 0
+        retries: 0
+      custommodeldata: 993105
+      name: '&b&lУправление воздушного недоверия'
+      lore:
+        - '&7Раз в 15 секунд сбивает летящего на элитрах игрока и подсвечивает его.'
+        - '&7Повторный полёт и ракеты блокируются на 6 секунд; цель падает медленно.'
+        - '&8Лицензия пилота признана эмоционально недействительной.'
+      enchantments:
+        quick_charge: 3
+        piercing: 4
+        unbreaking: 5
+        mending: 1
+      persistent-data:
+        'levelledmobs:anti_elytra_item_id': airspace_denial_crossbow
+
 all_hostile_mobs:
   -
 

@@ -129,6 +129,7 @@ class MainCompanion{
         main.customDropsHandler.load()
         main.mobArchetypeManager.load()
         main.judgementRelicManager.load()
+        main.judgementTrinketManager.load()
 
         parseDebugsEnabled()
 
@@ -217,6 +218,7 @@ class MainCompanion{
         main.entityDamageListener.load()
         main.mobArchetypeManager.loadListener()
         main.judgementRelicManager.loadListener()
+        main.judgementTrinketManager.loadListener()
         main.entityDeathListener.load()
         pluginManager.registerEvents(EntityRegainHealthListener(), main)
         main.entityTransformListener.load()
@@ -250,6 +252,7 @@ class MainCompanion{
         EntityDamageListener.instance.load()
         main.mobArchetypeManager.loadListener()
         main.judgementRelicManager.loadListener()
+        main.judgementTrinketManager.loadListener()
     }
 
     fun getEventPriority(

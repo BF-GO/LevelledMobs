@@ -235,4 +235,23 @@ judgement-week-relics:
       horizontal-force: 1.10
       vertical-force: 0.30
 
+judgement-week-trinkets:
+  enabled: true
+  hotbar-scan-period-ticks: 10
+  effects:
+    vitality-necklace:
+      max-health: 4.0
+    armor-badge:
+      armor: 2.0
+    emergency-sock:
+      movement-speed: 0.05
+    common-sense-anchor:
+      knockback-resistance: 0.15
+  anti-elytra:
+    cooldown: 15s
+    grounding-duration: 6s
+    rocket-lock-duration: 6s
+    slow-falling-duration: 6s
+    glowing-duration: 6s
+
 file-version: 40

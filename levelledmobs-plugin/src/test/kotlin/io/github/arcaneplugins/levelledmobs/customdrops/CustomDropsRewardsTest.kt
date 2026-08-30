@@ -48,6 +48,17 @@ class CustomDropsRewardsTest {
         val pieces: List<ArmorPiece>
     )
 
+    private data class TaggedReward(
+        val material: String,
+        val groupId: String,
+        val minLevel: Int,
+        val maxLevel: Int,
+        val chance: Double,
+        val customModelData: Int,
+        val persistentKey: String,
+        val persistentValue: String
+    )
+
     private val config: Map<String, Any?> by lazy {
         val resource = checkNotNull(javaClass.classLoader.getResourceAsStream("customdrops.yml"))
         resource.bufferedReader().use { reader ->
@@ -194,6 +205,60 @@ class CustomDropsRewardsTest {
         val mace = relics.single { it.material == "MACE" }
         assertFalse(enchantments(mace).containsKey("breach"))
         assertFalse(enchantments(mace).containsKey("wind_burst"))
+    }
+
+    @Test
+    fun `hotbar trinkets and anti elytra crossbow have exact protected drops`() {
+        val expected = listOf(
+            TaggedReward(
+                "AMETHYST_SHARD", "jw_trinket_vitality_300_449", 300, 449,
+                0.04, 993101, "levelledmobs:judgement_trinket_id", "vitality_necklace"
+            ),
+            TaggedReward(
+                "IRON_NUGGET", "jw_trinket_armor_450_599", 450, 599,
+                0.03, 993102, "levelledmobs:judgement_trinket_id", "armor_badge"
+            ),
+            TaggedReward(
+                "RABBIT_FOOT", "jw_trinket_speed_600_749", 600, 749,
+                0.02, 993103, "levelledmobs:judgement_trinket_id", "emergency_sock"
+            ),
+            TaggedReward(
+                "OBSIDIAN", "jw_trinket_anchor_750_998", 750, 998,
+                0.015, 993104, "levelledmobs:judgement_trinket_id", "common_sense_anchor"
+            ),
+            TaggedReward(
+                "CROSSBOW", "jw_anti_elytra_900_998", 900, 998,
+                0.01, 993105, "levelledmobs:anti_elytra_item_id", "airspace_denial_crossbow"
+            )
+        )
+
+        for (reward in expected) {
+            val drop = drops("all_levellable_mobs").single {
+                it.values["groupid"] == reward.groupId
+            }
+            assertEquals(reward.material, drop.material)
+            assertEquals(reward.minLevel, number(drop.values, "minLevel").toInt())
+            assertEquals(reward.maxLevel, number(drop.values, "maxLevel").toInt())
+            assertEquals(reward.chance, number(drop.values, "chance").toDouble())
+            assertEquals("1", drop.values["amount"].toString())
+            assertEquals(reward.customModelData, number(drop.values, "custommodeldata").toInt())
+            assertEquals(
+                mapOf(reward.persistentKey to reward.persistentValue),
+                map(drop.values, "persistent-data")
+            )
+            assertTrue(drop.values["name"].toString().isNotBlank())
+            assertTrue(list(drop.values, "lore").size >= 2)
+            assertProtected(drop)
+            assertGroupCapCoversAmount(drop)
+        }
+
+        val crossbow = drops("all_levellable_mobs").single {
+            it.values["groupid"] == "jw_anti_elytra_900_998"
+        }
+        assertEquals(
+            mapOf("quick_charge" to 3, "piercing" to 4, "unbreaking" to 5, "mending" to 1),
+            enchantments(crossbow)
+        )
     }
 
     @Test
