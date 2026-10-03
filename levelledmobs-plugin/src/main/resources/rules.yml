@@ -174,7 +174,7 @@ default-rule:
     creeper-max-damage-radius: 6
     maximum-death-in-chunk-threshold: 15
     max-adjacent-chunks: 5
-    chunk-max-cooldown-seconds: 10m
+    chunk-max-cooldown-seconds: 5m
     disable-vanilla-drops-on-chunk-max: false
     disable-item-boost-on-chunk-max: true
     disable-xp-boost-on-chunk-max: true
@@ -367,7 +367,7 @@ custom-rules:
     settings:
       maximum-death-in-chunk-threshold: 15
       max-adjacent-chunks: 5
-      chunk-max-cooldown-seconds: 10m
+      chunk-max-cooldown-seconds: 5m
       disable-vanilla-drops-on-chunk-max: false
       disable-item-boost-on-chunk-max: true
       disable-xp-boost-on-chunk-max: true
